@@ -1,5 +1,5 @@
 {
-  "name": "hopperlabsxyz:lagoon-kit",
+  "name": "@hopperlabsxyz/lagoon-kit",
   "version": "0.0.1",
   "description": "Permissions for Zodiac Roles covering interactions with DeFi protocols",
   "main": "dist/index.js",
