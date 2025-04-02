@@ -39,7 +39,7 @@
     "ts-node": "^10.9.2",
     "zodiac-roles-sdk": "^2.21.2"
   },
-  "private": true,
+  "private": false,
   "publishConfig": {
     "@hopperlabsxyz:registry": "https://npm.pkg.github.com/"
   },
