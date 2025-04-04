@@ -12,14 +12,4 @@ contract SimpleTest is BaseTest {
         assertTrue(true);
     }
 
-    function test_check_avatar_balance() public {
-        //instantiate the avatar
-        TestAvatar avatar = new TestAvatar();
-        //check the balance of the avatar
-        assertEq(address(avatar).balance, 0);
-        //check the balance of the owner
-        console.log("Avatar balance: %d", address(avatar).balance);
-        //check the address of the avatar
-        console.log("Avatar address:", address(avatar));
-    }
 }

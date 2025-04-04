@@ -15,6 +15,7 @@ remappings_location = "txt"
 
 [dependencies]
 forge-std = "1.9.6"
+roles = { version = "v2", git = "git@github.com:gnosisguild/zodiac-modifier-roles.git", rev = "deeb84f87bd586165fe69623f5690ff5b51943fb" }
 
 [fmt]
 line_length = 110

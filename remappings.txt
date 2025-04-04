@@ -1,2 +1,3 @@
 @forge-std/=dependencies/forge-std-1.9.6/src/
 @test/=test/
+@rolesV2/=dependencies/roles-v2/packages/evm/contracts/
