@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity 0.8.28;
+pragma solidity >=0.8.28;
 
-import {BaseTest} from "@test/Base.t.sol";
-import "@forge-std/Test.sol";
+import {BaseTest} from "./Base.t.sol";
+import "../lib/forge-std/src/Test.sol";
 
 contract SimpleTest is BaseTest {
     constructor() {}
