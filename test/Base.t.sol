@@ -21,6 +21,12 @@ interface IRoles {
     function setUp(bytes memory initParams) external;
 
     function avatar() external returns (address);
+
+    function assignRoles(
+        address module,
+        bytes32[] memory roleKeys,
+        bool[] memory memberOf
+    ) external;
 }
 
 function deployRolesModifier(
@@ -41,6 +47,8 @@ function deployTestAvatar() returns (TestAvatar) {
 }
 
 contract BaseTest is Test {
+    bytes32 constant TEST_ROLE = "TEST-ROLE";
+
     TestAvatar public avatar;
 
     IRoles public role;
@@ -49,6 +57,7 @@ contract BaseTest is Test {
         IModuleProxyFactory(MODULE_PROXY_FACTORY);
 
     VmSafe.Wallet public roleOwner = vm.createWallet("roleOwner");
+
     VmSafe.Wallet public roleMember = vm.createWallet("roleMember");
 
     constructor() {
@@ -58,6 +67,14 @@ contract BaseTest is Test {
             address(avatar),
             roleOwner.addr
         );
-        assertEq(role.avatar(), address(avatar), "role setup failed");
+
+        bytes32[] memory roleKeys = new bytes32[](1);
+        roleKeys[0] = TEST_ROLE;
+
+        bool[] memory memberOf = new bool[](1);
+        memberOf[0] = true;
+
+        vm.prank(roleOwner.addr);
+        role.assignRoles(roleMember.addr, roleKeys, memberOf);
     }
 }
