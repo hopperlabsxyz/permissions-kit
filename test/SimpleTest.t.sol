@@ -5,15 +5,25 @@ import {BaseTest, USDC} from "@test/Base.t.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
 import "@forge-std/Test.sol";
 
+address constant SPECTRA = 0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51;
+
 contract SimpleTest is BaseTest {
     constructor() {}
 
-    function testApproveUsdc() public {
+    function test_manager_is_member_of_role() public view {
+        assertTrue(
+            role.isModuleEnabled(manager.addr),
+            "manager is not enabled as module on the role modifier"
+        );
+    }
+
+    function test_approve_usdc() public {
         bytes memory data = abi.encodeWithSelector(
             USDC.approve.selector,
-            0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51,
+            SPECTRA,
             10
         );
+        console.logBytes32(TEST_ROLE);
         vm.prank(manager.addr);
         role.execTransactionWithRole(
             address(USDC),
@@ -24,13 +34,7 @@ contract SimpleTest is BaseTest {
             false
         );
 
-        assertEq(
-            USDC.allowance(
-                manager.addr,
-                0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51
-            ),
-            10
-        );
+        assertEq(USDC.allowance(address(avatar), SPECTRA), 10);
     }
 }
 

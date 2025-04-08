@@ -11,7 +11,6 @@ import {IRoles} from "@test/interfaces/IRoles.sol";
 address constant MODULE_PROXY_FACTORY = 0x000000000000aDdB49795b0f9bA5BC298cDda236;
 address constant ROLE_MASTER_COPY = 0x9646fDAD06d3e24444381f44362a3B0eB343D337;
 IUsdc constant USDC = IUsdc(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-address constant SPECTRA = 0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51;
 
 interface IModuleProxyFactory {
     function deployModule(
