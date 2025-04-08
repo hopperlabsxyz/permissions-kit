@@ -76,5 +76,27 @@ contract BaseTest is Test {
 
         vm.prank(roleOwner.addr);
         role.assignRoles(roleMember.addr, roleKeys, memberOf);
+
+       
+    }
+    function testParseRolesFromJson() public{
+        string memory path = "test/data/permissions.json";
+        string memory jsonRaw = vm.readFile(path);
+
+        // Parse JSON array into `bytes[]`
+        bytes[] memory txs = abi.decode(vm.parseJson(jsonRaw), (bytes[]));
+
+        for (uint i = 0; i < txs.length; i++) {
+            // console.logBytes(txs[i]);
+            console.log("\ni: ", i);
+            // console.logBytes(txs[i]);
+            //cut selector
+            bytes memory txBytes = txs[i];
+
+            //assign roles
+            vm.prank(roleOwner.addr);
+            address(role).call(txBytes);
+
+        }
     }
 }
