@@ -37,6 +37,7 @@ function deployRolesModifier(
 function deployTestAvatar() returns (TestAvatar) {
     return new TestAvatar();
 }
+
 contract BaseTest is Test {
     bytes32 constant TEST_ROLE = "TEST-ROLE";
 
@@ -67,7 +68,8 @@ contract BaseTest is Test {
         vm.prank(roleOwner.addr);
         role.assignRoles(manager.addr, roleKeys, memberOf);
     }
-    function testParseRolesFromJson() public{
+
+    function testParseRolesFromJson() public {
         string memory path = "test/data/permissions.json";
         string memory jsonRaw = vm.readFile(path);
 
@@ -80,7 +82,8 @@ contract BaseTest is Test {
 
             //assign roles
             vm.prank(roleOwner.addr);
-            address(role).call(txBytes);
+            (bool success, ) = address(role).call(txBytes);
+            require(success, "call failed");
         }
     }
 }
