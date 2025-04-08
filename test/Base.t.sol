@@ -67,23 +67,30 @@ contract BaseTest is Test {
 
         vm.prank(roleOwner.addr);
         role.assignRoles(manager.addr, roleKeys, memberOf);
+
+        bytes[] memory permissions = parsePermissions(
+            "test/data/permissions.json"
+        );
+        applyPermissionsOnRole(permissions);
     }
 
-    function testParseRolesFromJson() public {
-        string memory path = "test/data/permissions.json";
-        string memory jsonRaw = vm.readFile(path);
-
-        // Parse JSON array into `bytes[]`
-        bytes[] memory txs = abi.decode(vm.parseJson(jsonRaw), (bytes[]));
-
-        for (uint i = 0; i < txs.length; i++) {
-            console.log("\ni: ", i);
-            bytes memory txBytes = txs[i];
+    function applyPermissionsOnRole(bytes[] memory permissions) internal {
+        for (uint i = 0; i < permissions.length; i++) {
+            bytes memory txBytes = permissions[i];
 
             //assign roles
             vm.prank(roleOwner.addr);
             (bool success, ) = address(role).call(txBytes);
             require(success, "call failed");
         }
+    }
+
+    function parsePermissions(
+        string memory path
+    ) internal view returns (bytes[] memory) {
+        string memory jsonRaw = vm.readFile(path);
+
+        // Parse JSON array into `bytes[]`
+        return abi.decode(vm.parseJson(jsonRaw), (bytes[]));
     }
 }
