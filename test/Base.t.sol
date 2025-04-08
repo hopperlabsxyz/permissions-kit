@@ -5,9 +5,13 @@ import "@forge-std/Test.sol";
 import "@forge-std/console.sol";
 import {VmSafe} from "@forge-std/Vm.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
+import {IUsdc} from "@test/interfaces/IUsdc.sol";
+import {IRoles} from "@test/interfaces/IRoles.sol";
 
 address constant MODULE_PROXY_FACTORY = 0x000000000000aDdB49795b0f9bA5BC298cDda236;
 address constant ROLE_MASTER_COPY = 0x9646fDAD06d3e24444381f44362a3B0eB343D337;
+IUsdc constant USDC = IUsdc(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+address constant SPECTRA = 0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51;
 
 interface IModuleProxyFactory {
     function deployModule(
@@ -15,18 +19,6 @@ interface IModuleProxyFactory {
         bytes calldata initializer,
         uint256 salt
     ) external returns (address);
-}
-
-interface IRoles {
-    function setUp(bytes memory initParams) external;
-
-    function avatar() external returns (address);
-
-    function assignRoles(
-        address module,
-        bytes32[] memory roleKeys,
-        bool[] memory memberOf
-    ) external;
 }
 
 function deployRolesModifier(
@@ -45,7 +37,6 @@ function deployRolesModifier(
 function deployTestAvatar() returns (TestAvatar) {
     return new TestAvatar();
 }
-
 contract BaseTest is Test {
     bytes32 constant TEST_ROLE = "TEST-ROLE";
 
@@ -57,8 +48,7 @@ contract BaseTest is Test {
         IModuleProxyFactory(MODULE_PROXY_FACTORY);
 
     VmSafe.Wallet public roleOwner = vm.createWallet("roleOwner");
-
-    VmSafe.Wallet public roleMember = vm.createWallet("roleMember");
+    VmSafe.Wallet public manager = vm.createWallet("manager");
 
     constructor() {
         avatar = deployTestAvatar();
@@ -75,9 +65,7 @@ contract BaseTest is Test {
         memberOf[0] = true;
 
         vm.prank(roleOwner.addr);
-        role.assignRoles(roleMember.addr, roleKeys, memberOf);
-
-       
+        role.assignRoles(manager.addr, roleKeys, memberOf);
     }
     function testParseRolesFromJson() public{
         string memory path = "test/data/permissions.json";
@@ -87,16 +75,12 @@ contract BaseTest is Test {
         bytes[] memory txs = abi.decode(vm.parseJson(jsonRaw), (bytes[]));
 
         for (uint i = 0; i < txs.length; i++) {
-            // console.logBytes(txs[i]);
             console.log("\ni: ", i);
-            // console.logBytes(txs[i]);
-            //cut selector
             bytes memory txBytes = txs[i];
 
             //assign roles
             vm.prank(roleOwner.addr);
             address(role).call(txBytes);
-
         }
     }
 }
