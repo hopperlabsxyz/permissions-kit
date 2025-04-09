@@ -1,6 +1,6 @@
 import { Address } from "@gnosis-guild/eth-sdk";
 import { applyMembers, applyTargets, ChainId, fetchRolesMod, processPermissions, Role, Target } from "zodiac-roles-sdk";
-import { eth } from "../../src/protocols/lagoon";
+import { kit } from "../../dist/eth";
 
 interface ApplyUpdates {
   chainId: ChainId,
@@ -55,13 +55,16 @@ export async function applyUpdates({
   return calls;
 }
 
-export async function exportCalls(calls: `0x${string}`[], filePath: string = 'data/permissions.json') {
+export async function exportCalls(calls: `0x${string}`[], filePath: string = 'test/data/permissions.json') {
   await Bun.write(filePath, JSON.stringify(calls, null, 2));
 }
 
 const MANAGER = '0xA5d55E7A556fbA22974479497E6bf7e097D81b5e'
+
 const TEST_ROLE = '0x544553542d524f4c450000000000000000000000000000000000000000000000'
+
 const AVATAR = '0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f'
+
 const currentRole: Role = {
   key: TEST_ROLE,
   members: [MANAGER],
@@ -70,19 +73,21 @@ const currentRole: Role = {
   lastUpdate: 0
 }
 
-const permissions = await eth.manage_vault({ targets: ['0xB09F761Cb13baCa8eC087Ac476647361b6314F98'] })
+const permissions = [... await kit.lagoon.manage_vault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })];
 
 
 const { targets } = processPermissions(permissions);
 
 
-const calls = await applyUpdates({
+const calls = (await applyUpdates({
   chainId: 1,
   address: "0xc128B1307128e8A692c98DD48cd7Ff155521A093",
   owner: AVATAR,
   role: currentRole,
   members: [MANAGER],
   targets: targets,
-})
+})).map((call) => call.data)
 
-console.log(calls)
+
+await exportCalls(calls)
+console.log(calls);

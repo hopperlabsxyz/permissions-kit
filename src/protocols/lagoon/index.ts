@@ -1,6 +1,6 @@
 import { allow } from "zodiac-roles-sdk/kit"
 import { allowErc20Approve } from "../../conditions";
-import { c, ChainId, Permission } from "zodiac-roles-sdk/.";
+import { c, ChainId, Permission } from "zodiac-roles-sdk";
 import { Rates, Target, Targets, UnknownTarget } from "./types";
 import ethVaults from "./_ethVaults.ts"
 

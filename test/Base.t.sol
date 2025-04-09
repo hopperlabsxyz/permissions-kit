@@ -60,6 +60,8 @@ contract BaseTest is Test {
         console.log("ROLE ADDRESS", address(role));
         console.log("MANAGER", manager.addr);
         console.log("AVATAR", address(avatar));
+        console.log("ROLE KEY:");
+        console.logBytes32(TEST_ROLE);
 
         bytes32[] memory roleKeys = new bytes32[](1);
         roleKeys[0] = TEST_ROLE;
