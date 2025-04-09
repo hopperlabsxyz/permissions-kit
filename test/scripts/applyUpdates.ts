@@ -73,7 +73,10 @@ const currentRole: Role = {
   lastUpdate: 0
 }
 
-const permissions = [... await kit.lagoon.manage_vault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })];
+const permissions = [
+  ... await kit.lagoon.settleDeposit({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
+  ... await kit.lagoon.settleRedeem({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
+];
 
 
 const { targets } = processPermissions(permissions);
@@ -89,5 +92,4 @@ const calls = (await applyUpdates({
 })).map((call) => call.data)
 
 
-await exportCalls(calls)
-console.log(calls);
+await exportCalls(calls, 'test/protocols/lagoon/settle_deposit.json')

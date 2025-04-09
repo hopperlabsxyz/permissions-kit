@@ -24,7 +24,7 @@ function settleRedeem(
   return [
     ...allowErc20Approve([target.asset], [target.address]), // manage approval for redemption from safe to vault
     {
-      ...allow.mainnet.lagoon.vault.settleDeposit(undefined),
+      ...allow.mainnet.lagoon.vault.settleRedeem(undefined),
       targetAddress: target.address,
     },
   ]

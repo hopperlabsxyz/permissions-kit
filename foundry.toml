@@ -5,7 +5,7 @@ libs = ["dependencies"]
 solc_version = "0.8.28"
 optimizer_runs = 200
 evm_version = 'cancun' # soon to be replace with pectra
-fs_permissions = [{ access = "read", path = "test/data"}]
+fs_permissions = [{ access = "read", path = "test/"}]
 
 [soldeer]
 remappings_generate = false
