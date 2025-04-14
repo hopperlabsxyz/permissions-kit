@@ -34,3 +34,8 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .DS_Store
 
 TODO.txt
+
+# Forge / soldeer related
+dependencies/
+cache/
+lib/

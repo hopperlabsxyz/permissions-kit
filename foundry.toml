@@ -1,0 +1,32 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["dependencies"]
+solc_version = "0.8.28"
+optimizer_runs = 200
+evm_version = 'cancun' # soon to be replace with pectra
+fs_permissions = [{ access = "read", path = "test/"}]
+
+[soldeer]
+remappings_generate = false
+remappings_regenerate = false
+remappings_version = true
+remappings_prefix = ""
+remappings_location = "txt"
+
+[dependencies]
+forge-std = "1.9.6"
+
+[fmt]
+line_length = 110
+single_line_statement_blocks = "multi"
+multiline_func_header = "params_first"
+sort_imports = true
+override_spacing = false
+int_types = "long"
+quote_style = "double"
+number_underscore = "thousands"
+wrap_comments = false
+ignore = ["./lib"]
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
