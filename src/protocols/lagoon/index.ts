@@ -1,106 +1,107 @@
 import { allow } from "zodiac-roles-sdk/kit"
 import { allowErc20Approve } from "../../conditions";
 import { c, ChainId, Permission } from "zodiac-roles-sdk";
-import { Rates, Target, Targets, UnknownTarget } from "./types";
+import { Rates, Target, TargetInfo, Targets } from "./types";
 import ethVaults from "./_ethVaults.ts"
 
-function settleDeposit(
-  _: ChainId,
-  target: UnknownTarget,
-) {
-  return [
-    ...allowErc20Approve([target.asset], [target.address]), // manage approval for redemption from safe to vault
-    {
-      ...allow.mainnet.lagoon.vault.settleDeposit(undefined),
-      targetAddress: target.address,
-    },
-  ]
-}
-
-function settleRedeem(
-  _: ChainId,
-  target: UnknownTarget,
-) {
-  return [
-    ...allowErc20Approve([target.asset], [target.address]), // manage approval for redemption from safe to vault
-    {
-      ...allow.mainnet.lagoon.vault.settleRedeem(undefined),
-      targetAddress: target.address,
-    },
-  ]
-}
-
-function close(
-  _: ChainId,
-  target: UnknownTarget,
-) {
-  return [
-    ...allowErc20Approve([target.asset], [target.address]), // manage approval for redemption from safe to vault
-    {
-      ...allow.mainnet.lagoon.vault.close(),
-      targetAddress: target.address,
-    },
-  ]
-}
-
-function manage_vault(
-  chainId: ChainId,
-  target: UnknownTarget,
-  rates: Rates | undefined = undefined,
-  canClaimSharesOnBehalf: boolean = false
-) {
-  const permissions: Permission[] = [
-    ...settleDeposit(chainId, target),
-    ...settleRedeem(chainId, target),
-    ...close(chainId, target),
-    {
-      ...allow.mainnet.lagoon.vault.initiateClosing(),
-      targetAddress: target.address
-    },
-
-  ];
-  if (rates) {
-    permissions.push({
-      ...allow.mainnet.lagoon.vault.updateRates(
-        c.matches({
-          managementRate: rates.managementRate,
-          performanceRate: rates.performanceRate,
-        }),
-      ),
-      targetAddress: target.address,
-    });
-  }
-  if (canClaimSharesOnBehalf) {
-    permissions.push({
-      ...allow.mainnet.lagoon.vault.claimSharesOnBehalf(),
-      targetAddress: target.address,
-    });
-  }
-  return permissions;
-}
-
-function getTarget(target: Target | UnknownTarget) {
-  if (typeof target == 'string') {
+function getTargetInfo(target: Target): TargetInfo {
+  if (typeof target === 'string') {
     const res = ethVaults.find((t) => t.address === target);
     if (res === undefined) {
       throw new Error("Unknown target");
     }
     return res;
   }
-  return target;
+  else if (typeof target.vault === 'string') {
+    const res = ethVaults.find((t) => t.address === target.vault);
+    if (res === undefined) {
+      throw new Error("Unknown target");
+    }
+    return {
+      address: res.address,
+      asset: res.asset,
+      rates: target.rates,
+      canClaimSharesOnBehalf: target.canClaimSharesOnBehalf
+    };
+  }
+  return {
+    address: target.vault.address,
+    asset: target.vault.asset,
+    rates: target.rates,
+    canClaimSharesOnBehalf: target.canClaimSharesOnBehalf
+  };
+}
+
+function settleVault(
+  _: ChainId,
+  targetInfo: TargetInfo,
+) {
+  return [
+    ...allowErc20Approve([targetInfo.asset], [targetInfo.address]), // manage approval for redemption from safe to vault
+    {
+      ...allow.mainnet.lagoon.vault.settleDeposit(undefined),
+      targetAddress: targetInfo.address,
+    },
+    {
+      ...allow.mainnet.lagoon.vault.settleRedeem(undefined),
+      targetAddress: targetInfo.address,
+    },
+  ]
+}
+
+function closeVault(
+  _: ChainId,
+  targetInfo: TargetInfo,
+) {
+  return [
+    ...allowErc20Approve([targetInfo.asset], [targetInfo.address]), // manage approval for redemption from safe to vault
+    {
+      ...allow.mainnet.lagoon.vault.close(),
+      targetAddress: targetInfo.address,
+    },
+    {
+      ...allow.mainnet.lagoon.vault.initiateClosing(),
+      targetAddress: targetInfo.address
+    },
+  ]
+}
+
+function manageVault(
+  chainId: ChainId,
+  targetInfo: TargetInfo,
+) {
+  const permissions: Permission[] = [
+    ...settleVault(chainId, targetInfo),
+    ...closeVault(chainId, targetInfo),
+  ];
+  if (targetInfo.rates) {
+    permissions.push({
+      ...allow.mainnet.lagoon.vault.updateRates(
+        c.matches({
+          managementRate: targetInfo.rates.managementRate,
+          performanceRate: targetInfo.rates.performanceRate,
+        }),
+      ),
+      targetAddress: targetInfo.address
+    });
+  }
+  if (targetInfo.canClaimSharesOnBehalf) {
+    permissions.push({
+      ...allow.mainnet.lagoon.vault.claimSharesOnBehalf(),
+      targetAddress: targetInfo.address
+    });
+  }
+  return permissions;
 }
 
 export const eth = {
-  manage_vault: async ({ targets }: { targets: Targets }) => {
-    return targets.flatMap((target) => manage_vault(1, getTarget(target)))
+  manageVault: async ({ targets }: { targets: Targets }) => {
+    return targets.flatMap((target) => manageVault(1, getTargetInfo(target)))
   },
-  close: async ({ targets }: { targets: Targets }) => {
-    return targets.flatMap((target) => close(1, getTarget(target)))
+  closeVault: async ({ targets }: { targets: Targets }) => {
+    return targets.flatMap((target) => closeVault(1, getTargetInfo(target)))
   },
-  settleDeposit: async ({ targets }: { targets: Targets }) => {
-    return targets.flatMap((target) => settleDeposit(1, getTarget(target)))
+  settleVault: async ({ targets }: { targets: Targets }) => {
+    return targets.flatMap((target) => settleVault(1, getTargetInfo(target)))
   },
-  settleRedeem: async ({ targets }: { targets: Targets }) => {
-    return targets.flatMap((target) => settleRedeem(1, getTarget(target)))
-  }
 }

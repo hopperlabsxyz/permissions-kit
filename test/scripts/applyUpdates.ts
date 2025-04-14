@@ -1,5 +1,5 @@
 import { Address } from "@gnosis-guild/eth-sdk";
-import { applyMembers, applyTargets, ChainId, fetchRolesMod, processPermissions, Role, Target } from "zodiac-roles-sdk";
+import { applyMembers, applyTargets, c, ChainId, fetchRolesMod, Permission, processPermissions, Role, Target } from "zodiac-roles-sdk";
 import { kit } from "../../dist/eth";
 
 interface ApplyUpdates {
@@ -55,10 +55,6 @@ export async function applyUpdates({
   return calls;
 }
 
-export async function exportCalls(calls: `0x${string}`[], filePath: string = 'test/data/permissions.json') {
-  await Bun.write(filePath, JSON.stringify(calls, null, 2));
-}
-
 const MANAGER = '0xA5d55E7A556fbA22974479497E6bf7e097D81b5e'
 
 const TEST_ROLE = '0x544553542d524f4c450000000000000000000000000000000000000000000000'
@@ -73,23 +69,57 @@ const currentRole: Role = {
   lastUpdate: 0
 }
 
-const permissions = [
-  ... await kit.lagoon.settleDeposit({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
-  ... await kit.lagoon.settleRedeem({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
-];
+async function getCallsFromPermissions(permissions: Permission[]) {
+  const { targets } = processPermissions(permissions);
+
+  return (await applyUpdates({
+    chainId: 1,
+    address: "0xc128B1307128e8A692c98DD48cd7Ff155521A093",
+    owner: AVATAR,
+    role: currentRole,
+    members: [MANAGER],
+    targets: targets,
+  })).map((call) => call.data)
+
+}
+
+const permissions = {
+  lagoon: {
+    manageVault: await kit.lagoon.manageVault(
+      {
+        targets:
+          [
+            {
+              vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
+              rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
+              canClaimSharesOnBehalf: true
+            }
+          ]
+      }
+    ),
+    settleVault: await kit.lagoon.settleVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
+    closeVault: await kit.lagoon.closeVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
+  }
+}
 
 
-const { targets } = processPermissions(permissions);
+type Protocol = keyof typeof kit
+type Action = keyof typeof kit[Protocol]
+
+const protocols = Object.keys(kit) as Protocol[];
+
+const calls = await protocols.reduce(async (accP, protocol) => {
+  const acc = await accP;
+  acc[protocol] = {} as Record<Action, `0x${string}`[]>;
+
+  const actions = Object.keys(kit[protocol]) as Action[];
+
+  await Promise.all(actions.map(async (action) => {
+    acc[protocol][action] = await getCallsFromPermissions(permissions[protocol][action]);
+  }));
+
+  return acc;
+}, Promise.resolve({} as Record<Protocol, Record<Action, `0x${string}`[]>>));
 
 
-const calls = (await applyUpdates({
-  chainId: 1,
-  address: "0xc128B1307128e8A692c98DD48cd7Ff155521A093",
-  owner: AVATAR,
-  role: currentRole,
-  members: [MANAGER],
-  targets: targets,
-})).map((call) => call.data)
-
-
-await exportCalls(calls, 'test/protocols/lagoon/settle_deposit.json')
+await Bun.write('test/data/permissions.json', JSON.stringify(calls, null, 2));
