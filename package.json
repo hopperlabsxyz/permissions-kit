@@ -1,11 +1,15 @@
 {
   "name": "@hopperlabsxyz/lagoon-kit",
-  "version": "0.0.3-alpha",
+  "version": "0.0.4-alpha",
   "description": "Permissions for Zodiac Roles covering interactions with DeFi protocols",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
     "./eth": {
       "types": "./dist/eth.d.ts",
       "require": "./dist/eth.js",
@@ -13,9 +17,14 @@
     }
   },
   "typesVersions": {
-    "eth": [
-      "./dist/eth.d.ts"
-    ]
+    "*": {
+      ".": [
+        "./dist/index.d.ts"
+      ],
+      "eth": [
+        "./dist/eth.d.ts"
+      ]
+    }
   },
   "files": [
     "dist",
