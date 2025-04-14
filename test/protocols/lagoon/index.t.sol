@@ -9,71 +9,142 @@ import "@forge-std/Test.sol";
 address constant TARGET = 0x07ed467acD4ffd13023046968b0859781cb90D9B; // 9SETH
 address constant ASSET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // USDC
 
-contract SettleDepositTest is BaseTest {
+contract SettleVaultTest is BaseTest {
     function setUp() public {
-        bytes[] memory permissions = parsePermissions(
-            "test/protocols/lagoon/settle_deposit.json"
-        );
-        applyPermissionsOnRole(permissions);
+        applyPermissionsOnRole(permissions["lagoon"].settleVault);
     }
 
-    function test_settle_deposit() public {
-        // test to use approve on vault underlying
-        bytes memory data = abi.encodeWithSelector(
+    function test_approve() public {
+        bytes memory call = abi.encodeWithSelector(
             IUsdc(ASSET).approve.selector,
             TARGET,
             10
         );
         vm.prank(manager);
-        bool success = role.execTransactionWithRole(
-            ASSET,
-            0,
-            data,
-            0,
-            TEST_ROLE,
-            false
-        );
-
-        // test to use settle deposit on vault underlying
-        data = abi.encodeWithSelector(Vault(TARGET).settleDeposit.selector, 42);
-        vm.prank(manager);
-        success = role.execTransactionWithRole(
-            TARGET,
-            0,
-            data,
-            0,
-            TEST_ROLE,
-            false
-        );
+        role.execTransactionWithRole(ASSET, 0, call, 0, TEST_ROLE, false);
     }
 
-    function test_settle_redeem() public {
-        // test to use approve on vault underlying
-        bytes memory data = abi.encodeWithSelector(
+    function test_settleDeposit() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).settleDeposit.selector,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_settleRedeem() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).settleRedeem.selector,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+}
+
+contract CloseVaultTest is BaseTest {
+    function setUp() public {
+        applyPermissionsOnRole(permissions["lagoon"].closeVault);
+    }
+
+    function test_approve() public {
+        bytes memory call = abi.encodeWithSelector(
             IUsdc(ASSET).approve.selector,
             TARGET,
             10
         );
         vm.prank(manager);
-        bool success = role.execTransactionWithRole(
-            ASSET,
-            0,
-            data,
-            0,
-            TEST_ROLE,
-            false
-        );
+        role.execTransactionWithRole(ASSET, 0, call, 0, TEST_ROLE, false);
+    }
 
-        // test to use settle deposit on vault underlying
-        data = abi.encodeWithSelector(Vault(TARGET).settleRedeem.selector, 42);
-        vm.prank(manager);
-        success = role.execTransactionWithRole(
-            TARGET,
-            0,
-            data,
-            0,
-            TEST_ROLE,
-            false
+    function test_initiateClosing() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).initiateClosing.selector
         );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_close() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).close.selector,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+}
+
+contract ManageVaultTest is BaseTest {
+    function setUp() public {
+        applyPermissionsOnRole(permissions["lagoon"].manageVault);
+    }
+
+    function test_approve() public {
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(ASSET).approve.selector,
+            TARGET,
+            10
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(ASSET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_settleDeposit() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).settleDeposit.selector,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_settleRedeem() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).settleRedeem.selector,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_initiateClosing() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).initiateClosing.selector
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_close() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).close.selector,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    struct Rates {
+        uint16 managementRate;
+        uint16 performanceRate;
+    }
+
+    function test_updateRates() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).updateRates.selector,
+            Rates({managementRate: 42, performanceRate: 42})
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_canClaimSharesOnBehalf() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).claimSharesOnBehalf.selector
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 }

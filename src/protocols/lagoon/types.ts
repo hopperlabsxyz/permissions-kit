@@ -5,11 +5,12 @@ import ethVaults from "./_ethVaults.ts"
 
 
 type EthVault = (typeof ethVaults)[number];
-type EthTarget = EthVault['address']
 
-export interface UnknownTarget {
-  address: Address;
+export interface TargetInfo {
+  address: Address
   asset: Address;
+  rates?: Rates;
+  canClaimSharesOnBehalf?: boolean;
 }
 
 export interface Rates {
@@ -17,6 +18,15 @@ export interface Rates {
   performanceRate: ConditionFunction<BigNumberish>;
 }
 
-export type Target = EthTarget
+export interface UnknownVault {
+  address: Address;
+  asset: Address
+}
 
-export type Targets = (Target | UnknownTarget)[]
+export type Target = EthVault['address'] | {
+  vault: EthVault['address'] | UnknownVault,
+  rates?: Rates;
+  canClaimSharesOnBehalf?: boolean;
+}
+
+export type Targets = Target[]
