@@ -24,7 +24,7 @@
   "scripts": {
     "setup": "eth-sdk",
     "build": "rm -rf dist && tsup --format esm,cjs",
-    "test": "forge test --fork-url $RPC_URL -vvvvvv"
+    "test": "forge test --fork-url ${RPC_URL:-}"
   },
   "devDependencies": {
     "@types/bun": "latest",
