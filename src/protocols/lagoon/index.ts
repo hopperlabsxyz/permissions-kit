@@ -47,11 +47,17 @@ function manage_vault(
   chainId: ChainId,
   target: UnknownTarget,
   rates: Rates | undefined = undefined,
+  canClaimSharesOnBehalf: boolean = false
 ) {
   const permissions: Permission[] = [
     ...settleDeposit(chainId, target),
     ...settleRedeem(chainId, target),
-    ...close(chainId, target)
+    ...close(chainId, target),
+    {
+      ...allow.mainnet.lagoon.vault.initiateClosing(),
+      targetAddress: target.address
+    },
+
   ];
   if (rates) {
     permissions.push({
@@ -61,6 +67,12 @@ function manage_vault(
           performanceRate: rates.performanceRate,
         }),
       ),
+      targetAddress: target.address,
+    });
+  }
+  if (canClaimSharesOnBehalf) {
+    permissions.push({
+      ...allow.mainnet.lagoon.vault.claimSharesOnBehalf(),
       targetAddress: target.address,
     });
   }
