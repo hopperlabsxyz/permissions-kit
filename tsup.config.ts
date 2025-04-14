@@ -5,6 +5,7 @@ export default defineConfig({
   target: "node14",
   sourcemap: true,
   entry: [
+    "./src/index.ts",
     "./src/eth.ts",
   ],
   dts: {
