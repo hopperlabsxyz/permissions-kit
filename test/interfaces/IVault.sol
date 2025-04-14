@@ -14,23 +14,6 @@ library Roles {
 interface Vault {
     type State is uint8;
 
-    struct InitStruct {
-        address underlying;
-        string name;
-        string symbol;
-        address safe;
-        address whitelistManager;
-        address valuationManager;
-        address admin;
-        address feeReceiver;
-        address feeRegistry;
-        address wrappedNativeToken;
-        uint16 managementRate;
-        uint16 performanceRate;
-        bool enableWhitelist;
-        uint256 rateUpdateCooldown;
-    }
-
     struct Rates {
         uint16 managementRate;
         uint16 performanceRate;
@@ -135,6 +118,7 @@ interface Vault {
     function balanceOf(address account) external view returns (uint256);
     function cancelRequestDeposit() external;
     function claimSharesAndRequestRedeem(uint256 sharesToRedeem) external returns (uint40 requestId);
+    function claimSharesOnBehalf(address[] memory controllers) external;
     function claimableDepositRequest(uint256 requestId, address controller) external view returns (uint256 assets);
     function claimableRedeemRequest(uint256 requestId, address controller) external view returns (uint256 shares);
     function close(uint256 _newTotalAssets) external;
@@ -149,7 +133,7 @@ interface Vault {
     function feeRates() external view returns (Rates memory);
     function getRolesStorage() external pure returns (Roles.RolesStorage memory _rolesStorage);
     function highWaterMark() external view returns (uint256);
-    function initialize(InitStruct memory init) external;
+    function initialize(bytes memory data, address feeRegistry, address wrappedNativeToken) external;
     function initiateClosing() external;
     function isOperator(address controller, address operator) external view returns (bool);
     function isWhitelistActivated() external view returns (bool);
@@ -204,5 +188,6 @@ interface Vault {
     function updateRates(Rates memory newRates) external;
     function updateValuationManager(address _valuationManager) external;
     function updateWhitelistManager(address _whitelistManager) external;
+    function version() external pure returns (string memory);
     function withdraw(uint256 assets, address receiver, address controller) external returns (uint256 shares);
 }
