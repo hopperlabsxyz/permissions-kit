@@ -125,4 +125,26 @@ contract ManageVaultTest is BaseTest {
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
+
+    struct Rates {
+        uint16 managementRate;
+        uint16 performanceRate;
+    }
+
+    function test_updateRates() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).updateRates.selector,
+            Rates({managementRate: 42, performanceRate: 42})
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_canClaimSharesOnBehalf() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).claimSharesOnBehalf.selector
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
 }
