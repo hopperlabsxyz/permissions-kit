@@ -6,12 +6,8 @@ import {TestAvatar} from "@test/TestAvatar.sol";
 import {Vault} from "@test/interfaces/IVault.sol";
 import "@forge-std/Test.sol";
 
-contract LagoonTest is BaseTest {
-    struct Permissions {
-        bytes[] depositAndBorrow;
-    }
-
-    mapping(string => Permissions) internal permissions;
+contract ResupplyTest is BaseTest {
+    bytes[] depositAndBorrow;
 
     constructor() {
         _loadPermissions("test/data/permissions.json");
@@ -20,13 +16,15 @@ contract LagoonTest is BaseTest {
     function _loadPermissions(string memory path) internal {
         string memory json = vm.readFile(path);
 
-        bytes[] memory depositAndBorrow = abi.decode(
+        depositAndBorrow = abi.decode(
             vm.parseJson(json, "$.resupply.depositAndBorrow"),
             (bytes[])
         );
+    }
+}
 
-        permissions["resupply"] = Permissions({
-            depositAndBorrow: depositAndBorrow
-        });
+contract DepositAndBorrowTest is ResupplyTest {
+    function setUp() public {
+        applyPermissionsOnRole(depositAndBorrow);
     }
 }

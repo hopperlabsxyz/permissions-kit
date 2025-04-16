@@ -10,13 +10,9 @@ address constant TARGET = 0x07ed467acD4ffd13023046968b0859781cb90D9B; // 9SETH
 address constant ASSET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // USDC
 
 contract LagoonTest is BaseTest {
-    struct Permissions {
-        bytes[] manageVault;
-        bytes[] closeVault;
-        bytes[] settleVault;
-    }
-
-    mapping(string => Permissions) internal permissions;
+    bytes[] manageVault;
+    bytes[] closeVault;
+    bytes[] settleVault;
 
     constructor() {
         _loadPermissions("test/data/permissions.json");
@@ -25,36 +21,26 @@ contract LagoonTest is BaseTest {
     function _loadPermissions(string memory path) internal {
         string memory json = vm.readFile(path);
 
-        // lagoon.manageVault
-        bytes[] memory manage = abi.decode(
+        manageVault = abi.decode(
             vm.parseJson(json, "$.lagoon.manageVault"),
             (bytes[])
         );
 
-        // lagoon.closeVault
-        bytes[] memory close = abi.decode(
+        closeVault = abi.decode(
             vm.parseJson(json, "$.lagoon.closeVault"),
             (bytes[])
         );
 
-        // lagoon.settleVault
-        bytes[] memory settle = abi.decode(
+        settleVault = abi.decode(
             vm.parseJson(json, "$.lagoon.settleVault"),
             (bytes[])
         );
-
-        // Store in storage mapping
-        permissions["lagoon"] = Permissions({
-            manageVault: manage,
-            closeVault: close,
-            settleVault: settle
-        });
     }
 }
 
 contract SettleVaultTest is LagoonTest {
     function setUp() public {
-        applyPermissionsOnRole(permissions["lagoon"].settleVault);
+        applyPermissionsOnRole(settleVault);
     }
 
     function test_approve() public {
@@ -88,7 +74,7 @@ contract SettleVaultTest is LagoonTest {
 
 contract CloseVaultTest is LagoonTest {
     function setUp() public {
-        applyPermissionsOnRole(permissions["lagoon"].closeVault);
+        applyPermissionsOnRole(closeVault);
     }
 
     function test_approve() public {
@@ -121,7 +107,7 @@ contract CloseVaultTest is LagoonTest {
 
 contract ManageVaultTest is LagoonTest {
     function setUp() public {
-        applyPermissionsOnRole(permissions["lagoon"].manageVault);
+        applyPermissionsOnRole(manageVault);
     }
 
     function test_approve() public {
