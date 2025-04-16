@@ -12,6 +12,7 @@ address constant TARGET = 0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D;
 
 contract ResupplyTest is BaseTest {
     bytes[] depositAndBorrow;
+    bytes[] deposit;
 
     constructor() {
         _loadPermissions("test/data/permissions.json");
@@ -24,6 +25,47 @@ contract ResupplyTest is BaseTest {
             vm.parseJson(json, "$.resupply.depositAndBorrow"),
             (bytes[])
         );
+        deposit = abi.decode(
+            vm.parseJson(json, "$.resupply.deposit"),
+            (bytes[])
+        );
+    }
+}
+
+contract DepositTest is ResupplyTest {
+    function setUp() public {
+        applyPermissionsOnRole(deposit);
+    }
+
+    function test_approve() public {
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(ASSET).approve.selector,
+            TARGET,
+            10
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(ASSET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_addCollateral() public {
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(TARGET).addCollateral.selector,
+            10,
+            avatar
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_addCollateral_revert() public {
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(TARGET).addCollateral.selector,
+            10,
+            address(0xdead)
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 }
 

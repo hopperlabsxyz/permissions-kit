@@ -5,7 +5,8 @@ export type EthPool = typeof ethPools[number]
 
 export type Target = EthPool['address'] | {
   address: EthPool['address'],
-  depositAsset?: Address
+  collateralToken?: Address
+  loanToken?: Address
 }
 
 export type Targets = Target[]
@@ -13,6 +14,7 @@ export type Targets = Target[]
 export interface TargetInfo {
   name: string;
   address: Address;
-  depositAsset: Address;
+  collateralToken: Address;
+  loanToken: Address;
 }
 

@@ -12,19 +12,23 @@ function getTargetInfo(target: Target): TargetInfo {
     }
     return res;
   }
-  if (target.depositAsset === undefined) {
-    throw new Error("Missing depositAsset");
+  if (target.collateralToken === undefined) {
+    throw new Error("Missing collateralToken");
+  }
+  if (target.loanToken === undefined) {
+    throw new Error("Missing loanToken");
   }
   return {
     name: "Unknown",
     address: target.address,
-    depositAsset: target.depositAsset,
+    collateralToken: target.collateralToken,
+    loanToken: target.loanToken
   };
 }
 
 function depositCrvUSD(_: ChainId, targetInfo: TargetInfo) {
   return [
-    ...allowErc20Approve([targetInfo.depositAsset], [targetInfo.address]),
+    ...allowErc20Approve([targetInfo.collateralToken], [targetInfo.address]),
     {
       ...allow.mainnet.resupply.pair.addCollateral(undefined, c.avatar),
       targetAddress: targetInfo.address,
@@ -36,9 +40,32 @@ function depositCrvUSD(_: ChainId, targetInfo: TargetInfo) {
   ];
 }
 
+function borrow(_: ChainId, targetInfo: TargetInfo) {
+  return [
+    ...allowErc20Approve([targetInfo.loanToken], [targetInfo.address]),
+    {
+      ...allow.mainnet.resupply.pair.borrow(undefined, undefined, c.avatar),
+      targetAddress: targetInfo.address,
+    },
+    {
+      ...allow.mainnet.resupply.pair.repay(undefined, c.avatar),
+      targetAddress: targetInfo.address,
+    },
+  ];
+}
+
 
 export const eth = {
-  depositAndBorrow: async ({ targets }: { targets: Targets }) => {
+  deposit: async ({ targets }: { targets: Targets }) => {
     return targets.flatMap((target) => depositCrvUSD(1, getTargetInfo(target)));
+  },
+  borrow: async ({ targets }: { targets: Targets }) => {
+    return targets.flatMap((target) => borrow(1, getTargetInfo(target)));
+  },
+  depositAndBorrow: async ({ targets }: { targets: Targets }) => {
+    return targets.flatMap((target) => [
+      ...depositCrvUSD(1, getTargetInfo(target)),
+      ...borrow(1, getTargetInfo(target))
+    ]);
   },
 };
