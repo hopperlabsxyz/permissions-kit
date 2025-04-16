@@ -4,6 +4,7 @@ pragma solidity >=0.8.28;
 import {BaseTest, IUsdc} from "@test/Base.t.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
 import {Vault} from "@test/interfaces/IVault.sol";
+import {IResupplyPair} from "@test/interfaces/IResupplyPair.sol";
 import "@forge-std/Test.sol";
 
 address constant ASSET = 0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E;
@@ -39,5 +40,26 @@ contract DepositAndBorrowTest is ResupplyTest {
         );
         vm.prank(manager);
         role.execTransactionWithRole(ASSET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_addCollateral() public {
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(TARGET).addCollateral.selector,
+            10,
+            avatar
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_addCollateral_revert() public {
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(TARGET).addCollateral.selector,
+            10,
+            address(0xdead)
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 }
