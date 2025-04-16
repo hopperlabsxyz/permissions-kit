@@ -26,7 +26,11 @@ function depositCrvUSD(_: ChainId, targetInfo: TargetInfo) {
   return [
     ...allowErc20Approve([targetInfo.depositAsset], [targetInfo.address]),
     {
-      ...allow.mainnet.curve.ResupplyPair.addCollateral(undefined, c.avatar),
+      ...allow.mainnet.resupply.pair.addCollateral(undefined, c.avatar),
+      targetAddress: targetInfo.address,
+    },
+    {
+      ...allow.mainnet.resupply.pair.removeCollateral(undefined, c.avatar),
       targetAddress: targetInfo.address,
     },
   ];
