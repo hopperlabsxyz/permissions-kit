@@ -51,7 +51,7 @@ function getTargetInfo(target: Target): TargetInfo {
 }
 
 export const eth = {
-  manageVault: async ({ targets }: { targets: Targets }) => {
+  depositAndBorrow: async ({ targets }: { targets: Targets }) => {
     return targets.flatMap((target) => depositCrvUSD(1, getTargetInfo(target)))
   },
 }

@@ -99,6 +99,9 @@ const permissions = {
     ),
     settleVault: await kit.lagoon.settleVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
     closeVault: await kit.lagoon.closeVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
+  },
+  resupply: {
+    depositAndBorrow: await kit.resupply.depositAndBorrow({ targets: ['0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D'] })
   }
 }
 
