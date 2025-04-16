@@ -13,5 +13,10 @@ export default [
     symbol: "9SETH",
     address: "0x07ed467acd4ffd13023046968b0859781cb90d9b",
     asset: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  {
+    symbol: "tacETH9s",
+    address: "0xDe7CFf032D453Ce6B0a796043E75d380Df258812",
+    asset: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
   }
 ] as const;
