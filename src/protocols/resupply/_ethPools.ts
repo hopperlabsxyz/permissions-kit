@@ -1,17 +1,26 @@
 import { c } from "zodiac-roles-sdk/.";
-
+//reUSD = "0x57aB1E0003F623289CD798B1824Be09a793e4Bec"
 export default [
+  // {
+  //   name: "abc",
+  //   address: "0xabc",
+  //   underlying: "crvUSD or frxUSD", //collateralToken -> underlying
+  //   loanToken: "reUSD",
+  //   collateralVault: ""
+  // },
   {
     name: "PAIR_CURVELEND_WETH_CRVUSD",
     address: "0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D",
-    collateralToken: "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",// crvUSD
-    loanToken: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"// WETH ???
+    underlying: "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",// crvUSD
+    loanToken: "0x57aB1E0003F623289CD798B1824Be09a793e4Bec",// reUSD
+    collateralVault: "0x8fb1c7AEDcbBc1222325C39dd5c1D2d23420CAe3" //vault
   },
   {
     name: "PAIR_CURVELEND_SFRXUSD_CRVUSD",
     address: "0xC5184cccf85b81EDdc661330acB3E41bd89F34A1",
     collateralToken: "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E", //crvUSD underlying
-    loanToken: "??" //crvUSD underlying
+    loanToken: "??", //crvUSD underlying
+    collateralVault: ""
   },
   {
     name: "PAIR_CURVELEND_SDOLA_CRVUSD",
