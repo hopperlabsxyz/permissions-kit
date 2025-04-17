@@ -7,9 +7,9 @@ import {Vault} from "@test/interfaces/IVault.sol";
 import {IResupplyPair} from "@test/interfaces/IResupplyPair.sol";
 import "@forge-std/Test.sol";
 
-address constant COLLATERAL_TOKEN = 0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E;
+address constant UNDERLYING_TOKEN = 0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E;
 address constant PAIR_POOL = 0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D;
-address constant LOAN_TOKEN = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; //WETH
+address constant LOAN_TOKEN = 0x57aB1E0003F623289CD798B1824Be09a793e4Bec; //WETH
 
 contract ResupplyTest is BaseTest {
     bytes[] depositAndBorrow;
@@ -31,10 +31,7 @@ contract ResupplyTest is BaseTest {
             vm.parseJson(json, "$.resupply.deposit"),
             (bytes[])
         );
-        borrow = abi.decode(
-            vm.parseJson(json, "$.resupply.borrow"),
-            (bytes[])
-        );
+        borrow = abi.decode(vm.parseJson(json, "$.resupply.borrow"), (bytes[]));
     }
 }
 
@@ -45,12 +42,19 @@ contract DepositTest is ResupplyTest {
 
     function test_approve() public {
         bytes memory call = abi.encodeWithSelector(
-            IUsdc(COLLATERAL_TOKEN).approve.selector,
+            IUsdc(UNDERLYING_TOKEN).approve.selector,
             PAIR_POOL,
             10
         );
         vm.prank(manager);
-        role.execTransactionWithRole(COLLATERAL_TOKEN, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            UNDERLYING_TOKEN,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_addCollateral() public {
@@ -74,7 +78,7 @@ contract DepositTest is ResupplyTest {
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
-    function test_removeCollateral() public{
+    function test_removeCollateral() public {
         bytes memory call = abi.encodeWithSelector(
             IResupplyPair(PAIR_POOL).removeCollateral.selector,
             10,
@@ -84,7 +88,7 @@ contract DepositTest is ResupplyTest {
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
-        function test_withdrawCollateral_revert() public{
+    function test_withdrawCollateral_revert() public {
         bytes memory call = abi.encodeWithSelector(
             IResupplyPair(PAIR_POOL).removeCollateral.selector,
             10,
@@ -122,7 +126,7 @@ contract BorrowTest is ResupplyTest {
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
-     function test_borrow_revert() public {
+    function test_borrow_revert() public {
         bytes memory call = abi.encodeWithSelector(
             IResupplyPair(PAIR_POOL).borrow.selector,
             5,
@@ -163,12 +167,19 @@ contract DepositAndBorrowTest is ResupplyTest {
 
     function test_approve() public {
         bytes memory call = abi.encodeWithSelector(
-            IUsdc(COLLATERAL_TOKEN).approve.selector,
+            IUsdc(UNDERLYING_TOKEN).approve.selector,
             PAIR_POOL,
             10
         );
         vm.prank(manager);
-        role.execTransactionWithRole(COLLATERAL_TOKEN, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            UNDERLYING_TOKEN,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_addCollateral() public {
@@ -191,5 +202,4 @@ contract DepositAndBorrowTest is ResupplyTest {
         vm.expectRevert();
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
-
 }

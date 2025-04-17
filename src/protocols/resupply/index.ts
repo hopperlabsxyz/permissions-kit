@@ -4,6 +4,8 @@ import { Target, TargetInfo, Targets } from "./types";
 import ethPools from "./_ethPools.ts";
 import { allow } from "zodiac-roles-sdk/kit";
 
+const reUSD = "0x57aB1E0003F623289CD798B1824Be09a793e4Bec";
+
 function getTargetInfo(target: Target): TargetInfo {
   if (typeof target === "string") {
     const res = ethPools.find((t) => t.address === target);
@@ -12,23 +14,19 @@ function getTargetInfo(target: Target): TargetInfo {
     }
     return res;
   }
-  if (target.collateralToken === undefined) {
+  if (target.underlying === undefined) {
     throw new Error("Missing collateralToken");
-  }
-  if (target.loanToken === undefined) {
-    throw new Error("Missing loanToken");
   }
   return {
     name: "Unknown",
     address: target.address,
-    collateralToken: target.collateralToken,
-    loanToken: target.loanToken
+    underlying: target.underlying,
   };
 }
 
 function depositCrvUSD(_: ChainId, targetInfo: TargetInfo) {
   return [
-    ...allowErc20Approve([targetInfo.collateralToken], [targetInfo.address]),
+    ...allowErc20Approve([targetInfo.underlying], [targetInfo.address]),
     {
       ...allow.mainnet.resupply.pair.addCollateral(undefined, c.avatar),
       targetAddress: targetInfo.address,
@@ -42,7 +40,7 @@ function depositCrvUSD(_: ChainId, targetInfo: TargetInfo) {
 
 function borrow(_: ChainId, targetInfo: TargetInfo) {
   return [
-    ...allowErc20Approve([targetInfo.loanToken], [targetInfo.address]),
+    ...allowErc20Approve([reUSD], [targetInfo.address]),
     {
       ...allow.mainnet.resupply.pair.borrow(undefined, undefined, c.avatar),
       targetAddress: targetInfo.address,
