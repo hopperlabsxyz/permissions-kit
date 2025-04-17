@@ -104,6 +104,10 @@ const permissions = {
     deposit: await kit.resupply.deposit({ targets: ['0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D'] }),
     borrow: await kit.resupply.borrow({ targets: ['0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D'] }),
     depositAndBorrow: await kit.resupply.depositAndBorrow({ targets: ['0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D'] })
+  },
+  curve: {
+    stakeCrvUSD: await kit.curve.stakeCrvUSD(),
+    depositStableSwapNg: await kit.curve.depositStableSwapNg({ targets: ['0xc522a6606bba746d7960404f22a3db936b6f4f50'] })
   }
 }
 
