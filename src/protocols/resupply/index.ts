@@ -54,7 +54,6 @@ function borrow(_: ChainId, targetInfo: TargetInfo) {
   ];
 }
 
-
 export const eth = {
   deposit: async ({ targets }: { targets: Targets }) => {
     return targets.flatMap((target) => depositCrvUSD(1, getTargetInfo(target)));

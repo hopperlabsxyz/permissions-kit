@@ -6,7 +6,6 @@
       "dependencies": {
         "@gnosis-guild/eth-sdk": "^0.3.7",
         "@gnosis-guild/eth-sdk-client": "^0.1.6",
-        "@hopperlabsxyz/lagoon-kit": "0.0.4-alpha",
         "ts-node": "^10.9.2",
         "zodiac-roles-sdk": "^2.21.2",
       },
@@ -79,8 +78,6 @@
     "@gnosis-guild/eth-sdk-client": ["@gnosis-guild/eth-sdk-client@0.1.6", "", {}, "sha512-v+DAOqfeBIVIsnBYbe5ZL40qgOULJdeS1hxL1uMfHsf7Ph0MfjokUFx3WpqFdg+D0nuNsbYVkmZIv8MALDvahw=="],
 
     "@gnosis-guild/typechain-ethers-v6": ["@gnosis-guild/typechain-ethers-v6@0.5.5", "", { "dependencies": { "lodash": "^4.17.15", "ts-essentials": "^7.0.1" }, "peerDependencies": { "ethers": "6.x", "typechain": "^8.3.2", "typescript": ">=4.7.0" } }, "sha512-mrtuw+sC6ihQ7yBH8PjKBA2V6xdpsntfqGSzC88lMVn/DB74wVVrYynX1uUaewM6pys7djAZ2cRmFmzIyVWNOQ=="],
-
-    "@hopperlabsxyz/lagoon-kit": ["@hopperlabsxyz/lagoon-kit@0.0.4-alpha", "https://npm.pkg.github.com/download/@hopperlabsxyz/lagoon-kit/0.0.4-alpha/cb119abe4921d698bc1323da20e6d32fc1702c30", { "dependencies": { "@gnosis-guild/eth-sdk": "^0.3.7", "@gnosis-guild/eth-sdk-client": "^0.1.6", "ts-node": "^10.9.2", "zodiac-roles-sdk": "^2.21.2" }, "peerDependencies": { "typescript": "^5" } }, "sha512-1HNSxgBChRsEnEpxTSFNz8knOG9Iu7Lhv7eIE9kaRvFP7KlPIvC0ViMc+U5GshfQrtl6x6COm6U1ai1UbfMabw=="],
 
     "@isaacs/cliui": ["@isaacs/cliui@8.0.2", "", { "dependencies": { "string-width": "^5.1.2", "string-width-cjs": "npm:string-width@^4.2.0", "strip-ansi": "^7.0.1", "strip-ansi-cjs": "npm:strip-ansi@^6.0.1", "wrap-ansi": "^8.1.0", "wrap-ansi-cjs": "npm:wrap-ansi@^7.0.0" } }, "sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA=="],
 

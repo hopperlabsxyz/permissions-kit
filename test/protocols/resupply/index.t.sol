@@ -67,6 +67,27 @@ contract DepositTest is ResupplyTest {
         vm.expectRevert();
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
+
+    function test_removeCollateral() public{
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(TARGET).removeCollateral.selector,
+            10,
+            avatar
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+        function test_withdrawCollateral_revert() public{
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(TARGET).removeCollateral.selector,
+            10,
+            address(0xdead)
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
 }
 
 contract DepositAndBorrowTest is ResupplyTest {
@@ -104,4 +125,5 @@ contract DepositAndBorrowTest is ResupplyTest {
         vm.expectRevert();
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
+
 }
