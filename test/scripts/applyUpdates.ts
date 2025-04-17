@@ -108,6 +108,9 @@ const permissions = {
   curve: {
     stakeCrvUSD: await kit.curve.stakeCrvUSD(),
     depositStableSwapNg: await kit.curve.depositStableSwapNg({ targets: ['0xc522a6606bba746d7960404f22a3db936b6f4f50'] })
+  },
+  convex: {
+    deposit: await kit.convex.deposit({ targets: [440] })
   }
 }
 
