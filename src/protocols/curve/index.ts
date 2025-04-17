@@ -9,7 +9,10 @@ export const eth = {
   stakeCrvUSD: async () => {
     return [
       ...allowErc20Approve([CRVUSD], [SCRVUSD]),
-      allow.mainnet.curve.scrvUSD.deposit(undefined, c.avatar)
+      allow.mainnet.curve.scrvUSD.deposit(undefined, c.avatar),
+      allow.mainnet.curve.scrvUSD["redeem(uint256,address,address)"](undefined, c.avatar, c.avatar),
+      allow.mainnet.curve.scrvUSD["redeem(uint256,address,address,uint256)"](undefined, c.avatar, c.avatar, undefined),
+      allow.mainnet.curve.scrvUSD["redeem(uint256,address,address,uint256,address[])"](undefined, c.avatar, c.avatar, undefined, undefined)
     ]
   }
 }

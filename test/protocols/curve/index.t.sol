@@ -52,4 +52,100 @@ contract StakeCrvUSD is CurveTest {
         vm.prank(manager);
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
     }
+
+    function test_deposit_revert() public {
+        bytes memory call = abi.encodeWithSelector(
+            YearnV3Vault(SCRVUSD).deposit.selector,
+            42,
+            address(0xdead)
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
+    }
+
+    //
+    // function redeem(
+    //     uint256 shares,
+    //     address receiver,
+    //     address owner,
+    //     uint256 max_loss
+    // ) external returns (uint256);
+    //
+    // function redeem(
+    //     uint256 shares,
+    //     address receiver,
+    //     address owner,
+    //     uint256 max_loss,
+    //     address[] memory strategies
+    // ) external returns (uint256);
+
+    function test_redeem() public {
+        bytes memory call = abi.encodeWithSignature(
+            "redeem(uint256,address,address)",
+            42,
+            avatar,
+            avatar
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
+
+        call = abi.encodeWithSignature(
+            "redeem(uint256,address,address,uint256)",
+            42,
+            avatar,
+            avatar,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
+
+        address[] memory addr;
+        call = abi.encodeWithSignature(
+            "redeem(uint256,address,address,uint256,address[])",
+            42,
+            avatar,
+            avatar,
+            42,
+            addr
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_redeem_revert() public {
+        bytes memory call = abi.encodeWithSignature(
+            "redeem(uint256,address,address)",
+            42,
+            address(0xdead),
+            address(0xdead)
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
+
+        call = abi.encodeWithSignature(
+            "redeem(uint256,address,address,uint256)",
+            42,
+            address(0xdead),
+            address(0xdead),
+            42
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
+
+        address[] memory addr;
+        call = abi.encodeWithSignature(
+            "redeem(uint256,address,address,uint256,address[])",
+            42,
+            address(0xdead),
+            address(0xdead),
+            42,
+            addr
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
+    }
 }
