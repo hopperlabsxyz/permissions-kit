@@ -64,22 +64,6 @@ contract StakeCrvUSD is CurveTest {
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
     }
 
-    //
-    // function redeem(
-    //     uint256 shares,
-    //     address receiver,
-    //     address owner,
-    //     uint256 max_loss
-    // ) external returns (uint256);
-    //
-    // function redeem(
-    //     uint256 shares,
-    //     address receiver,
-    //     address owner,
-    //     uint256 max_loss,
-    //     address[] memory strategies
-    // ) external returns (uint256);
-
     function test_redeem() public {
         bytes memory call = abi.encodeWithSignature(
             "redeem(uint256,address,address)",
