@@ -9,9 +9,38 @@ import "@forge-std/Test.sol";
 address constant TARGET = 0x07ed467acD4ffd13023046968b0859781cb90D9B; // 9SETH
 address constant ASSET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // USDC
 
-contract SettleVaultTest is BaseTest {
+contract LagoonTest is BaseTest {
+    bytes[] manageVault;
+    bytes[] closeVault;
+    bytes[] settleVault;
+
+    constructor() {
+        _loadPermissions("test/data/permissions.json");
+    }
+
+    function _loadPermissions(string memory path) internal {
+        string memory json = vm.readFile(path);
+
+        manageVault = abi.decode(
+            vm.parseJson(json, "$.lagoon.manageVault"),
+            (bytes[])
+        );
+
+        closeVault = abi.decode(
+            vm.parseJson(json, "$.lagoon.closeVault"),
+            (bytes[])
+        );
+
+        settleVault = abi.decode(
+            vm.parseJson(json, "$.lagoon.settleVault"),
+            (bytes[])
+        );
+    }
+}
+
+contract SettleVaultTest is LagoonTest {
     function setUp() public {
-        applyPermissionsOnRole(permissions["lagoon"].settleVault);
+        applyPermissionsOnRole(settleVault);
     }
 
     function test_approve() public {
@@ -43,9 +72,9 @@ contract SettleVaultTest is BaseTest {
     }
 }
 
-contract CloseVaultTest is BaseTest {
+contract CloseVaultTest is LagoonTest {
     function setUp() public {
-        applyPermissionsOnRole(permissions["lagoon"].closeVault);
+        applyPermissionsOnRole(closeVault);
     }
 
     function test_approve() public {
@@ -76,9 +105,9 @@ contract CloseVaultTest is BaseTest {
     }
 }
 
-contract ManageVaultTest is BaseTest {
+contract ManageVaultTest is LagoonTest {
     function setUp() public {
-        applyPermissionsOnRole(permissions["lagoon"].manageVault);
+        applyPermissionsOnRole(manageVault);
     }
 
     function test_approve() public {
