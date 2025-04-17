@@ -10,6 +10,7 @@ export default defineConfig({
       },
       curve: {
         crvUSD: "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+        scrvUSD: "0x0655977FEb2f289A4aB78af67BAB0d17aAb84367"
       },
       resupply: {
         pair: "0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D",
