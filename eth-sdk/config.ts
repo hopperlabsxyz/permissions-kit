@@ -15,6 +15,9 @@ export default defineConfig({
       },
       resupply: {
         pair: "0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D",
+      },
+      convex: {
+        booster: "0xf403c135812408bfbe8713b5a23a04b3d48aae31"
       }
     },
   },
