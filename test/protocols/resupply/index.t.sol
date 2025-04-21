@@ -88,6 +88,25 @@ contract DepositTest is ResupplyTest {
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
+    function test_getReward() public {
+        bytes memory call = abi.encodeWithSignature(
+            "getReward(address)",
+            avatar
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_getRewardForward() public {
+        bytes memory call = abi.encodeWithSignature(
+            "getReward(address,address)",
+            avatar,
+            avatar
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
+    }
+
     function test_withdrawCollateral_revert() public {
         bytes memory call = abi.encodeWithSelector(
             IResupplyPair(PAIR_POOL).removeCollateral.selector,

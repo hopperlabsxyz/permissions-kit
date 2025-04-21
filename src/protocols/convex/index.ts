@@ -13,9 +13,23 @@ function deposit(_: ChainId, targetInfo: TargetInfo) {
     ...allowErc20Approve([targetInfo.lpToken], [BOOSTER]),
     allow.mainnet.convex.booster.depositAll(targetInfo.poolId, undefined),
     allow.mainnet.convex.booster.deposit(targetInfo.poolId, undefined, undefined),
+  ]
+}
+
+function withdraw(_: ChainId, targetInfo: TargetInfo) {
+  return [
+    ...allowErc20Approve([targetInfo.lpToken], [BOOSTER]),
     allow.mainnet.convex.booster.withdrawAll(targetInfo.poolId),
     allow.mainnet.convex.booster.withdrawTo(targetInfo.poolId, undefined, c.avatar),
-    allow.mainnet.convex.booster.withdraw(targetInfo.poolId, undefined)
+    allow.mainnet.convex.booster.withdraw(targetInfo.poolId, undefined),
+    // TODO: start test those
+    allow.mainnet.convex.baseRewardPool["getReward(address,bool)"](c.avatar, undefined),
+    allow.mainnet.convex.baseRewardPool["getReward()"](),
+    allow.mainnet.convex.baseRewardPool.withdraw(undefined, undefined),
+    allow.mainnet.convex.baseRewardPool.withdrawAllAndUnwrap(undefined),
+    allow.mainnet.convex.baseRewardPool.withdrawAll(undefined),
+    allow.mainnet.convex.baseRewardPool.withdrawAndUnwrap(undefined, undefined),
+    // TODO: end
   ]
 }
 
@@ -32,8 +46,12 @@ function getTargetInfo(target: Target): TargetInfo {
 
 export const eth = {
   deposit: async ({ targets }: { targets: Targets }) => {
-    return targets.flatMap((target) => ([
-      ...deposit(1, getTargetInfo(target))
-    ]))
+    return targets.flatMap((target) => {
+      const info = getTargetInfo(target)
+      return ([
+        ...deposit(1, info),
+        ...withdraw(1, info),
+      ])
+    })
   }
 }

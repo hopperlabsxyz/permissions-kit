@@ -35,6 +35,14 @@ function depositCrvUSD(_: ChainId, targetInfo: TargetInfo) {
       ...allow.mainnet.resupply.pair.removeCollateral(undefined, c.avatar),
       targetAddress: targetInfo.address,
     },
+    {
+      ...allow.mainnet.resupply.pair["getReward(address)"](c.avatar),
+      targetAddress: targetInfo.address,
+    },
+    {
+      ...allow.mainnet.resupply.pair["getReward(address,address)"](c.avatar, c.avatar),
+      targetAddress: targetInfo.address,
+    },
   ];
 }
 
