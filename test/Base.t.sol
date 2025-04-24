@@ -7,6 +7,7 @@ import {VmSafe} from "@forge-std/Vm.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
 import {IUsdc} from "@test/interfaces/IUsdc.sol";
 import {IRoles} from "@test/interfaces/IRoles.sol";
+import {ISimpleOFTAdapter} from "@test/interfaces/ISimpleOFTAdapter.sol";
 import {ZodiacHelpers} from "@test/ZodiacHelpers.t.sol";
 
 contract BaseTest is ZodiacHelpers {
