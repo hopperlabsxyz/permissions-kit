@@ -19,7 +19,10 @@ export default defineConfig({
       convex: {
         booster: "0xf403c135812408bfbe8713b5a23a04b3d48aae31",
         baseRewardPool: "0x7Fafc1876970dBD9F6568586EFa7d0FAc0FE8EA8"
-      }
+      },
+      bridge: {
+        SimpleOFTAdapter_resolv: "0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28",//implementation
+      },
     },
   },
 })
