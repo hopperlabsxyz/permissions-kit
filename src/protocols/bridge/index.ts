@@ -18,7 +18,7 @@ const implementation = "0xc4543073bfaba77781b46dfb4d43b5ae4e30eb28";
 function transfer(_: ChainId): Permission[] {
   return [
     // Step 1: Approve USR to Stargate Proxy
-    ...allowErc20Approve([Proxy_Resolv], [USRToken]),
+    ...allowErc20Approve([USRToken], [Proxy_Resolv]),
 
     // Step 2: transfer USR to Base
     {
@@ -28,17 +28,15 @@ function transfer(_: ChainId): Permission[] {
           dstEid: undefined, // chainId
           to: c.avatar, // destination address
           amountLD: undefined, // amount to send
-          // minAmountLD: c.gt(0), //min amount
-          // extraOptions: c.any(), // Optional, allow dynamic
-          // composeMsg: c.any(),
-          // oftCmd: c.any()
+          minAmountLD: undefined, //min amount
+          extraOptions: undefined, // Optional, allow dynamic
+          composeMsg: undefined,
+          oftCmd: undefined,
         }),
-        // _fee
-        undefined,
-        // _refundAddress
-        c.avatar
+        undefined, //fee
+        c.avatar, //refund address
       ),
-      targetAddress: implementation,
+      targetAddress: Proxy_Resolv, //TODO: replace with adapted address
     },
   ];
 }
@@ -47,12 +45,12 @@ function transfer(_: ChainId): Permission[] {
 //Step 4: bridge USR back to mainnet
 
 export const eth = {
-    transfer: async ({ targets }: { targets: ChainId[] }) => {
-        return targets.flatMap((target) => {
-        return [transfer(target)];
-        });
-    },
-    };
+  transfer: async ({ targets }: { targets: ChainId[] }) => {
+    return targets.flatMap((target) => {
+      return [transfer(target)];
+    });
+  },
+};
 
 // TSX: transaction record
 // From mainnet to base first, this is the first transactions: approve and send
