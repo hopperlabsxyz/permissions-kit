@@ -1,14 +1,24 @@
 import { Address } from "@gnosis-guild/eth-sdk";
-import { applyMembers, applyTargets, c, ChainId, fetchRolesMod, Permission, processPermissions, Role, Target } from "zodiac-roles-sdk";
+import {
+  applyMembers,
+  applyTargets,
+  c,
+  ChainId,
+  fetchRolesMod,
+  Permission,
+  processPermissions,
+  Role,
+  Target,
+} from "zodiac-roles-sdk";
 import { kit } from "../../dist/eth";
 
 interface ApplyUpdates {
-  chainId: ChainId,
-  address: Address,
-  owner: Address,
-  role: Role,
-  members: Address[],
-  targets: Target[],
+  chainId: ChainId;
+  address: Address;
+  owner: Address;
+  role: Role;
+  members: Address[];
+  targets: Target[];
 }
 
 export async function applyUpdates({
@@ -18,11 +28,10 @@ export async function applyUpdates({
   members,
   targets,
 }: ApplyUpdates) {
+  const comments: string[] = [];
+  const logCall = (log: string) => comments.push(log);
 
-  const comments: string[] = []
-  const logCall = (log: string) => comments.push(log)
-
-  let calls: { to: `0x${string}`; data: `0x${string}` }[] = []
+  let calls: { to: `0x${string}`; data: `0x${string}` }[] = [];
 
   if (members) {
     calls = calls.concat(
@@ -35,7 +44,7 @@ export async function applyUpdates({
           log: logCall,
         })
       ).map((data) => ({ to: address, data }))
-    )
+    );
   }
 
   if (targets) {
@@ -49,77 +58,89 @@ export async function applyUpdates({
           log: logCall,
         })
       ).map((data) => ({ to: address, data }))
-    )
+    );
   }
 
   return calls;
 }
 
-const MANAGER = '0xA5d55E7A556fbA22974479497E6bf7e097D81b5e'
+const MANAGER = "0xA5d55E7A556fbA22974479497E6bf7e097D81b5e";
 
-const TEST_ROLE = '0x544553542d524f4c450000000000000000000000000000000000000000000000'
+const TEST_ROLE =
+  "0x544553542d524f4c450000000000000000000000000000000000000000000000";
 
-const AVATAR = '0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f'
+const AVATAR = "0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f";
 
 const currentRole: Role = {
   key: TEST_ROLE,
   members: [MANAGER],
   targets: [],
   annotations: [],
-  lastUpdate: 0
-}
+  lastUpdate: 0,
+};
 
 async function getCallsFromPermissions(permissions: Permission[]) {
   const { targets } = processPermissions(permissions);
 
-  return (await applyUpdates({
-    chainId: 1,
-    address: "0xc128B1307128e8A692c98DD48cd7Ff155521A093",
-    owner: AVATAR,
-    role: currentRole,
-    members: [MANAGER],
-    targets: targets,
-  })).map((call) => call.data)
-
+  return (
+    await applyUpdates({
+      chainId: 1,
+      address: "0xc128B1307128e8A692c98DD48cd7Ff155521A093",
+      owner: AVATAR,
+      role: currentRole,
+      members: [MANAGER],
+      targets: targets,
+    })
+  ).map((call) => call.data);
 }
 
 const permissions = {
   lagoon: {
-    manageVault: await kit.lagoon.manageVault(
-      {
-        targets:
-          [
-            {
-              vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
-              rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
-              canClaimSharesOnBehalf: true
-            }
-          ]
-      }
-    ),
-    settleVault: await kit.lagoon.settleVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
-    closeVault: await kit.lagoon.closeVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
+    manageVault: await kit.lagoon.manageVault({
+      targets: [
+        {
+          vault: "0x07ed467acd4ffd13023046968b0859781cb90d9b",
+          rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
+          canClaimSharesOnBehalf: true,
+        },
+      ],
+    }),
+    settleVault: await kit.lagoon.settleVault({
+      targets: ["0x07ed467acd4ffd13023046968b0859781cb90d9b"],
+    }),
+    closeVault: await kit.lagoon.closeVault({
+      targets: ["0x07ed467acd4ffd13023046968b0859781cb90d9b"],
+    }),
   },
   resupply: {
-    deposit: await kit.resupply.deposit({ targets: ['0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D'] }),
-    borrow: await kit.resupply.borrow({ targets: ['0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D'] }),
-    depositAndBorrow: await kit.resupply.depositAndBorrow({ targets: ['0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D'] })
+    deposit: await kit.resupply.deposit({
+      targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
+    }),
+    borrow: await kit.resupply.borrow({
+      targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
+    }),
+    depositAndBorrow: await kit.resupply.depositAndBorrow({
+      targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
+    }),
   },
   curve: {
     stakeCrvUSD: await kit.curve.stakeCrvUSD(),
-    depositStableSwapNg: await kit.curve.depositStableSwapNg({ targets: ['0xc522a6606bba746d7960404f22a3db936b6f4f50'] })
+    depositStableSwapNg: await kit.curve.depositStableSwapNg({
+      targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50"],
+    }),
   },
   convex: {
-    deposit: await kit.convex.deposit({ targets: [440] })
+    deposit: await kit.convex.deposit({ targets: [440] }),
   },
   bridge: {
-    send: await kit.bridge.transfer({ targets: ['0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28'] }), //why? kit not updated?
+    transfer: await kit.bridge.transfer({
+      targets: [1],
+    }),
   },
-}
+};
 
-
-type Protocol = keyof typeof kit
-type Action = keyof typeof kit[Protocol]
+type Protocol = keyof typeof kit;
+type Action = keyof (typeof kit)[Protocol];
 
 const protocols = Object.keys(kit) as Protocol[];
 
@@ -129,12 +150,15 @@ const calls = await protocols.reduce(async (accP, protocol) => {
 
   const actions = Object.keys(kit[protocol]) as Action[];
 
-  await Promise.all(actions.map(async (action) => {
-    acc[protocol][action] = await getCallsFromPermissions(permissions[protocol][action]);
-  }));
+  await Promise.all(
+    actions.map(async (action) => {
+      acc[protocol][action] = await getCallsFromPermissions(
+        permissions[protocol][action]
+      );
+    })
+  );
 
   return acc;
 }, Promise.resolve({} as Record<Protocol, Record<Action, `0x${string}`[]>>));
 
-
-await Bun.write('test/data/permissions.json', JSON.stringify(calls, null, 2));
+await Bun.write("test/data/permissions.json", JSON.stringify(calls, null, 2));

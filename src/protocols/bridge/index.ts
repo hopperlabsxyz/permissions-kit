@@ -1,7 +1,6 @@
 import { allow } from "zodiac-roles-sdk/kit";
 import { allowErc20Approve } from "../../conditions";
 import { c, ChainId, Permission } from "zodiac-roles-sdk";
-import { TargetInfo } from "../lagoon/types";
 
 const USRToken = "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110";
 const Proxy_Resolv = "0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E";
@@ -14,7 +13,9 @@ const implementation = "0xc4543073bfaba77781b46dfb4d43b5ae4e30eb28";
 // Bridge from and to Base & Mainnet
 // LP USR on Pendle Base
 
-function transfer(_: ChainId, targetAddress: TargetInfo): Permission[] {
+//targetInfo should be a chainId
+
+function transfer(_: ChainId): Permission[] {
   return [
     // Step 1: Approve USR to Stargate Proxy
     ...allowErc20Approve([Proxy_Resolv], [USRToken]),
@@ -25,7 +26,7 @@ function transfer(_: ChainId, targetAddress: TargetInfo): Permission[] {
         // _sendParam
         c.matches({
           dstEid: undefined, // chainId
-          to: undefined, // destination address
+          to: c.avatar, // destination address
           amountLD: undefined, // amount to send
           // minAmountLD: c.gt(0), //min amount
           // extraOptions: c.any(), // Optional, allow dynamic
@@ -46,10 +47,12 @@ function transfer(_: ChainId, targetAddress: TargetInfo): Permission[] {
 //Step 4: bridge USR back to mainnet
 
 export const eth = {
-  transfer: async ({ targets }: { targets: TargetInfo[] }) => {
-    return targets.flatMap((target) => transfer(1, target));
-  },
-};
+    transfer: async ({ targets }: { targets: ChainId[] }) => {
+        return targets.flatMap((target) => {
+        return [transfer(target)];
+        });
+    },
+    };
 
 // TSX: transaction record
 // From mainnet to base first, this is the first transactions: approve and send
