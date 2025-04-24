@@ -101,6 +101,7 @@
   },
   "bridge": {
     "transfer": [
+      // TODO: add the correct bridge address
     ]
   }
 }
