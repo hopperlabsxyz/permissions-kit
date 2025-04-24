@@ -111,7 +111,10 @@ const permissions = {
   },
   convex: {
     deposit: await kit.convex.deposit({ targets: [440] })
-  }
+  },
+  bridge: {
+    send: await kit.bridge.transfer({ targets: ['0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28'] }),
+  },
 }
 
 
