@@ -21,7 +21,9 @@ export default defineConfig({
         baseRewardPool: "0x7Fafc1876970dBD9F6568586EFa7d0FAc0FE8EA8"
       },
       bridge: {
-        SimpleOFTAdapter_resolv: "0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28",//implementation
+        stargate: {
+          simpleOFTAdapter: "0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28", //implementation
+        }
       },
     },
   },

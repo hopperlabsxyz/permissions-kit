@@ -1,82 +1,70 @@
 import { allow } from "zodiac-roles-sdk/kit";
-import { allowErc20Approve } from "../../conditions";
+import { allowErc20Approve, oneOf } from "../../conditions";
 import { c, ChainId, Permission } from "zodiac-roles-sdk";
+import { Address } from "@gnosis-guild/eth-sdk";
 
-const USRToken = "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110";
-const Proxy_Resolv = "0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E";
-const implementation = "0xc4543073bfaba77781b46dfb4d43b5ae4e30eb28";
+const oftAdapters = {
+  1: '0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E'
+} as const
 
-//Note: Pendle Base USR
-// Bridge USR back and forth
-// Approve USR on Stargate Mainnet & Base
-// https://stargate.finance/
-// Bridge from and to Base & Mainnet
-// LP USR on Pendle Base
+const chainIdToEndpointId = {
+  1: 30101, // mainnet
+  10: 30111, // optimism
+  100: 30145, // gnosis
+  137: 30109, // polygon
+  42161: 30110, // arbitrum
+  43114: 30106, // avalance
+  56: 30102, // bnb
+  8453: 30184, // base
+} as const
 
-//targetInfo should be a chainId
+function getOFTAdapterAddress(chainId: ChainId) {
+  if (chainId in oftAdapters) {
+    return oftAdapters[chainId as keyof typeof oftAdapters];
+  }
+  throw new Error(`OFT Adapters addresses not supported on this chain id: ${chainId}`)
+}
 
-function transfer(_: ChainId): Permission[] {
+
+function stargateTransfer(chainId: ChainId, tokens: Address[], dstChainIds: number[], receiver: Address): Permission[] {
+  const endpointIds = dstChainIds.map((chainId) => {
+    if (chainId in chainIdToEndpointId) {
+      return chainIdToEndpointId[chainId as keyof typeof chainIdToEndpointId]
+    }
+    return chainId
+  })
+
+  const oftAdapter = getOFTAdapterAddress(chainId)
+
   return [
-    // Step 1: Approve USR to Stargate Proxy
-    ...allowErc20Approve([USRToken], [Proxy_Resolv]),
-
-    // Step 2: transfer USR to Base
+    ...allowErc20Approve(tokens, [oftAdapter]),
     {
-      ...allow.mainnet.bridge.SimpleOFTAdapter_resolv.send(
-        // _sendParam
+      ...allow.mainnet.bridge.stargate.simpleOFTAdapter.send(
         c.matches({
-          dstEid: undefined, // chainId
-          to: c.avatar, // destination address
-          amountLD: undefined, // amount to send
-          minAmountLD: undefined, //min amount
-          extraOptions: undefined, // Optional, allow dynamic
+          dstEid: oneOf(endpointIds),
+          to: c.eq(receiver),
+          amountLD: undefined,
+          minAmountLD: undefined,
+          extraOptions: undefined,
           composeMsg: undefined,
           oftCmd: undefined,
         }),
-        undefined, //fee
-        c.avatar //refund address
+        undefined,
+        c.avatar
       ),
-      targetAddress: Proxy_Resolv, //TODO: replace with adapted address
+      targetAddress: oftAdapter,
     },
   ];
 }
 
-//Step 3: approve USR on Base
-//Step 4: bridge USR back to mainnet
+
+type Target = { tokenAddresses: Address[], dstChainIds: number[], receiver: Address }
+
 
 export const eth = {
-  transfer: async ({ targets }: { targets: ChainId[] }) => {
-    return targets.flatMap((target) => {
-      return [transfer(target)];
-    });
-  },
+  stargate: {
+    transfer: async ({ targets }: { targets: Target[] }) => {
+      return targets.flatMap(({ tokenAddresses, dstChainIds, receiver }) => stargateTransfer(1, tokenAddresses, dstChainIds, receiver))
+    },
+  }
 };
-
-// TSX: transaction record
-// From mainnet to base first, this is the first transactions: approve and send
-// "{
-//     "func": "approve",
-//     "params": [
-//         "0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E",
-//         115792089237316195423570985008687907853269984665640564039457584007913129639935
-//     ]
-// }"
-// "{
-//     "func": "send",
-//     "params": [
-//         [
-//             30184,
-//             "000000000000000000000000208f33ae630a69c649c41fff2360537a99868b2a",
-//             224836000000000000,
-//             223712735839484713,
-//             "0003",
-//             "",
-//             ""
-//         ],
-//         [
-//             86491082257887,
-//             0
-//         ],
-//         "0x208F33ae630a69c649c41ffF2360537a99868b2A"
-//     ]
-// }"
