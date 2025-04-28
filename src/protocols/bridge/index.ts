@@ -34,7 +34,7 @@ function transfer(_: ChainId): Permission[] {
           oftCmd: undefined,
         }),
         undefined, //fee
-        c.avatar, //refund address
+        c.avatar //refund address
       ),
       targetAddress: Proxy_Resolv, //TODO: replace with adapted address
     },
