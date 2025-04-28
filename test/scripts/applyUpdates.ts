@@ -93,7 +93,6 @@ async function getCallsFromPermissions(permissions: Permission[]) {
   ).map((call) => call.data);
 }
 
-
 const permissions = {
   lagoon: {
     manageVault: await kit.lagoon.manageVault({
@@ -135,13 +134,19 @@ const permissions = {
   bridge: {
     stargate: {
       transfer: await kit.bridge.stargate.transfer({
-        targets: [{ tokenAddresses: ['0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110'], dstChainIds: [30332], receiver: `0x000000000000000000000000${AVATAR.slice(2)}` }],
+        targets: [
+          {
+            tokenAddresses: ["0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110"],
+            dstChainIds: [30332],
+            receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
+          },
+        ],
       }),
     },
-  }
+  },
 };
 
-const protocols = Object.keys(kit).filter(p => p !== 'bridge')
+const protocols = Object.keys(kit).filter((p) => p !== "bridge");
 
 const calls = await protocols.reduce(async (accP, protocol) => {
   const acc: any = await accP;
@@ -149,31 +154,40 @@ const calls = await protocols.reduce(async (accP, protocol) => {
 
   let actions = Object.keys((kit as any)[protocol]);
 
-  await Promise.all(actions.map(async (action) => {
-    acc[protocol][action] = (await getCallsFromPermissions((permissions as any)[protocol][action]));
-  }));
+  await Promise.all(
+    actions.map(async (action) => {
+      acc[protocol][action] = await getCallsFromPermissions(
+        (permissions as any)[protocol][action]
+      );
+    })
+  );
 
   return acc;
 }, Promise.resolve({}));
 
-const bridgeProtocols = Object.keys(kit['bridge'])
+const bridgeProtocols = Object.keys(kit["bridge"]);
 
 const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
   const acc: any = await accP;
-  if (!acc['bridge']) {
-    acc['bridge'] = {}
+  if (!acc["bridge"]) {
+    acc["bridge"] = {};
   }
-  acc['bridge'][protocol] = {};
-
+  acc["bridge"][protocol] = {};
 
   let actions = Object.keys((kit.bridge as any)[protocol]);
 
-  await Promise.all(actions.map(async (action) => {
-    acc['bridge'][protocol][action] = (await getCallsFromPermissions((permissions as any)['bridge'][protocol][action]));
-  }));
+  await Promise.all(
+    actions.map(async (action) => {
+      acc["bridge"][protocol][action] = await getCallsFromPermissions(
+        (permissions as any)["bridge"][protocol][action]
+      );
+    })
+  );
 
   return acc;
 }, calls);
 
-
-await Bun.write("test/data/permissions.json", JSON.stringify(bridgeCalls, null, 2));
+await Bun.write(
+  "test/data/permissions.json",
+  JSON.stringify(bridgeCalls, null, 2)
+);

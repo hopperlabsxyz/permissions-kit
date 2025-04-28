@@ -4,8 +4,9 @@ import { c, ChainId, Permission } from "zodiac-roles-sdk";
 import { Address } from "@gnosis-guild/eth-sdk";
 
 const oftAdapters = {
-  1: '0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E'
-} as const
+  1: "0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E", // mainnet simpleOFTAdapter
+  8453: "0x35e5db674d8e93a03d814fa0ada70731efe8a4b9", // base simpleOFT
+} as const;
 
 const chainIdToEndpointId = {
   1: 30101, // mainnet
@@ -16,25 +17,31 @@ const chainIdToEndpointId = {
   43114: 30106, // avalance
   56: 30102, // bnb
   8453: 30184, // base
-} as const
+} as const;
 
 function getOFTAdapterAddress(chainId: ChainId) {
   if (chainId in oftAdapters) {
     return oftAdapters[chainId as keyof typeof oftAdapters];
   }
-  throw new Error(`OFT Adapters addresses not supported on this chain id: ${chainId}`)
+  throw new Error(
+    `OFT Adapters addresses not supported on this chain id: ${chainId}`
+  );
 }
 
-
-function stargateTransfer(chainId: ChainId, tokens: Address[], dstChainIds: number[], receiver: Address): Permission[] {
+function stargateTransfer(
+  chainId: ChainId,
+  tokens: Address[],
+  dstChainIds: number[],
+  receiver: Address
+): Permission[] {
   const endpointIds = dstChainIds.map((chainId) => {
     if (chainId in chainIdToEndpointId) {
-      return chainIdToEndpointId[chainId as keyof typeof chainIdToEndpointId]
+      return chainIdToEndpointId[chainId as keyof typeof chainIdToEndpointId];
     }
-    return chainId
-  })
+    return chainId;
+  });
 
-  const oftAdapter = getOFTAdapterAddress(chainId)
+  const oftAdapter = getOFTAdapterAddress(chainId);
 
   return [
     ...allowErc20Approve(tokens, [oftAdapter]),
@@ -57,19 +64,28 @@ function stargateTransfer(chainId: ChainId, tokens: Address[], dstChainIds: numb
   ];
 }
 
-
-type Target = { tokenAddresses: Address[], dstChainIds: number[], receiver: Address }
-
+type Target = {
+  tokenAddresses: Address[];
+  dstChainIds: number[];
+  receiver: Address;
+};
 
 export const eth = {
   stargate: {
     transfer: async ({ targets }: { targets: Target[] }) => {
-      return targets.flatMap(({ tokenAddresses, dstChainIds, receiver }) => stargateTransfer(1, tokenAddresses, dstChainIds, receiver))
+      return targets.flatMap(({ tokenAddresses, dstChainIds, receiver }) =>
+        stargateTransfer(1, tokenAddresses, dstChainIds, receiver)
+      );
     },
-  }
+  },
 };
 
-//TODO: add tests for approve : Ok
-//TODO: add tests for transfer : Ok
-//TODO: add addresses for other chains
-//TODO: add chainId to oftAdapters
+export const base = {
+  stargate: {
+    transfer: async ({ targets }: { targets: Target[] }) => {
+      return targets.flatMap(({ tokenAddresses, dstChainIds, receiver }) =>
+        stargateTransfer(8453, tokenAddresses, dstChainIds, receiver)
+      );
+    },
+  },
+};

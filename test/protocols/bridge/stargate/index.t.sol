@@ -38,7 +38,14 @@ contract Transfer is StargateBridgeTest {
             42
         );
         vm.prank(manager);
-        role.execTransactionWithRole(UNDERLYING_TOKEN, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            UNDERLYING_TOKEN,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_send_with_full_parameters() public {
@@ -75,7 +82,7 @@ contract Transfer is StargateBridgeTest {
         );
     }
 
-function test_send_with_different_chain_id() public {
+    function test_send_with_different_chain_id() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
                 dstEid: 30333,
@@ -99,7 +106,7 @@ function test_send_with_different_chain_id() public {
         );
 
         vm.prank(manager);
-        vm.expectRevert();//unsupported chain id
+        vm.expectRevert(); //unsupported chain id
         role.execTransactionWithRole(
             SIMPLE_OFT_ADAPTER,
             0,
@@ -110,8 +117,7 @@ function test_send_with_different_chain_id() public {
         );
     }
 
-
-function test_send_should_revert_with_unvalid_destination() public {
+    function test_send_should_revert_with_unvalid_destination() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
                 dstEid: 30332,
@@ -146,7 +152,7 @@ function test_send_should_revert_with_unvalid_destination() public {
         );
     }
 
-function test_send_should_revert_with_wrong_refund_address() public {
+    function test_send_should_revert_with_wrong_refund_address() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
                 dstEid: 30332,
@@ -180,5 +186,4 @@ function test_send_should_revert_with_wrong_refund_address() public {
             false
         );
     }
-
 }
