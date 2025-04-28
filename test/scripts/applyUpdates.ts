@@ -134,7 +134,7 @@ const permissions = {
   },
   bridge: {
     transfer: await kit.bridge.transfer({
-      targets: [1],
+      targets: [8453],
     }),
   },
 };

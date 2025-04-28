@@ -40,7 +40,7 @@ contract BridgeTest is BaseTest {
         //     bytes oftCmd;
         // // }
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
-            dstEid: 0,
+            dstEid: 8453,
             to: bytes32(bytes20(uint160(avatar))),
             amountLD: 20_000_000_000_000_000,
             minAmountLD: 0,
