@@ -69,7 +69,7 @@ export const eth = {
   }
 };
 
-//TODO: add tests for approve
-//TODO: add tests for transfer
+//TODO: add tests for approve : Ok
+//TODO: add tests for transfer : Ok
 //TODO: add addresses for other chains
 //TODO: add chainId to oftAdapters

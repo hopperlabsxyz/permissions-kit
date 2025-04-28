@@ -74,117 +74,111 @@ contract Transfer is StargateBridgeTest {
             false
         );
     }
+
+function test_send_with_different_chain_id() public {
+        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
+            .SendParam({
+                dstEid: 30333,
+                to: bytes32(
+                    0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
+                ),
+                amountLD: 100,
+                minAmountLD: 0,
+                extraOptions: "",
+                composeMsg: "",
+                oftCmd: ""
+            });
+        ISimpleOFTAdapter.MessagingFee memory messagingFee = ISimpleOFTAdapter
+            .MessagingFee({nativeFee: 0, lzTokenFee: 0});
+
+        bytes memory call = abi.encodeWithSelector(
+            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
+            sendParam,
+            messagingFee,
+            avatar
+        );
+
+        vm.prank(manager);
+        vm.expectRevert();//unsupported chain id
+        role.execTransactionWithRole(
+            SIMPLE_OFT_ADAPTER,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
+    }
+
+
+function test_send_should_revert_with_unvalid_destination() public {
+        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
+            .SendParam({
+                dstEid: 30332,
+                to: bytes32(
+                    0x0000000000000000000000000000000000000000000000000000000000000000
+                ),
+                amountLD: 100,
+                minAmountLD: 0,
+                extraOptions: "",
+                composeMsg: "",
+                oftCmd: ""
+            });
+        ISimpleOFTAdapter.MessagingFee memory messagingFee = ISimpleOFTAdapter
+            .MessagingFee({nativeFee: 0, lzTokenFee: 0});
+
+        bytes memory call = abi.encodeWithSelector(
+            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
+            sendParam,
+            messagingFee,
+            avatar
+        );
+
+        vm.prank(manager);
+        vm.expectRevert(); // Should revert since destination  address is invalid
+        role.execTransactionWithRole(
+            SIMPLE_OFT_ADAPTER,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
+    }
+
+function test_send_should_revert_with_wrong_refund_address() public {
+        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
+            .SendParam({
+                dstEid: 30332,
+                to: bytes32(
+                    0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
+                ),
+                amountLD: 100,
+                minAmountLD: 0,
+                extraOptions: "",
+                composeMsg: "",
+                oftCmd: ""
+            });
+        ISimpleOFTAdapter.MessagingFee memory messagingFee = ISimpleOFTAdapter
+            .MessagingFee({nativeFee: 0, lzTokenFee: 0});
+
+        bytes memory call = abi.encodeWithSelector(
+            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
+            sendParam,
+            messagingFee,
+            address(0)
+        );
+
+        vm.prank(manager);
+        vm.expectRevert(); // Should revert since refund address is invalid
+        role.execTransactionWithRole(
+            SIMPLE_OFT_ADAPTER,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
+    }
+
 }
-
-// function test_send_with_different_chain_id() public {
-//     // The permissions allow any dstEid
-//     uint16 differentChainId = 31337;
-
-//     bytes memory call = abi.encodeWithSelector(
-//         ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
-//         differentChainId,
-//         abi.encodePacked(avatar),
-//         AMOUNT_LD,
-//         MIN_AMOUNT_LD,
-//         EXTRA_OPTIONS,
-//         COMPOSE_MSG,
-//         OFT_CMD,
-//         [FEE_0, FEE_1],
-//         avatar
-//     );
-
-//     vm.prank(manager);
-//     role.execTransactionWithRole(
-//         UNDERLYING_TOKEN,
-//         0,
-//         call,
-//         0,
-//         TEST_ROLE,
-//         false
-//     );
-// }
-
-// function test_send_with_different_amounts() public {
-//     // The permissions allow any amountLD and minAmountLD
-//     uint256 newAmount = 1000000000000000000; // 1 ETH
-//     uint256 newMinAmount = 990000000000000000; // 0.99 ETH
-
-//     bytes memory call = abi.encodeWithSelector(
-//         ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
-//         DST_EID,
-//         abi.encodePacked(avatar),
-//         newAmount,
-//         newMinAmount,
-//         EXTRA_OPTIONS,
-//         COMPOSE_MSG,
-//         OFT_CMD,
-//         [FEE_0, FEE_1],
-//         avatar
-//     );
-
-//     vm.prank(manager);
-//     role.execTransactionWithRole(
-//         UNDERLYING_TOKEN,
-//         0,
-//         call,
-//         0,
-//         TEST_ROLE,
-//         false
-//     );
-// }
-
-// function test_send_should_revert_with_wrong_destination() public { //ok
-//     address wrongDestination = address(0xdead);
-
-//     bytes memory call = abi.encodeWithSelector(
-//         ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
-//         DST_EID,
-//         abi.encodePacked(wrongDestination), // Not the avatar
-//         AMOUNT_LD,
-//         MIN_AMOUNT_LD,
-//         EXTRA_OPTIONS,
-//         COMPOSE_MSG,
-//         OFT_CMD,
-//         [FEE_0, FEE_1],
-//         avatar
-//     );
-
-//     vm.prank(manager);
-//     vm.expectRevert(); // Should revert since destination must be avatar
-//     role.execTransactionWithRole(
-//         UNDERLYING_TOKEN,
-//         0,
-//         call,
-//         0,
-//         TEST_ROLE,
-//         false
-//     );
-// }
-
-// function test_send_should_revert_with_wrong_refund_address() public { //ok
-//     address wrongRefundAddress = address(0xdead);
-
-//     bytes memory call = abi.encodeWithSelector(
-//         ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
-//         DST_EID,
-//         abi.encodePacked(avatar),
-//         AMOUNT_LD,
-//         MIN_AMOUNT_LD,
-//         EXTRA_OPTIONS,
-//         COMPOSE_MSG,
-//         OFT_CMD,
-//         [FEE_0, FEE_1],
-//         wrongRefundAddress // Not the avatar
-//     );
-
-//     vm.prank(manager);
-//     vm.expectRevert(); // Should revert since refund address must be avatar
-//     role.execTransactionWithRole(
-//         UNDERLYING_TOKEN,
-//         0,
-//         call,
-//         0,
-//         TEST_ROLE,
-//         false
-//     );
-// }
