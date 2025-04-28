@@ -5,6 +5,7 @@ import "@forge-std/Test.sol";
 import {BaseTest, ISimpleOFTAdapter} from "@test/Base.t.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
 import {Vault} from "@test/interfaces/IVault.sol";
+import {IUsdc} from "@test/interfaces/IUsdc.sol";
 
 // Constants based on transaction records
 address constant UNDERLYING_TOKEN = 0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110;
@@ -29,6 +30,15 @@ contract StargateBridgeTest is BaseTest {
 contract Transfer is StargateBridgeTest {
     function setUp() public {
         applyPermissionsOnRole(transfer);
+    }
+    function test_approve() public {
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(UNDERLYING_TOKEN).approve.selector,
+            SIMPLE_OFT_ADAPTER,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(UNDERLYING_TOKEN, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_send_with_full_parameters() public {
