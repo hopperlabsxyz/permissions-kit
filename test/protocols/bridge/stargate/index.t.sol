@@ -86,39 +86,40 @@ contract Transfer is StargateBridgeTest {
         );
     }
 
-    function test_bridge_usr_from_base() public {
-        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
-            .SendParam({
-                dstEid: 30101, //eth
-                to: bytes32(
-                    0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
-                ),
-                amountLD: 100,
-                minAmountLD: 0,
-                extraOptions: "",
-                composeMsg: "",
-                oftCmd: ""
-            });
-        ISimpleOFTAdapter.MessagingFee memory messagingFee = ISimpleOFTAdapter
-            .MessagingFee({nativeFee: 0, lzTokenFee: 0});
+    // WIP base, on hold for now
+    // function test_bridge_usr_from_base() public {
+    //     ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
+    //         .SendParam({
+    //             dstEid: 30101, //eth
+    //             to: bytes32(
+    //                 0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
+    //             ),
+    //             amountLD: 100,
+    //             minAmountLD: 0,
+    //             extraOptions: "",
+    //             composeMsg: "",
+    //             oftCmd: ""
+    //         });
+    //     ISimpleOFTAdapter.MessagingFee memory messagingFee = ISimpleOFTAdapter
+    //         .MessagingFee({nativeFee: 0, lzTokenFee: 0});
 
-        bytes memory call = abi.encodeWithSelector(
-            ISimpleOFTAdapter(USR_BASE).send.selector,
-            sendParam,
-            messagingFee,
-            avatar
-        );
+    //     bytes memory call = abi.encodeWithSelector(
+    //         ISimpleOFTAdapter(USR_BASE).send.selector,
+    //         sendParam,
+    //         messagingFee,
+    //         avatar
+    //     );
 
-        vm.prank(manager);
-        role.execTransactionWithRole(
-            SIMPLE_OFT_BASE,
-            0,
-            call,
-            0,
-            TEST_ROLE,
-            false
-        );
-    }
+    //     vm.prank(manager);
+    //     role.execTransactionWithRole(
+    //         SIMPLE_OFT_BASE,
+    //         0,
+    //         call,
+    //         0,
+    //         TEST_ROLE,
+    //         false
+    //     );
+    // }
 
     function test_send_with_different_chain_id() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter

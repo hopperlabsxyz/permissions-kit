@@ -140,11 +140,12 @@ const permissions = {
             dstChainIds: [30332],
             receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
           },
-          {
-            tokenAddresses: ["0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"],// USR base
-            dstChainIds: [30101],
-            receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
-          }
+          //WIP base
+          // {
+          //   tokenAddresses: ["0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"],// USR base
+          //   dstChainIds: [30101],
+          //   receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
+          // }
         ],
       }),
     },
