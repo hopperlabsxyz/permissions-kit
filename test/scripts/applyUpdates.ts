@@ -136,10 +136,15 @@ const permissions = {
       transfer: await kit.bridge.stargate.transfer({
         targets: [
           {
-            tokenAddresses: ["0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110"],
+            tokenAddresses: ["0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110"],//USR eth
             dstChainIds: [30332],
             receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
           },
+          {
+            tokenAddresses: ["0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"],// USR base
+            dstChainIds: [30101],
+            receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
+          }
         ],
       }),
     },

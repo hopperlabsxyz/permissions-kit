@@ -5,7 +5,7 @@ import { Address } from "@gnosis-guild/eth-sdk";
 
 const oftAdapters = {
   1: "0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E", // mainnet simpleOFTAdapter
-  8453: "0x35e5db674d8e93a03d814fa0ada70731efe8a4b9", // base simpleOFT
+  8453: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9", // base simpleOFT
 } as const;
 
 const chainIdToEndpointId = {
