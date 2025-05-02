@@ -10,6 +10,7 @@ import {
   Target,
 } from "zodiac-roles-sdk";
 import { kit } from "../../dist/eth";
+import { base } from "../../src/protocols/bridge";
 
 interface ApplyUpdates {
   chainId: ChainId;
@@ -147,6 +148,13 @@ const permissions = {
           //   receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
           // }
         ],
+      }),
+    },
+  },
+  pendle: {
+    base: {
+      depositToken: await kit.pendle.base.depositToken({
+        tokens: ["0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf"],
       }),
     },
   },
