@@ -153,12 +153,9 @@ const permissions = {
   pendle: {
     base: {
       depositToken: await kitBase.pendle.depositToken({
-        targets: {
-          chainId: 8453,
-          tokens: [
-            "0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf" as "0x${string}",
-          ],
-        },
+        tokens: [
+          "0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf" as "0x${string}",
+        ],
       }),
     },
   },

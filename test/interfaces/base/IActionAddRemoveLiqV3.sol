@@ -5,7 +5,7 @@ library IPLimitOrderType {
     type OrderType is uint8;
 }
 
-interface ActionAddRemoveLiqV3 {
+interface IActionAddRemoveLiqV3 {
     type SwapType is uint8;
 
     struct ApproxParams {
