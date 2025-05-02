@@ -14,6 +14,11 @@
       "types": "./dist/eth.d.ts",
       "require": "./dist/eth.js",
       "import": "./dist/eth.mjs"
+    },
+    "./base": {
+      "types": "./dist/base.d.ts",
+      "require": "./dist/base.js",
+      "import": "./dist/base.mjs"
     }
   },
   "typesVersions": {

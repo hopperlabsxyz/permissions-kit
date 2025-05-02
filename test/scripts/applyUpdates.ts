@@ -9,8 +9,7 @@ import {
   Role,
   Target,
 } from "zodiac-roles-sdk";
-import { kit } from "../../dist/eth";
-import { base } from "../../src/protocols/bridge";
+import { kit, kitBase } from "../../dist/eth";
 
 interface ApplyUpdates {
   chainId: ChainId;
@@ -137,7 +136,7 @@ const permissions = {
       transfer: await kit.bridge.stargate.transfer({
         targets: [
           {
-            tokenAddresses: ["0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110"],//USR eth
+            tokenAddresses: ["0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110"], //USR eth
             dstChainIds: [30332],
             receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
           },
@@ -153,8 +152,13 @@ const permissions = {
   },
   pendle: {
     base: {
-      depositToken: await kit.pendle.base.depositToken({
-        tokens: ["0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf"],
+      depositToken: await kitBase.pendle.depositToken({
+        targets: {
+          chainId: 8453,
+          tokens: [
+            "0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf" as "0x${string}",
+          ],
+        },
       }),
     },
   },
