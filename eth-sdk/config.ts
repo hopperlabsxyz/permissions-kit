@@ -26,5 +26,12 @@ export default defineConfig({
         }
       },
     },
+    base: {
+      bridge: {
+        stargate: {
+          simpleOFA: "0x2492d0006411af6c8bbb1c8afc1b0197350a79e9", //implementation
+        }
+      }
+    },
   },
 })
