@@ -9,7 +9,8 @@ import {
   Role,
   Target,
 } from "zodiac-roles-sdk";
-import { kit, kitBase } from "../../dist/eth";
+import { kit as ethkit } from "../../dist/eth";
+import { kit as basekit } from "../../dist/base";
 
 interface ApplyUpdates {
   chainId: ChainId;
@@ -95,7 +96,7 @@ async function getCallsFromPermissions(permissions: Permission[]) {
 
 const permissions = {
   lagoon: {
-    manageVault: await kit.lagoon.manageVault({
+    manageVault: await ethkit.lagoon.manageVault({
       targets: [
         {
           vault: "0x07ed467acd4ffd13023046968b0859781cb90d9b",
@@ -104,36 +105,36 @@ const permissions = {
         },
       ],
     }),
-    settleVault: await kit.lagoon.settleVault({
+    settleVault: await ethkit.lagoon.settleVault({
       targets: ["0x07ed467acd4ffd13023046968b0859781cb90d9b"],
     }),
-    closeVault: await kit.lagoon.closeVault({
+    closeVault: await ethkit.lagoon.closeVault({
       targets: ["0x07ed467acd4ffd13023046968b0859781cb90d9b"],
     }),
   },
   resupply: {
-    deposit: await kit.resupply.deposit({
+    deposit: await ethkit.resupply.deposit({
       targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
     }),
-    borrow: await kit.resupply.borrow({
+    borrow: await ethkit.resupply.borrow({
       targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
     }),
-    depositAndBorrow: await kit.resupply.depositAndBorrow({
+    depositAndBorrow: await ethkit.resupply.depositAndBorrow({
       targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
     }),
   },
   curve: {
-    stakeCrvUSD: await kit.curve.stakeCrvUSD(),
-    depositStableSwapNg: await kit.curve.depositStableSwapNg({
+    stakeCrvUSD: await ethkit.curve.stakeCrvUSD(),
+    depositStableSwapNg: await ethkit.curve.depositStableSwapNg({
       targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50"],
     }),
   },
   convex: {
-    deposit: await kit.convex.deposit({ targets: [440] }),
+    deposit: await ethkit.convex.deposit({ targets: [440] }),
   },
   bridge: {
     stargate: {
-      transfer: await kit.bridge.stargate.transfer({
+      transfer: await ethkit.bridge.stargate.transfer({
         targets: [
           {
             tokenAddresses: ["0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110"], //USR eth
@@ -152,22 +153,20 @@ const permissions = {
   },
   pendle: {
     base: {
-      depositToken: await kitBase.pendle.depositToken({
-        tokens: [
-          "0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf" as "0x${string}",
-        ],
+      depositToken: await basekit.pendle.depositToken({
+        tokens: ["0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf" as "0x${string}"],
       }),
     },
   },
 };
 
-const protocols = Object.keys(kit).filter((p) => p !== "bridge");
+const protocols = Object.keys(ethkit).filter((p) => p !== "bridge");
 
 const calls = await protocols.reduce(async (accP, protocol) => {
   const acc: any = await accP;
   acc[protocol] = {};
 
-  let actions = Object.keys((kit as any)[protocol]);
+  let actions = Object.keys((ethkit as any)[protocol]);
 
   await Promise.all(
     actions.map(async (action) => {
@@ -180,7 +179,7 @@ const calls = await protocols.reduce(async (accP, protocol) => {
   return acc;
 }, Promise.resolve({}));
 
-const bridgeProtocols = Object.keys(kit["bridge"]);
+const bridgeProtocols = Object.keys(ethkit["bridge"]);
 
 const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
   const acc: any = await accP;
@@ -189,7 +188,7 @@ const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
   }
   acc["bridge"][protocol] = {};
 
-  let actions = Object.keys((kit.bridge as any)[protocol]);
+  let actions = Object.keys((ethkit.bridge as any)[protocol]);
 
   await Promise.all(
     actions.map(async (action) => {
