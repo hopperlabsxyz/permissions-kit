@@ -15,4 +15,5 @@ export const eth = {
 
 export const base = {
   pendle: pendle.base,
+  bridge: bridge.base,
 };

@@ -12,6 +12,8 @@ import {
 import { kit as ethkit } from "../../dist/eth";
 import { kit as basekit } from "../../dist/base";
 
+
+const chainId = 8453;//base
 interface ApplyUpdates {
   chainId: ChainId;
   address: Address;
@@ -22,7 +24,7 @@ interface ApplyUpdates {
 }
 
 export async function applyUpdates({
-  chainId,
+  chainId: chainId,
   address,
   role,
   members,
@@ -37,7 +39,7 @@ export async function applyUpdates({
     calls = calls.concat(
       (
         await applyMembers(role.key, members, {
-          chainId,
+          chainId: chainId,
           address,
           mode: "replace",
           currentMembers: role.members,
@@ -51,7 +53,7 @@ export async function applyUpdates({
     calls = calls.concat(
       (
         await applyTargets(role.key, targets, {
-          chainId,
+          chainId: chainId,
           address,
           mode: "replace",
           currentTargets: role.targets,
@@ -84,7 +86,7 @@ async function getCallsFromPermissions(permissions: Permission[]) {
 
   return (
     await applyUpdates({
-      chainId: 1,
+      chainId: chainId,
       address: "0xc128B1307128e8A692c98DD48cd7Ff155521A093",
       owner: AVATAR,
       role: currentRole,
@@ -94,7 +96,7 @@ async function getCallsFromPermissions(permissions: Permission[]) {
   ).map((call) => call.data);
 }
 
-const permissions = {
+const ethPermissions = {
   lagoon: {
     manageVault: await ethkit.lagoon.manageVault({
       targets: [
@@ -151,22 +153,63 @@ const permissions = {
       }),
     },
   },
+};
+
+const basePermissions = {
   pendle: {
-    base: {
-      depositToken: await basekit.pendle.depositToken({
-        tokens: ["0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf" as "0x${string}"],
+    depositToken: await basekit.pendle.depositToken({
+      tokens: ["0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf"],
+    }),
+  },
+  bridge: {
+    stargate: {
+      transfer: await basekit.bridge.stargate.transfer({
+        targets: [
+          {
+            tokenAddresses: ["0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"], // USR base
+            dstChainIds: [30101],
+            receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
+          },
+        ],
       }),
     },
   },
 };
 
-const protocols = Object.keys(ethkit).filter((p) => p !== "bridge");
+
+function getKit(chainId: ChainId) {
+  if (chainId === 1) {
+    return ethkit;
+  } else if (chainId === 8453) {
+    return basekit;
+  }
+  throw new Error(`Unsupported chainId: ${chainId}`);
+}
+function getPermissions(chainId: ChainId) {
+  if (chainId === 1) {
+    return ethPermissions;
+  }
+  if (chainId === 8453) {
+    return basePermissions;
+  }
+  throw new Error(`Unsupported chainId: ${chainId}`);
+}
+const permissions = getPermissions(chainId);
+console.log("permissions HERE = ", permissions);
+console.log("CHAIN ID HERE = ", chainId);
+
+const kit = getKit(chainId);
+console.log("KIT HERE = ", kit);
+
+const protocols = Object.keys(kit).filter((p) => p !== "bridge");
 
 const calls = await protocols.reduce(async (accP, protocol) => {
   const acc: any = await accP;
   acc[protocol] = {};
 
-  let actions = Object.keys((ethkit as any)[protocol]);
+  let actions = Object.keys((kit as any)[protocol]);
+
+  console.log("IS actions ready? = ", actions);
 
   await Promise.all(
     actions.map(async (action) => {
@@ -176,10 +219,12 @@ const calls = await protocols.reduce(async (accP, protocol) => {
     })
   );
 
+  console.log("IS acc ready? = ", acc);
+
   return acc;
 }, Promise.resolve({}));
 
-const bridgeProtocols = Object.keys(ethkit["bridge"]);
+const bridgeProtocols = Object.keys(kit["bridge"]);
 
 const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
   const acc: any = await accP;
@@ -202,6 +247,6 @@ const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
 }, calls);
 
 await Bun.write(
-  "test/data/permissions.json",
+  `test/data/permissions${chainId}.json`,
   JSON.stringify(bridgeCalls, null, 2)
 );
