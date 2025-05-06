@@ -7,8 +7,8 @@ import {Vault} from "@test/interfaces/IVault.sol";
 import {IActionAddRemoveLiqV3} from "@test/interfaces/base/IActionAddRemoveLiqV3.sol";
 import "@forge-std/Test.sol";
 
-address constant USR_BASE = 0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9;
-address constant USR_BASE_MARKET = 0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45; //USR-BASE
+address constant USR = 0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9;
+address constant USR_MARKET = 0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45; //USR-BASE
 address constant PENDLEROUTERV4 = 0x888888888889758F76e7103c6CbF23ABbF58F946; //proxy
 
 contract PendleTest is BaseTest {
@@ -31,15 +31,15 @@ contract depositTokenTest is PendleTest {
     function setUp() public {
         applyPermissionsOnRole(depositToken);
     }
-    // function test_approve() public {
-    //     bytes memory call = abi.encodeWithSelector(
-    //         IUsdc(USR_BASE).approve.selector,
-    //         PENDLEROUTERV4,
-    //         42
-    //     );
-    //     vm.prank(manager);
-    //     role.execTransactionWithRole(USR_BASE, 0, call, 0, TEST_ROLE, false);
-    // }
+    function test_approve() public {
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(USR).approve.selector,
+            PENDLEROUTERV4,
+            10
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(USR, 0, call, 0, TEST_ROLE, false);
+    }
 
     // function test_add_liquidity_single_token() public {
     //     //blablabla

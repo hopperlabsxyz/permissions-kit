@@ -9,7 +9,7 @@ const targetMarket_base = "0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45"; //market
 const USR_base = "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"; //usr_base
 
 const pendleRouters = {
-  8453: "0x888888888889758F76e7103c6CbF23ABbF58F946", // base simpleOFT
+  8453: "0x888888888889758F76e7103c6CbF23ABbF58F946", // base pendleRouterV4
 } as const;
 
 const chainIdToEndpointId = {
