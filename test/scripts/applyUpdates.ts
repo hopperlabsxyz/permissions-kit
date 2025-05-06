@@ -12,8 +12,7 @@ import {
 import { kit as ethkit } from "../../dist/eth";
 import { kit as basekit } from "../../dist/base";
 
-
-const chainId = 8453;//base
+const chainId = 8453; //base
 interface ApplyUpdates {
   chainId: ChainId;
   address: Address;
@@ -143,12 +142,6 @@ const ethPermissions = {
             dstChainIds: [30332],
             receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
           },
-          //WIP base
-          // {
-          //   tokenAddresses: ["0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"],// USR base
-          //   dstChainIds: [30101],
-          //   receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
-          // }
         ],
       }),
     },
@@ -176,7 +169,6 @@ const basePermissions = {
   },
 };
 
-
 function getKit(chainId: ChainId) {
   if (chainId === 1) {
     return ethkit;
@@ -195,11 +187,8 @@ function getPermissions(chainId: ChainId) {
   throw new Error(`Unsupported chainId: ${chainId}`);
 }
 const permissions = getPermissions(chainId);
-console.log("permissions HERE = ", permissions);
-console.log("CHAIN ID HERE = ", chainId);
 
 const kit = getKit(chainId);
-console.log("KIT HERE = ", kit);
 
 const protocols = Object.keys(kit).filter((p) => p !== "bridge");
 
@@ -209,8 +198,6 @@ const calls = await protocols.reduce(async (accP, protocol) => {
 
   let actions = Object.keys((kit as any)[protocol]);
 
-  console.log("IS actions ready? = ", actions);
-
   await Promise.all(
     actions.map(async (action) => {
       acc[protocol][action] = await getCallsFromPermissions(
@@ -218,8 +205,6 @@ const calls = await protocols.reduce(async (accP, protocol) => {
       );
     })
   );
-
-  console.log("IS acc ready? = ", acc);
 
   return acc;
 }, Promise.resolve({}));
