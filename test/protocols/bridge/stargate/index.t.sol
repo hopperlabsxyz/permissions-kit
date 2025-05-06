@@ -12,7 +12,7 @@ address constant UNDERLYING_TOKEN = 0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110;
 address constant SIMPLE_OFT_ADAPTER = 0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E;
 
 address constant USR_BASE = 0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9;
-address constant SIMPLE_OFT_BASE = 0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9;
+address constant SIMPLE_OFT_BASE = 0x2492D0006411Af6C8bbb1c8afc1B0197350a79e9;
 //implementation: 0x2492d0006411af6c8bbb1c8afc1b0197350a79e9
 
 contract StargateBridgeTest is BaseTest {
