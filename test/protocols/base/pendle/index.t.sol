@@ -35,7 +35,7 @@ contract depositTokenTest is PendleTest {
         bytes memory call = abi.encodeWithSelector(
             IUsdc(USR).approve.selector,
             PENDLEROUTERV4,
-            10
+            30
         );
         vm.prank(manager);
         role.execTransactionWithRole(USR, 0, call, 0, TEST_ROLE, false);

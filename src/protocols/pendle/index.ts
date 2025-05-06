@@ -12,25 +12,16 @@ const pendleRouters = {
   8453: "0x888888888889758F76e7103c6CbF23ABbF58F946", // base pendleRouterV4
 } as const;
 
-const chainIdToEndpointId = {
-  1: 30101, // mainnet
-  10: 30111, // optimism
-  100: 30145, // gnosis
-  137: 30109, // polygon
-  42161: 30110, // arbitrum
-  43114: 30106, // avalance
-  56: 30102, // bnb
-  8453: 30184, // base
-} as const;
-
-// function getRouterAddress(chainId: ChainId) {
-//   if (chainId in pendleRouters) {
-//     return pendleRouters[chainId as keyof typeof pendleRouters];
-//   }
-//   throw new Error(
-//     `Pendle router addresses not supported on this chain id: ${chainId}`
-//   );
-// }
+// const chainIdToEndpointId = {
+//   1: 30101, // mainnet
+//   10: 30111, // optimism
+//   100: 30145, // gnosis
+//   137: 30109, // polygon
+//   42161: 30110, // arbitrum
+//   43114: 30106, // avalance
+//   56: 30102, // bnb
+//   8453: 30184, // base
+// } as const;
 
 // steps: white list the router address
 // approve the router address to spend the tokens
@@ -49,11 +40,15 @@ function getRouterAddress(chainId: ChainId) {
 
 function depositToken(chainId: ChainId, tokens: Address[]): Permission[] {
   const pendleRouter = getRouterAddress(chainId);
+  console.log("pendleRouter", pendleRouter);
+  console.log("tokens", tokens);
   return [
-    ...allowErc20Approve(tokens, [getRouterAddress(chainId)]), // manage approval for redemption from safe to vault
+    
+    ...allowErc20Approve(tokens, [pendleRouter]), // manage approval for redemption from safe to vault
     {
       ...allow.base.pendle.ActionAddRemoveLiqV3.addLiquiditySingleToken(
-        c.avatar,
+        // c.avatar,
+        undefined,
         undefined,
         undefined,
         undefined,
