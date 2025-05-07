@@ -132,13 +132,21 @@ const permissions = {
     deposit: await kit.convex.deposit({ targets: [440] }),
   },
   bridge: {
+    canonical: {
+      transfer: await kit.bridge.canonical.transfer({
+        targets: [
+          {
+            toChainIds: [130]
+          }
+        ]
+      })
+    },
     stargate: {
       transfer: await kit.bridge.stargate.transfer({
         targets: [
           {
             tokenAddress: "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110", //USR eth
-            dstChainIds: [1],
-            receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
+            toChainIds: [1],
           },
           //WIP base
           // {

@@ -23,6 +23,9 @@ export default defineConfig({
       bridge: {
         stargate: {
           simpleOFTAdapter: "0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28", //implementation
+        },
+        canonical: {
+          l1ChugSplashProxy: "0x0b09ba359A106C9ea3b181CBc5F394570c7d2a7A" // implemnetation
         }
       },
     },
