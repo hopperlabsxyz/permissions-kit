@@ -94,6 +94,56 @@ function manageVault(
   return permissions;
 }
 
+function depositAndWithdrawFromVault(
+  _: ChainId,
+  targetInfo: TargetInfo
+) {
+  const { address: targetAddress } = targetInfo
+  return [
+    ...allowErc20Approve([targetInfo.asset], [targetInfo.address]),
+    {
+      ...allow.mainnet.lagoon.vault["requestDeposit(uint256,address,address)"](undefined, c.avatar, c.avatar), // TODO: handle native token
+      targetAddress
+    },
+    {
+      ...allow.mainnet.lagoon.vault["requestDeposit(uint256,address,address,address)"](undefined, c.avatar, c.avatar, undefined),
+      targetAddress
+    },
+    {
+      ...allow.mainnet.lagoon.vault.requestRedeem(undefined, c.avatar, c.avatar),
+      targetAddress
+    },
+    {
+      ...allow.mainnet.lagoon.vault.claimSharesAndRequestRedeem(undefined),
+      targetAddress
+    },
+    {
+      ...allow.mainnet.lagoon.vault["deposit(uint256,address)"](undefined, c.avatar),
+      targetAddress
+    },
+    {
+      ...allow.mainnet.lagoon.vault["deposit(uint256,address,address)"](undefined, c.avatar, c.avatar),
+      targetAddress
+    },
+    {
+      ...allow.mainnet.lagoon.vault["mint(uint256,address,address)"](undefined, c.avatar, c.avatar),
+      targetAddress
+    },
+    {
+      ...allow.mainnet.lagoon.vault["mint(uint256,address)"](undefined, c.avatar),
+      targetAddress
+    },
+    {
+      ...allow.mainnet.lagoon.vault.redeem(undefined, c.avatar, c.avatar),
+      targetAddress
+    },
+    {
+      ...allow.mainnet.lagoon.vault.withdraw(undefined, c.avatar, c.avatar),
+      targetAddress
+    }
+  ]
+}
+
 export const eth = {
   manageVault: async ({ targets }: { targets: Targets }) => {
     return targets.flatMap((target) => manageVault(1, getTargetInfo(target)))
@@ -103,5 +153,8 @@ export const eth = {
   },
   settleVault: async ({ targets }: { targets: Targets }) => {
     return targets.flatMap((target) => settleVault(1, getTargetInfo(target)))
+  },
+  depositAndWithdrawFromVault: async ({ targets }: { targets: Targets }) => {
+    return targets.flatMap((target) => depositAndWithdrawFromVault(1, getTargetInfo(target)))
   },
 }
