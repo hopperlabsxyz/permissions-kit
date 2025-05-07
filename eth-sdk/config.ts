@@ -28,20 +28,13 @@ export default defineConfig({
     },
     base: {
       pendle: {
-        ActionAddRemoveLiqV3: "0x663C21103915B68e9dA797CfdF3cAb01a037D5Ff",//contain function needed
+        ActionAddRemoveLiqV3: "0x663C21103915B68e9dA797CfdF3cAb01a037D5Ff", //contain function needed
       },
       bridge: {
         stargate: {
           simpleOFT: "0x2492d0006411af6c8bbb1c8afc1b0197350a79e9",
         },
       },
-    },
-    base: {
-      bridge: {
-        stargate: {
-          simpleOFA: "0x2492d0006411af6c8bbb1c8afc1b0197350a79e9", //implementation
-        }
-      }
     },
   },
 });

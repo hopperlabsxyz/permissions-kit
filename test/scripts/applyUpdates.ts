@@ -151,7 +151,7 @@ const ethPermissions = {
 const basePermissions = {
   pendle: {
     depositToken: await basekit.pendle.depositToken({
-      tokens: ["0x2ff1E8C719ce789E66A7dD0Cf7bf9F6a932099Cf"],
+      tokens: ["0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"],
     }),
   },
   bridge: {

@@ -31,6 +31,10 @@ contract depositTokenTest is PendleTest {
     function setUp() public {
         applyPermissionsOnRole(depositToken);
     }
+    // //console log chainId: -> just test chainID
+    // function test_chainId() public view{
+    //     console.log("Chain ID ======= : ", block.chainid);
+    // }
     function test_approve() public {
         bytes memory call = abi.encodeWithSelector(
             IUsdc(USR).approve.selector,
@@ -40,8 +44,4 @@ contract depositTokenTest is PendleTest {
         vm.prank(manager);
         role.execTransactionWithRole(USR, 0, call, 0, TEST_ROLE, false);
     }
-
-    // function test_add_liquidity_single_token() public {
-    //     //blablabla
-    // }
 }
