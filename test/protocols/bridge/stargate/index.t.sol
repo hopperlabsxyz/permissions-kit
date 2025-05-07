@@ -13,6 +13,7 @@ address constant SIMPLE_OFT_ADAPTER = 0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E
 
 address constant USR_BASE = 0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9;
 address constant SIMPLE_OFT_BASE = 0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9;
+
 //implementation: 0x2492d0006411af6c8bbb1c8afc1b0197350a79e9
 
 contract StargateBridgeTest is BaseTest {
@@ -35,6 +36,7 @@ contract Transfer is StargateBridgeTest {
     function setUp() public {
         applyPermissionsOnRole(transfer);
     }
+
     function test_approve() public {
         bytes memory call = abi.encodeWithSelector(
             IUsdc(UNDERLYING_TOKEN).approve.selector,
@@ -55,7 +57,7 @@ contract Transfer is StargateBridgeTest {
     function test_send_with_full_parameters_eth() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
-                dstEid: 30332,
+                dstEid: 30101,
                 to: bytes32(
                     0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
                 ),
