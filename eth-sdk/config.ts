@@ -19,7 +19,15 @@ export default defineConfig({
       convex: {
         booster: "0xf403c135812408bfbe8713b5a23a04b3d48aae31",
         baseRewardPool: "0x7Fafc1876970dBD9F6568586EFa7d0FAc0FE8EA8"
-      }
+      },
+      bridge: {
+        stargate: {
+          simpleOFTAdapter: "0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28", //implementation
+        },
+        canonical: {
+          l1ChugSplashProxy: "0x0b09ba359A106C9ea3b181CBc5F394570c7d2a7A" // implemnetation
+        }
+      },
     },
   },
 })
