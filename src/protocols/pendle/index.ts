@@ -2,11 +2,38 @@ import { allow } from "zodiac-roles-sdk/kit";
 import { allowErc20Approve, oneOf } from "../../conditions";
 import { c, ChainId, Permission } from "zodiac-roles-sdk";
 import { Address } from "@gnosis-guild/eth-sdk";
-import { Target } from "bun";
+import { Target, Targets, TargetInfo } from "./types";
+import baseMarkets from "./_baseMarkets.ts";
 
-const PendleRouterV4_base = "0x888888888889758F76e7103c6CbF23ABbF58F946"; //proxy
-const targetMarket_base = "0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45"; //market
-const USR_base = "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"; //usr_base
+// const targetMarket_base = "0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45"; //market
+// const USR_base = "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"; //usr_base
+
+function getTargetInfo(target: Target): TargetInfo {
+  if (typeof target === "string") {
+    const res = baseMarkets.find((t) => t.address === target);
+    if (res === undefined) {
+      throw new Error("Unknown target");
+    }
+    return res;
+  } else if (typeof target.market === "string") {
+    const res = baseMarkets.find((t) => t.address === target.market);
+    if (res === undefined) {
+      throw new Error("Unknown target");
+    }
+    return {
+      symbol: res.symbol,
+      name: res.name,
+      address: res.address,
+      asset: res.asset,
+    };
+  }
+  return {
+    symbol: target.market.symbol,
+    name: target.market.name,
+    address: target.market.address,
+    asset: target.asset,
+  };
+}
 
 const pendleRouters = {
   8453: "0x888888888889758F76e7103c6CbF23ABbF58F946", // base pendleRouterV4
@@ -28,13 +55,13 @@ function depositToken(chainId: ChainId, tokens: Address[]): Permission[] {
     {
       ...allow.base.pendle.ActionAddRemoveLiqV3.addLiquiditySingleToken(
         c.avatar,
-        undefined,//market
+        undefined, //market
         undefined,
         undefined,
         undefined,
         undefined
       ),
-      targetAddress: PendleRouterV4_base,
+      targetAddress: pendleRouter,
     },
   ];
 }
