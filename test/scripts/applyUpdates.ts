@@ -131,6 +131,9 @@ const permissions = {
   convex: {
     deposit: await kit.convex.deposit({ targets: [440] }),
   },
+  lido: {
+    deposit: await kit.lido.deposit()
+  },
   bridge: {
     canonical: {
       transfer: await kit.bridge.canonical.transfer({
