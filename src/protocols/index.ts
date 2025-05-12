@@ -3,6 +3,7 @@ import * as resupply from "./resupply"
 import * as curve from "./curve"
 import * as convex from "./convex"
 import * as bridge from "./bridge"
+import * as lido from "./lido"
 
 
 export const eth = {
@@ -11,4 +12,5 @@ export const eth = {
   curve: curve.eth,
   convex: convex.eth,
   bridge: bridge.eth,
+  lido: lido.eth
 }
