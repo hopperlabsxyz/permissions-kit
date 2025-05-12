@@ -58,7 +58,8 @@ export function stargateTransfer(
           oftCmd: undefined,
         }),
         undefined,
-        c.avatar
+        c.avatar,
+        { send: true }
       ),
       targetAddress: oftAdapter,
     },
