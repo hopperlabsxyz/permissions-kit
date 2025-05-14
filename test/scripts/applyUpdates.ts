@@ -112,6 +112,9 @@ const ethPermissions = {
     closeVault: await ethkit.lagoon.closeVault({
       targets: ["0x07ed467acd4ffd13023046968b0859781cb90d9b"],
     }),
+    depositAndWithdrawFromVault: await ethkit.lagoon.depositAndWithdrawFromVault({
+      targets: ["0x07ed467acd4ffd13023046968b0859781cb90d9b"],
+    }),
   },
   resupply: {
     deposit: await ethkit.resupply.deposit({
@@ -133,14 +136,25 @@ const ethPermissions = {
   convex: {
     deposit: await ethkit.convex.deposit({ targets: [440] }),
   },
+  lido: {
+    deposit: await ethkit.lido.deposit(),
+  },
   bridge: {
+    canonical: {
+      transfer: await ethkit.bridge.canonical.transfer({
+        targets: [
+          {
+            toChainIds: [130],
+          },
+        ],
+      }),
+    },
     stargate: {
       transfer: await ethkit.bridge.stargate.transfer({
         targets: [
           {
-            tokenAddresses: ["0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110"], //USR eth
-            dstChainIds: [30332],
-            receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
+            tokenAddress: "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110", //USR eth
+            toChainIds: [1],
           },
         ],
       }),
@@ -164,9 +178,11 @@ const basePermissions = {
       transfer: await basekit.bridge.stargate.transfer({
         targets: [
           {
-            tokenAddresses: ["0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"], // USR base
-            dstChainIds: [30101],
-            receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
+            tokenAddress: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9", //USR base
+            toChainIds: [8453],
+            // tokenAddresses: ["0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"], // USR base
+            // dstChainIds: [30101],
+            // receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
           },
         ],
       }),
@@ -235,6 +251,7 @@ const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
 
   return acc;
 }, calls);
+
 
 await Bun.write(
   `test/data/permissions${chainId}.json`,

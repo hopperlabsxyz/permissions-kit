@@ -30,6 +30,7 @@ contract Transfer is StargateBridgeTest {
     function setUp() public {
         applyPermissionsOnRole(transfer);
     }
+
     function test_approve() public {
         bytes memory call = abi.encodeWithSelector(
             IUsdc(UNDERLYING_TOKEN).approve.selector,
@@ -48,12 +49,11 @@ contract Transfer is StargateBridgeTest {
     }
 
     function test_send_with_full_parameters_eth() public {
+        console.logBytes32(bytes32(uint256(uint160(avatar))));
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
-                dstEid: 30332,
-                to: bytes32(
-                    0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
-                ),
+                dstEid: 30101,
+                to: bytes32(uint256(uint160(avatar))),
                 amountLD: 0,
                 minAmountLD: 0,
                 extraOptions: "",
@@ -85,9 +85,7 @@ contract Transfer is StargateBridgeTest {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
                 dstEid: 30333,
-                to: bytes32(
-                    0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
-                ),
+                to: bytes32(uint256(uint160(avatar))),
                 amountLD: 100,
                 minAmountLD: 0,
                 extraOptions: "",
@@ -120,9 +118,7 @@ contract Transfer is StargateBridgeTest {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
                 dstEid: 30332,
-                to: bytes32(
-                    0x0000000000000000000000000000000000000000000000000000000000000000
-                ),
+                to: bytes32(uint256(uint160(avatar))),
                 amountLD: 100,
                 minAmountLD: 0,
                 extraOptions: "",
@@ -155,9 +151,7 @@ contract Transfer is StargateBridgeTest {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
                 dstEid: 30332,
-                to: bytes32(
-                    0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
-                ),
+                to: bytes32(uint256(uint160(avatar))),
                 amountLD: 100,
                 minAmountLD: 0,
                 extraOptions: "",
