@@ -63,4 +63,28 @@ contract depositTokenTest is PendleTest {
             false
         );
     }
+
+    //test should fail
+    function test_pendle_deposit_wrong_market() public {
+        bytes memory call = abi.encodeWithSelector(
+            IActionAddRemoveLiqV3(PENDLEROUTERV4)
+                .addLiquiditySingleToken
+                .selector,
+            avatar,
+            PENDLEROUTERV4,//should be USR_MARKET
+            3,
+            0,
+            0
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(
+            PENDLEROUTERV4,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
+    }
 }
