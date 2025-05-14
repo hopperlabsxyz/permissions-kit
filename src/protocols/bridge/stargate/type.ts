@@ -20,8 +20,7 @@ export const oftAdapters = {
     ['0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee']: "0xcd2eb13d6831d4602d80e5db9230a57596cdca63" // weeeth
   },
   8453: {
-    // [simpleOftAdapter]: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"
-    ['0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9']: "0x1a44076050125825900e736c501f859c50fE728c", // usr
+    ['0x35e5db674d8e93a03d814fa0ada70731efe8a4b9']: "0x2492d0006411af6c8bbb1c8afc1b0197350a79e9", // usr
   }
 } as const;
 
