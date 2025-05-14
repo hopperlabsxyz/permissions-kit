@@ -31,6 +31,7 @@ contract depositTokenTest is PendleTest {
     function setUp() public {
         applyPermissionsOnRole(depositToken);
     }
+
     function test_approve() public {
         bytes memory call = abi.encodeWithSelector(
             IUsdc(USR).approve.selector,
@@ -43,7 +44,9 @@ contract depositTokenTest is PendleTest {
 
     function test_pendle_deposit() public {
         bytes memory call = abi.encodeWithSelector(
-            IActionAddRemoveLiqV3(PENDLEROUTERV4).addLiquiditySingleToken.selector,
+            IActionAddRemoveLiqV3(PENDLEROUTERV4)
+                .addLiquiditySingleToken
+                .selector,
             avatar,
             USR_MARKET,
             3,

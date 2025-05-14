@@ -5,9 +5,6 @@ import { Address } from "@gnosis-guild/eth-sdk";
 import { Target, Targets, TargetInfo } from "./types";
 import baseMarkets from "./_baseMarkets.ts";
 
-// const targetMarket_base = "0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45"; //market
-// const USR_base = "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"; //usr_base
-
 function getTargetInfo(target: Target): TargetInfo {
   if (typeof target === "string") {
     const res = baseMarkets.find((t) => t.address === target);
@@ -24,14 +21,14 @@ function getTargetInfo(target: Target): TargetInfo {
       symbol: res.symbol,
       name: res.name,
       address: res.address,
-      asset: res.asset,
+      underlying: res.underlying,
     };
   }
   return {
     symbol: target.market.symbol,
     name: target.market.name,
     address: target.market.address,
-    asset: target.asset,
+    underlying: target.underlying,
   };
 }
 
@@ -48,17 +45,14 @@ function getRouterAddress(chainId: ChainId) {
   );
 }
 
-function depositToken(chainId: ChainId, tokens: Address[]): Permission[] {
+function depositToken(chainId: ChainId, targetInfo: TargetInfo): Permission[] {
   const pendleRouter = getRouterAddress(chainId);
   return [
-    ...allowErc20Approve(tokens, [pendleRouter]),
+    ...allowErc20Approve([targetInfo.underlying], [pendleRouter]),
     {
       ...allow.base.pendle.ActionAddRemoveLiqV3.addLiquiditySingleToken(
         c.avatar,
-        undefined, //market
-        undefined,
-        undefined,
-        undefined,
+        targetInfo.address,
         undefined
       ),
       targetAddress: pendleRouter,
@@ -71,12 +65,9 @@ export interface tokens {
 }
 
 export const base = {
-  depositToken: async ({ tokens }: { tokens: Address[] }) => {
-    if (tokens.length === 0) {
-      throw new Error("No tokens provided");
-    }
-    return tokens.flatMap((token) => {
-      return depositToken(8453, [token]);
-    });
+  depositToken: async ({ targets }: { targets: Targets }) => {
+    return targets.flatMap((target) =>
+      depositToken(8453, getTargetInfo(target))
+    );
   },
 };
