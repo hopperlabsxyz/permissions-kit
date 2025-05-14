@@ -24,6 +24,9 @@ export const contracts = {
       wstEth: "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
       unstEth: "0x889edC2eDab5f40e902b864aD4d7AdE8E412F9B1",
     },
+    etherfi: {
+      depositAdapter: "0xe87797a1afb329216811dfa22c87380128ca17d8" // implementation
+    },
     bridge: {
       stargate: {
         simpleOFTAdapter: "0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28", //implementation
