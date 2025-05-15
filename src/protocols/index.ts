@@ -5,6 +5,7 @@ import * as convex from "./convex";
 import * as bridge from "./bridge";
 import * as pendle from "./pendle";
 import * as lido from "./lido";
+import * as etherfi from "./etherfi"
 
 export const eth = {
   lagoon: lagoon.eth,
@@ -13,6 +14,7 @@ export const eth = {
   convex: convex.eth,
   bridge: bridge.eth,
   lido: lido.eth,
+   etherfi: etherfi.eth
 };
 
 export const base = {
