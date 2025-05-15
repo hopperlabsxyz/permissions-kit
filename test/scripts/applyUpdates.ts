@@ -134,6 +134,9 @@ const permissions = {
   lido: {
     deposit: await kit.lido.deposit()
   },
+  etherfi: {
+    deposit: await kit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
+  },
   bridge: {
     canonical: {
       transfer: await kit.bridge.canonical.transfer({

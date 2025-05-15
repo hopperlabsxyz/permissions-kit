@@ -4,6 +4,7 @@ import * as curve from "./curve"
 import * as convex from "./convex"
 import * as bridge from "./bridge"
 import * as lido from "./lido"
+import * as etherfi from "./etherfi"
 
 
 export const eth = {
@@ -12,5 +13,6 @@ export const eth = {
   curve: curve.eth,
   convex: convex.eth,
   bridge: bridge.eth,
-  lido: lido.eth
+  lido: lido.eth,
+  etherfi: etherfi.eth
 }
