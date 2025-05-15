@@ -51,7 +51,7 @@ contract Transfer is StargateBridgeTest {
     function test_bridge_usr_from_base() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
-                dstEid: 30101, //eth
+                dstEid: 30111,
                 to: bytes32(
                     0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
                 ),
