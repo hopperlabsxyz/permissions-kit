@@ -49,6 +49,19 @@ function settleVault(
   ]
 }
 
+function syncDeposit(
+  _: ChainId,
+  targetInfo: TargetInfo,
+) {
+  return [
+    ...allowErc20Approve([targetInfo.asset], [targetInfo.address]), // manage approval for redemption from safe to vault
+    {
+      ...allow.mainnet.lagoon.sync_vault.syncDeposit(undefined, c.avatar),//euhhh not working
+      // targetAddress: targetInfo.address,
+    },
+  ]
+}
+
 function closeVault(
   _: ChainId,
   targetInfo: TargetInfo,
