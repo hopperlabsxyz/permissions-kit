@@ -7,6 +7,7 @@ export const contracts = {
     usdc: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     lagoon: {
       vault: '0x16648324d68B86E341051767e749F9F074714228', // implementation
+      sync_vault: '0x7895a046b26cc07272b022a0c9bafc046e6f6396', // new sync vault
     },
     curve: {
       crvUSD: "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",

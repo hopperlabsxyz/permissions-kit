@@ -1,0 +1,47 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      { "name": "beacon", "type": "address", "internalType": "address" },
+      { "name": "data", "type": "bytes", "internalType": "bytes" }
+    ],
+    "stateMutability": "payable"
+  },
+  {
+    "name": "AddressEmptyCode",
+    "type": "error",
+    "inputs": [
+      { "name": "target", "type": "address", "internalType": "address" }
+    ]
+  },
+  {
+    "name": "ERC1967InvalidBeacon",
+    "type": "error",
+    "inputs": [
+      { "name": "beacon", "type": "address", "internalType": "address" }
+    ]
+  },
+  {
+    "name": "ERC1967InvalidImplementation",
+    "type": "error",
+    "inputs": [
+      { "name": "implementation", "type": "address", "internalType": "address" }
+    ]
+  },
+  { "name": "ERC1967NonPayable", "type": "error", "inputs": [] },
+  { "name": "FailedInnerCall", "type": "error", "inputs": [] },
+  {
+    "name": "BeaconUpgraded",
+    "type": "event",
+    "inputs": [
+      {
+        "name": "beacon",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  { "type": "fallback", "stateMutability": "payable" }
+]
