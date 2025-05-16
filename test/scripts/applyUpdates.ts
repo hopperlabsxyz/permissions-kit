@@ -140,7 +140,7 @@ const ethPermissions = {
     deposit: await ethkit.lido.deposit(),
   },
   etherfi: {
-    deposit: await kit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
+    deposit: await ethkit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
   },
   bridge: {
     canonical: {
