@@ -1,6 +1,7 @@
 import { allow } from "zodiac-roles-sdk/kit"
 import { allowErc20Approve } from "../../conditions"
 import { contracts } from "../../../eth-sdk/config"
+import { Permission } from "zodiac-roles-sdk/.";
 
 const DEPOSIT_ADAPTER = "0xcfC6d9Bd7411962Bfe7145451A7EF71A24b6A7A2"
 const WETH = contracts.mainnet.weth;
@@ -14,7 +15,7 @@ function deposit(target: Target) {
         ...allow.mainnet.etherfi.depositAdapter.depositETHForWeETH(undefined, { send: true }),
         targetAddress: "0xcfC6d9Bd7411962Bfe7145451A7EF71A24b6A7A2"
       },
-    ]
+    ] as Permission[]
   }
   else if (target === 'WETH') {
     return [
