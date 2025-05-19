@@ -102,12 +102,12 @@ const permissions = {
             {
               vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
               rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
-              canClaimSharesOnBehalf: true
+              canClaimSharesOnBehalf: true,
+              lifespan: c.lt(86400) // 1 day
             }
           ]
       }
     ),
-    syncDeposit: await kit.lagoon.syncDeposit({ targets: [ '0x7895a046b26cc07272b022a0c9bafc046e6f6396']}),
     settleVault: await kit.lagoon.settleVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
     closeVault: await kit.lagoon.closeVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
     depositAndWithdrawFromVault: await kit.lagoon.depositAndWithdrawFromVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })

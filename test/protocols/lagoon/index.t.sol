@@ -7,7 +7,6 @@ import {Vault} from "@test/interfaces/IVault.sol";
 import "@forge-std/Test.sol";
 
 address constant TARGET = 0x07ed467acD4ffd13023046968b0859781cb90D9B; // 9SETH
-address constant SYNC_VAULT = 0x7895A046b26CC07272B022a0C9BAFC046E6F6396; //Noon tacUSN 
 address constant ASSET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // USDC
 
 contract LagoonTest is BaseTest {
@@ -26,11 +25,6 @@ contract LagoonTest is BaseTest {
 
         manageVault = abi.decode(
             vm.parseJson(json, "$.lagoon.manageVault"),
-            (bytes[])
-        );
-
-        syncDeposit = abi.decode(
-            vm.parseJson(json, "$.lagoon.syncDeposit"),
             (bytes[])
         );
 
@@ -270,26 +264,25 @@ contract DepositAndWithdrawFromVaultTest is LagoonTest {
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
-// ----------------------------------------------------
-
-// -----------------------------
     function test_sync_deposit() public {
         bytes memory call = abi.encodeWithSignature(
-            "syncDeposit(uint256, address, address)",
+            "syncDeposit(uint256,address,address)",
             24,
             address(avatar),
+            address(avatar)
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_update_lifespan() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).updateTotalAssetsLifespan.selector,
             0
         );
         vm.prank(manager);
-        role.execTransactionWithRole(SYNC_VAULT, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
-
-    //questions:
-    //should I replace the abis for all vaults?
-    //Is it ok to use the same test for all vaults?
-
-    // -----------------------------
-
 
     function test_mint1() public {
         bytes memory call = abi.encodeWithSignature(
