@@ -21,7 +21,7 @@ function getTargetInfo(target: Target): TargetInfo {
       asset: res.asset,
       rates: target.rates,
       canClaimSharesOnBehalf: target.canClaimSharesOnBehalf,
-      lifespan: target.lifespan
+      lifespan: target.lifespan,
     };
   }
   return {
@@ -29,7 +29,7 @@ function getTargetInfo(target: Target): TargetInfo {
     asset: target.vault.asset,
     rates: target.rates,
     canClaimSharesOnBehalf: target.canClaimSharesOnBehalf,
-    lifespan: target.lifespan
+    lifespan: target.lifespan,
   };
 }
 
@@ -86,19 +86,20 @@ function manageVault(chainId: ChainId, targetInfo: TargetInfo) {
   }
 
   if (targetInfo.lifespan) {
-    console.log("COUCOU", targetInfo.address)
     permissions.push(
       //update Total Assets lifespan -> to enable sync vault
       {
-        ...allow.mainnet.lagoon.vault.updateTotalAssetsLifespan(undefined),
+        ...allow.mainnet.lagoon.vault.updateTotalAssetsLifespan(
+          targetInfo.lifespan
+        ),
+        targetAddress: targetInfo.address,
+      },
+      // allow expire total assets (to deactivate sync vault mannually if needed )
+      {
+        ...allow.mainnet.lagoon.vault.expireTotalAssets(),
         targetAddress: targetInfo.address,
       }
-      // allow expire total assets (to deactivate sync vault mannually if needed )
-      // {
-      //   ...allow.mainnet.lagoon.vault.expireTotalAssets(),
-      //   targetAddress: targetInfo.address,
-      // },
-    )
+    );
   }
 
   return permissions;
@@ -129,9 +130,7 @@ function depositAndWithdrawFromVault(_: ChainId, targetInfo: TargetInfo) {
     {
       ...allow.mainnet.lagoon.vault[
         "requestDeposit(uint256,address,address,address)"
-      ](undefined, c.avatar, c.avatar, undefined,
-        { send: true }
-      ),
+      ](undefined, c.avatar, c.avatar, undefined, { send: true }),
       targetAddress,
     },
     {

@@ -148,7 +148,25 @@ contract ManageVaultTest is LagoonTest {
     function test_update_lifespan() public {
         bytes memory call = abi.encodeWithSelector(
             Vault(TARGET).updateTotalAssetsLifespan.selector,
-            0
+            24
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_update_invalid_lifespan() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).updateTotalAssetsLifespan.selector,
+            300000000000000
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_expireTotalAssets() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).expireTotalAssets.selector
         );
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
