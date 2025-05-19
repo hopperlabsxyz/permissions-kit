@@ -102,7 +102,8 @@ const permissions = {
             {
               vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
               rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
-              canClaimSharesOnBehalf: true
+              canClaimSharesOnBehalf: true,
+              lifespan: c.lt(86400) // 1 day
             }
           ]
       }

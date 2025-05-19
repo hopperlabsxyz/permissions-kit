@@ -11,6 +11,7 @@ export interface TargetInfo {
   asset: Address;
   rates?: Rates;
   canClaimSharesOnBehalf?: boolean;
+  lifespan?: ConditionFunction<BigNumberish>; // allow the asset manager to put the vault in sync mode
 }
 
 export interface Rates {
@@ -27,6 +28,7 @@ export type Target = EthVault['address'] | {
   vault: EthVault['address'] | UnknownVault,
   rates?: Rates;
   canClaimSharesOnBehalf?: boolean;
+  lifespan?: ConditionFunction<BigNumberish>; // allow the asset manager to put the vault in sync mode
 }
 
 export type Targets = Target[]
