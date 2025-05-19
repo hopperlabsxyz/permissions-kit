@@ -145,6 +145,15 @@ contract ManageVaultTest is LagoonTest {
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
+    function test_update_lifespan() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).updateTotalAssetsLifespan.selector,
+            0
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
     function test_initiateClosing() public {
         bytes memory call = abi.encodeWithSelector(
             Vault(TARGET).initiateClosing.selector
@@ -270,15 +279,6 @@ contract DepositAndWithdrawFromVaultTest is LagoonTest {
             24,
             address(avatar),
             address(avatar)
-        );
-        vm.prank(manager);
-        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
-    }
-
-    function test_update_lifespan() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).updateTotalAssetsLifespan.selector,
-            0
         );
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
