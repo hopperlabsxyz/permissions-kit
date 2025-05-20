@@ -102,7 +102,8 @@ const permissions = {
             {
               vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
               rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
-              canClaimSharesOnBehalf: true
+              canClaimSharesOnBehalf: true,
+              lifespan: c.lt(86400) // 1 day
             }
           ]
       }
@@ -125,7 +126,7 @@ const permissions = {
   curve: {
     stakeCrvUSD: await kit.curve.stakeCrvUSD(),
     depositStableSwapNg: await kit.curve.depositStableSwapNg({
-      targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50"],
+      targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50", "0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F"],
     }),
   },
   convex: {
@@ -136,6 +137,19 @@ const permissions = {
   },
   etherfi: {
     deposit: await kit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
+  },
+  se7enseas: {
+    depositBoringVault: await kit.se7enseas.depositBoringVault({
+      targets: [
+        {
+          vault: {
+            boringVault: '0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad',
+            teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73",
+            assets: ['ETH', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'],
+          }
+        }
+      ]
+    })
   },
   bridge: {
     canonical: {

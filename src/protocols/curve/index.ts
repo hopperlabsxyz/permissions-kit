@@ -9,7 +9,7 @@ export const SCRVUSD = "0x0655977FEb2f289A4aB78af67BAB0d17aAb84367"
 
 function depositStableSwapNg(_: ChainId, targetInfo: TargetInfo) {
   const { token0, token1, address: poolAddress } = targetInfo;
-  return [
+  let permissions = [
     ...allowErc20Approve([token0, token1], [poolAddress]),
     allow.mainnet.curve.stableSwapNg["add_liquidity(uint256[],uint256,address)"](undefined, undefined, c.avatar),
     allow.mainnet.curve.stableSwapNg["add_liquidity(uint256[],uint256)"](undefined, undefined),
@@ -17,6 +17,36 @@ function depositStableSwapNg(_: ChainId, targetInfo: TargetInfo) {
     allow.mainnet.curve.stableSwapNg["remove_liquidity(uint256,uint256[],address)"](undefined, undefined, c.avatar),
     allow.mainnet.curve.stableSwapNg["remove_liquidity(uint256,uint256[])"](undefined, undefined)
   ]
+  if (targetInfo.gauge) {
+    permissions.push(
+      ...allowErc20Approve([poolAddress], [targetInfo.gauge]),
+      {
+        ...allow.mainnet.curve.gauge["deposit(uint256)"](undefined),
+        targetAddress: targetInfo.gauge
+      },
+      {
+        ...allow.mainnet.curve.gauge["withdraw(uint256)"](undefined),
+        targetAddress: targetInfo.gauge
+      },
+      {
+        ...allow.mainnet.curve.gauge["withdraw(uint256,bool)"](undefined, undefined),
+        targetAddress: targetInfo.gauge
+      },
+      {
+        ...allow.mainnet.curve.gauge["claim_rewards()"](),
+        targetAddress: targetInfo.gauge
+      },
+      {
+        ...allow.mainnet.curve.gauge["claim_rewards(address)"](),
+        targetAddress: targetInfo.gauge
+      },
+      {
+        ...allow.mainnet.curve.gauge["claim_rewards(address,address)"](c.avatar),
+        targetAddress: targetInfo.gauge
+      },
+    )
+  }
+  return permissions
 }
 
 function getTargetInfo(target: Target): TargetInfo {

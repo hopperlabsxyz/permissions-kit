@@ -11,6 +11,7 @@ address constant ASSET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // USDC
 
 contract LagoonTest is BaseTest {
     bytes[] depositAndWithdrawFromVault;
+    bytes[] syncDeposit;
     bytes[] manageVault;
     bytes[] closeVault;
     bytes[] settleVault;
@@ -144,6 +145,33 @@ contract ManageVaultTest is LagoonTest {
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
+    function test_update_lifespan() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).updateTotalAssetsLifespan.selector,
+            24
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_update_invalid_lifespan() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).updateTotalAssetsLifespan.selector,
+            300000000000000
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_expireTotalAssets() public {
+        bytes memory call = abi.encodeWithSelector(
+            Vault(TARGET).expireTotalAssets.selector
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
     function test_initiateClosing() public {
         bytes memory call = abi.encodeWithSelector(
             Vault(TARGET).initiateClosing.selector
@@ -256,6 +284,17 @@ contract DepositAndWithdrawFromVaultTest is LagoonTest {
         bytes memory call = abi.encodeWithSignature(
             "deposit(uint256,address,address)",
             42,
+            address(avatar),
+            address(avatar)
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
+    }
+
+    function test_sync_deposit() public {
+        bytes memory call = abi.encodeWithSignature(
+            "syncDeposit(uint256,address,address)",
+            24,
             address(avatar),
             address(avatar)
         );
