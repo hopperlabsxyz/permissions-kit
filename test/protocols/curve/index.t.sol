@@ -14,6 +14,9 @@ address constant SCRVUSD = 0x0655977FEb2f289A4aB78af67BAB0d17aAb84367;
 
 address constant reUSDsCRV = 0xc522A6606BBA746d7960404F22a3DB936B6F4F50;
 
+address constant POOL = 0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F;
+address constant GAUGE = 0x92219862F9F40fe27444e45a9554E824e8556A62;
+
 contract CurveTest is BaseTest {
     bytes[] stakeCrvUSD;
     bytes[] depositStableSwapNg;
@@ -51,6 +54,16 @@ contract DepositStableSwapNg is CurveTest {
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
     }
 
+    function test_approve_on_gauge() public {
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(GAUGE).approve.selector,
+            GAUGE,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(POOL, 0, call, 0, TEST_ROLE, false);
+    }
+
     function test_add_liquidity() public {
         uint256[] memory arr;
         bytes memory call = abi.encodeWithSignature(
@@ -70,6 +83,19 @@ contract DepositStableSwapNg is CurveTest {
         vm.prank(manager);
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
     }
+
+    // function test_add_liquidity_revert() public {
+    //     uint256[] memory arr;
+    //     bytes memory call = abi.encodeWithSignature(
+    //         "add_liquidity(uint256[],uint256,address)",
+    //         arr,
+    //         42,
+    //         address(0xdead)
+    //     );
+    //     vm.prank(manager);
+    //     vm.expectRevert();
+    //     role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
+    // }
 
     function test_add_liquidity_revert() public {
         uint256[] memory arr;
