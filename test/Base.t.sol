@@ -12,6 +12,10 @@ import {ZodiacHelpers} from "@test/ZodiacHelpers.t.sol";
 
 contract BaseTest is ZodiacHelpers {
     constructor() {
+        // TODO: add a condition to check chainId and setup the correct RPC URL
+        //https://base-mainnet.g.alchemy.com/v2/x5-gv7WYkFnf4Kv2r43bj4oOIrleGrFF
+        vm.createSelectFork("https://eth-mainnet.g.alchemy.com/v2/x5-gv7WYkFnf4Kv2r43bj4oOIrleGrFF");
+
         avatar = deployTestAvatar();
         role = deployRolesModifier(roleFactory, address(avatar), roleOwner);
         console.log("ROLE ADDRESS", address(role));
