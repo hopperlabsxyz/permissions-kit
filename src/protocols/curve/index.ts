@@ -19,6 +19,7 @@ function depositStableSwapNg(_: ChainId, targetInfo: TargetInfo) {
   ]
   if (targetInfo.gauge) {
     permissions.push(
+      ...allowErc20Approve([poolAddress], [targetInfo.gauge]),
       {
         ...allow.mainnet.curve.gauge["deposit(uint256)"](undefined),
         targetAddress: targetInfo.gauge
