@@ -28,6 +28,10 @@ export const contracts = {
     etherfi: {
       depositAdapter: "0xe87797a1afb329216811dfa22c87380128ca17d8" // implementation
     },
+    se7enseas: {
+      boringVault: "0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad",
+      teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73"
+    },
     bridge: {
       stargate: {
         simpleOFTAdapter: "0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28", //implementation
