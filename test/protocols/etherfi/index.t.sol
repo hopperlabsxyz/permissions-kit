@@ -11,7 +11,7 @@ address payable constant DEPOSIT_ADAPTER = payable(
 );
 address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-contract EtherfiTest is BaseTest {
+contract EtherfiTest is BaseTest(1) {
     bytes[] deposit;
 
     constructor() {

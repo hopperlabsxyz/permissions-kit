@@ -9,7 +9,7 @@ import "@forge-std/Test.sol";
 address constant TARGET = 0x07ed467acD4ffd13023046968b0859781cb90D9B; // 9SETH
 address constant ASSET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // USDC
 
-contract LagoonTest is BaseTest {
+contract LagoonTest is BaseTest(1) {
     bytes[] depositAndWithdrawFromVault;
     bytes[] manageVault;
     bytes[] closeVault;

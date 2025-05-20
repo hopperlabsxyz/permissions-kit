@@ -16,6 +16,10 @@ interface IModuleProxyFactory {
 }
 
 contract ZodiacHelpers is Test {
+
+    constructor(uint256 chainId) {
+    }
+
     address constant MODULE_PROXY_FACTORY =
         0x000000000000aDdB49795b0f9bA5BC298cDda236;
 

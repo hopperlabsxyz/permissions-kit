@@ -11,10 +11,16 @@ import {ISimpleOFTAdapter} from "@test/interfaces/ISimpleOFTAdapter.sol";
 import {ZodiacHelpers} from "@test/ZodiacHelpers.t.sol";
 
 contract BaseTest is ZodiacHelpers {
-    constructor() {
-        // TODO: add a condition to check chainId and setup the correct RPC URL
-        //https://base-mainnet.g.alchemy.com/v2/x5-gv7WYkFnf4Kv2r43bj4oOIrleGrFF
-        vm.createSelectFork("https://eth-mainnet.g.alchemy.com/v2/x5-gv7WYkFnf4Kv2r43bj4oOIrleGrFF");
+    constructor(uint256 chainId) ZodiacHelpers(chainId) {
+        string memory key = vm.envString("ALCHEMY_API_KEY");
+        string memory url;
+
+        if (chainId == 1) {
+            url = string.concat("https://eth-mainnet.g.alchemy.com/v2/", key);
+        } else if (chainId == 8453) {
+            url = string.concat("https://base-mainnet.g.alchemy.com/v2/", key);
+        }
+        vm.createSelectFork(url);
 
         avatar = deployTestAvatar();
         role = deployRolesModifier(roleFactory, address(avatar), roleOwner);

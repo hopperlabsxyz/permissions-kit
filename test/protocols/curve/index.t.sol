@@ -14,7 +14,7 @@ address constant SCRVUSD = 0x0655977FEb2f289A4aB78af67BAB0d17aAb84367;
 
 address constant reUSDsCRV = 0xc522A6606BBA746d7960404F22a3DB936B6F4F50;
 
-contract CurveTest is BaseTest {
+contract CurveTest is BaseTest(1) {
     bytes[] stakeCrvUSD;
     bytes[] depositStableSwapNg;
 

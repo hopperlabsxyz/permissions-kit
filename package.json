@@ -38,7 +38,7 @@
   "scripts": {
     "setup": "eth-sdk",
     "build": "rm -rf dist && tsup --format esm,cjs",
-    "test": "forge test --fork-url ${RPC_URL:-}",
+    "test": "forge test -v",
     "generate": "bun run build && bun run test/scripts/applyUpdates.ts"
   },
   "devDependencies": {

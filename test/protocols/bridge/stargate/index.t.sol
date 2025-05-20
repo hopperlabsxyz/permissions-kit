@@ -10,7 +10,7 @@ import {IUsdc} from "@test/interfaces/IUsdc.sol";
 // Constants based on transaction records: mainnet
 address constant UNDERLYING_TOKEN = 0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110;
 address constant SIMPLE_OFT_ADAPTER = 0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E;
-contract StargateBridgeTest is BaseTest {
+contract StargateBridgeTest is BaseTest(1) {
     bytes[] transfer;
 
     constructor() {

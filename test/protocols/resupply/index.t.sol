@@ -11,7 +11,7 @@ address constant UNDERLYING_TOKEN = 0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E;
 address constant PAIR_POOL = 0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D;
 address constant LOAN_TOKEN = 0x57aB1E0003F623289CD798B1824Be09a793e4Bec; //WETH
 
-contract ResupplyTest is BaseTest {
+contract ResupplyTest is BaseTest(1) {
     bytes[] depositAndBorrow;
     bytes[] deposit;
     bytes[] borrow;

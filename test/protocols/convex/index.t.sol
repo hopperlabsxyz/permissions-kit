@@ -10,7 +10,7 @@ import "@forge-std/Test.sol";
 address constant BOOSTER = 0xF403C135812408BFbE8713b5A23a04b3D48AAE31;
 address constant reUSDsCRV = 0xc522A6606BBA746d7960404F22a3DB936B6F4F50;
 
-contract CurveTest is BaseTest {
+contract CurveTest is BaseTest(1) {
     bytes[] deposit;
 
     constructor() {

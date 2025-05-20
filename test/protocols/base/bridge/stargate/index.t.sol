@@ -10,7 +10,7 @@ import {IUsdc} from "@test/interfaces/IUsdc.sol";
 address constant UNDERLYING_TOKEN = 0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9;
 address constant SIMPLE_OFT_BASE = 0x2492D0006411Af6C8bbb1c8afc1B0197350a79e9;
 
-contract StargateBridgeTest is BaseTest {
+contract StargateBridgeTest is BaseTest(8453) {
     bytes[] transfer;
 
     constructor() {

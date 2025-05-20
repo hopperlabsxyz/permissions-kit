@@ -8,7 +8,7 @@ import "@forge-std/Test.sol";
 address constant SPECTRA = 0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51;
 
 contract SimpleTest is BaseTest {
-    constructor() {}
+    constructor() BaseTest(1){}
 
     function test_manager_is_member_of_role() public view {
         assertTrue(
