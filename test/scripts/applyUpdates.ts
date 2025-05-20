@@ -138,6 +138,19 @@ const permissions = {
   etherfi: {
     deposit: await kit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
   },
+  se7enseas: {
+    depositBoringVault: await kit.se7enseas.depositBoringVault({
+      targets: [
+        {
+          vault: {
+            boringVault: '0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad',
+            teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73",
+            assets: ['ETH', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'],
+          }
+        }
+      ]
+    })
+  },
   bridge: {
     canonical: {
       transfer: await kit.bridge.canonical.transfer({

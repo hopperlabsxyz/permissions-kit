@@ -30,7 +30,7 @@ export const contracts = {
     },
     se7enseas: {
       boringVault: "0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad",
-      teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73"
+      teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73",
     },
     bridge: {
       stargate: {
