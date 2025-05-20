@@ -7,6 +7,7 @@ export interface TargetInfo {
   address: Address
   token0: Address;
   token1: Address;
+  gauge?: Address;
 }
 
 export type Target = EthPool['address'] | TargetInfo;
