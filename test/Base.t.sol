@@ -2,16 +2,20 @@
 pragma solidity >=0.8.28;
 
 import "@forge-std/Test.sol";
-import "@forge-std/console.sol";
+
 import {VmSafe} from "@forge-std/Vm.sol";
+import "@forge-std/console.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
-import {IUsdc} from "@test/interfaces/IUsdc.sol";
+
+import {ZodiacHelpers} from "@test/ZodiacHelpers.t.sol";
 import {IRoles} from "@test/interfaces/IRoles.sol";
 import {ISimpleOFTAdapter} from "@test/interfaces/ISimpleOFTAdapter.sol";
-import {ZodiacHelpers} from "@test/ZodiacHelpers.t.sol";
+import {IUsdc} from "@test/interfaces/IUsdc.sol";
 
 contract BaseTest is ZodiacHelpers {
-    constructor(uint256 chainId) ZodiacHelpers(chainId) {
+    constructor(
+        uint256 chainId
+    ) ZodiacHelpers(chainId) {
         string memory key = vm.envString("ALCHEMY_API_KEY");
         string memory url;
 

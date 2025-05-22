@@ -92,9 +92,15 @@ interface ISimpleOFT {
     event EnforcedOptionSet(EnforcedOptionParam[] _enforcedOptions);
     event Initialized(uint64 version);
     event MsgInspectorSet(address inspector);
-    event OFTReceived(bytes32 indexed guid, uint32 srcEid, address indexed toAddress, uint256 amountReceivedLD);
+    event OFTReceived(
+        bytes32 indexed guid, uint32 srcEid, address indexed toAddress, uint256 amountReceivedLD
+    );
     event OFTSent(
-        bytes32 indexed guid, uint32 dstEid, address indexed fromAddress, uint256 amountSentLD, uint256 amountReceivedLD
+        bytes32 indexed guid,
+        uint32 dstEid,
+        address indexed fromAddress,
+        uint256 amountSentLD,
+        uint256 amountReceivedLD
     );
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
     event PeerSet(uint32 eid, bytes32 peer);
@@ -103,15 +109,20 @@ interface ISimpleOFT {
 
     function SEND() external view returns (uint16);
     function SEND_AND_CALL() external view returns (uint16);
-    function allowInitializePath(Origin memory origin) external view returns (bool);
+    function allowInitializePath(
+        Origin memory origin
+    ) external view returns (bool);
     function allowance(address owner, address spender) external view returns (uint256);
     function approvalRequired() external pure returns (bool);
     function approve(address spender, uint256 value) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-    function combineOptions(uint32 _eid, uint16 _msgType, bytes memory _extraOptions)
-        external
-        view
-        returns (bytes memory);
+    function balanceOf(
+        address account
+    ) external view returns (uint256);
+    function combineOptions(
+        uint32 _eid,
+        uint16 _msgType,
+        bytes memory _extraOptions
+    ) external view returns (bytes memory);
     function decimalConversionRate() external view returns (uint256);
     function decimals() external view returns (uint8);
     function endpoint() external view returns (address);
@@ -126,7 +137,9 @@ interface ISimpleOFT {
         address _executor,
         bytes memory _extraData
     ) external payable;
-    function lzReceiveAndRevert(InboundPacket[] memory _packets) external payable;
+    function lzReceiveAndRevert(
+        InboundPacket[] memory _packets
+    ) external payable;
     function lzReceiveSimulate(
         Origin memory _origin,
         bytes32 _guid,
@@ -141,31 +154,46 @@ interface ISimpleOFT {
     function oAppVersion() external pure returns (uint64 senderVersion, uint64 receiverVersion);
     function oftVersion() external pure returns (bytes4 interfaceId, uint64 version);
     function owner() external view returns (address);
-    function peers(uint32 _eid) external view returns (bytes32);
+    function peers(
+        uint32 _eid
+    ) external view returns (bytes32);
     function preCrime() external view returns (address);
-    function quoteOFT(SendParam memory _sendParam)
+    function quoteOFT(
+        SendParam memory _sendParam
+    )
         external
         view
         returns (OFTLimit memory oftLimit, OFTFeeDetail[] memory oftFeeDetails, OFTReceipt memory oftReceipt);
-    function quoteSend(SendParam memory _sendParam, bool _payInLzToken)
-        external
-        view
-        returns (MessagingFee memory msgFee);
+    function quoteSend(
+        SendParam memory _sendParam,
+        bool _payInLzToken
+    ) external view returns (MessagingFee memory msgFee);
     function renounceOwnership() external;
-    function send(SendParam memory _sendParam, MessagingFee memory _fee, address _refundAddress)
-        external
-        payable
-        returns (MessagingReceipt memory msgReceipt, OFTReceipt memory oftReceipt);
-    function setDelegate(address _delegate) external;
-    function setEnforcedOptions(EnforcedOptionParam[] memory _enforcedOptions) external;
-    function setMsgInspector(address _msgInspector) external;
+    function send(
+        SendParam memory _sendParam,
+        MessagingFee memory _fee,
+        address _refundAddress
+    ) external payable returns (MessagingReceipt memory msgReceipt, OFTReceipt memory oftReceipt);
+    function setDelegate(
+        address _delegate
+    ) external;
+    function setEnforcedOptions(
+        EnforcedOptionParam[] memory _enforcedOptions
+    ) external;
+    function setMsgInspector(
+        address _msgInspector
+    ) external;
     function setPeer(uint32 _eid, bytes32 _peer) external;
-    function setPreCrime(address _preCrime) external;
+    function setPreCrime(
+        address _preCrime
+    ) external;
     function sharedDecimals() external pure returns (uint8);
     function symbol() external view returns (string memory);
     function token() external view returns (address);
     function totalSupply() external view returns (uint256);
     function transfer(address to, uint256 value) external returns (bool);
     function transferFrom(address from, address to, uint256 value) external returns (bool);
-    function transferOwnership(address newOwner) external;
+    function transferOwnership(
+        address newOwner
+    ) external;
 }

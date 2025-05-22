@@ -116,10 +116,18 @@ interface IActionAddRemoveLiqV3 {
         uint256 netSyInterm
     );
     event AddLiquiditySinglePt(
-        address indexed caller, address indexed market, address indexed receiver, uint256 netPtIn, uint256 netLpOut
+        address indexed caller,
+        address indexed market,
+        address indexed receiver,
+        uint256 netPtIn,
+        uint256 netLpOut
     );
     event AddLiquiditySingleSy(
-        address indexed caller, address indexed market, address indexed receiver, uint256 netSyIn, uint256 netLpOut
+        address indexed caller,
+        address indexed market,
+        address indexed receiver,
+        uint256 netSyIn,
+        uint256 netLpOut
     );
     event AddLiquiditySingleSyKeepYt(
         address indexed caller,
@@ -183,7 +191,11 @@ interface IActionAddRemoveLiqV3 {
         ExitPreExpReturnParams params
     );
     event MintPyFromSy(
-        address indexed caller, address indexed receiver, address indexed YT, uint256 netSyIn, uint256 netPyOut
+        address indexed caller,
+        address indexed receiver,
+        address indexed YT,
+        uint256 netSyIn,
+        uint256 netPyOut
     );
     event MintPyFromToken(
         address indexed caller,
@@ -204,7 +216,11 @@ interface IActionAddRemoveLiqV3 {
     );
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
     event RedeemPyToSy(
-        address indexed caller, address indexed receiver, address indexed YT, uint256 netPyIn, uint256 netSyOut
+        address indexed caller,
+        address indexed receiver,
+        address indexed YT,
+        uint256 netPyIn,
+        uint256 netSyOut
     );
     event RedeemPyToToken(
         address indexed caller,
@@ -349,7 +365,10 @@ interface IActionAddRemoveLiqV3 {
         uint256 minLpOut,
         uint256 minYtOut,
         TokenInput memory input
-    ) external payable returns (uint256 netLpOut, uint256 netYtOut, uint256 netSyMintPy, uint256 netSyInterm);
+    )
+        external
+        payable
+        returns (uint256 netLpOut, uint256 netYtOut, uint256 netSyMintPy, uint256 netSyInterm);
     function removeLiquidityDualSyAndPt(
         address receiver,
         address market,

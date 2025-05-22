@@ -15,11 +15,15 @@ interface Booster {
     function distributionAddressId() external view returns (uint256);
     function earmarkFees() external returns (bool);
     function earmarkIncentive() external view returns (uint256);
-    function earmarkRewards(uint256 _pid) external returns (bool);
+    function earmarkRewards(
+        uint256 _pid
+    ) external returns (bool);
     function feeDistro() external view returns (address);
     function feeManager() external view returns (address);
     function feeToken() external view returns (address);
-    function gaugeMap(address) external view returns (bool);
+    function gaugeMap(
+        address
+    ) external view returns (bool);
     function isShutdown() external view returns (bool);
     function lockFees() external view returns (address);
     function lockIncentive() external view returns (uint256);
@@ -27,28 +31,58 @@ interface Booster {
     function minter() external view returns (address);
     function owner() external view returns (address);
     function platformFee() external view returns (uint256);
-    function poolInfo(uint256)
+    function poolInfo(
+        uint256
+    )
         external
         view
-        returns (address lptoken, address token, address gauge, address crvRewards, address stash, bool shutdown);
+        returns (
+            address lptoken,
+            address token,
+            address gauge,
+            address crvRewards,
+            address stash,
+            bool shutdown
+        );
     function poolLength() external view returns (uint256);
     function poolManager() external view returns (address);
     function registry() external view returns (address);
     function rewardArbitrator() external view returns (address);
     function rewardClaimed(uint256 _pid, address _address, uint256 _amount) external returns (bool);
     function rewardFactory() external view returns (address);
-    function setArbitrator(address _arb) external;
+    function setArbitrator(
+        address _arb
+    ) external;
     function setFactories(address _rfactory, address _sfactory, address _tfactory) external;
     function setFeeInfo() external;
-    function setFeeManager(address _feeM) external;
-    function setFees(uint256 _lockFees, uint256 _stakerFees, uint256 _callerFees, uint256 _platform) external;
-    function setGaugeRedirect(uint256 _pid) external returns (bool);
-    function setOwner(address _owner) external;
-    function setPoolManager(address _poolM) external;
+    function setFeeManager(
+        address _feeM
+    ) external;
+    function setFees(
+        uint256 _lockFees,
+        uint256 _stakerFees,
+        uint256 _callerFees,
+        uint256 _platform
+    ) external;
+    function setGaugeRedirect(
+        uint256 _pid
+    ) external returns (bool);
+    function setOwner(
+        address _owner
+    ) external;
+    function setPoolManager(
+        address _poolM
+    ) external;
     function setRewardContracts(address _rewards, address _stakerRewards) external;
-    function setTreasury(address _treasury) external;
-    function setVoteDelegate(address _voteDelegate) external;
-    function shutdownPool(uint256 _pid) external returns (bool);
+    function setTreasury(
+        address _treasury
+    ) external;
+    function setVoteDelegate(
+        address _voteDelegate
+    ) external;
+    function shutdownPool(
+        uint256 _pid
+    ) external returns (bool);
     function shutdownSystem() external;
     function staker() external view returns (address);
     function stakerIncentive() external view returns (uint256);
@@ -62,6 +96,8 @@ interface Booster {
     function voteOwnership() external view returns (address);
     function voteParameter() external view returns (address);
     function withdraw(uint256 _pid, uint256 _amount) external returns (bool);
-    function withdrawAll(uint256 _pid) external returns (bool);
+    function withdrawAll(
+        uint256 _pid
+    ) external returns (bool);
     function withdrawTo(uint256 _pid, uint256 _amount, address _to) external returns (bool);
 }

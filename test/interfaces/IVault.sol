@@ -63,7 +63,11 @@ interface Vault {
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Deposit(address indexed sender, address indexed owner, uint256 assets, uint256 shares);
     event DepositRequest(
-        address indexed controller, address indexed owner, uint256 indexed requestId, address sender, uint256 assets
+        address indexed controller,
+        address indexed owner,
+        uint256 indexed requestId,
+        address sender,
+        uint256 assets
     );
     event DepositRequestCanceled(uint256 indexed requestId, address indexed controller);
     event FeeReceiverUpdated(address oldReceiver, address newReceiver);
@@ -76,9 +80,15 @@ interface Vault {
     event Paused(address account);
     event RatesUpdated(Rates oldRates, Rates newRate, uint256 timestamp);
     event RedeemRequest(
-        address indexed controller, address indexed owner, uint256 indexed requestId, address sender, uint256 shares
+        address indexed controller,
+        address indexed owner,
+        uint256 indexed requestId,
+        address sender,
+        uint256 shares
     );
-    event Referral(address indexed referral, address indexed owner, uint256 indexed requestId, uint256 assets);
+    event Referral(
+        address indexed referral, address indexed owner, uint256 indexed requestId, uint256 assets
+    );
     event SettleDeposit(
         uint40 indexed epochId,
         uint40 indexed settledId,
@@ -104,27 +114,51 @@ interface Vault {
     event WhitelistManagerUpdated(address oldManager, address newManager);
     event WhitelistUpdated(address indexed account, bool authorized);
     event Withdraw(
-        address indexed sender, address indexed receiver, address indexed owner, uint256 assets, uint256 shares
+        address indexed sender,
+        address indexed receiver,
+        address indexed owner,
+        uint256 assets,
+        uint256 shares
     );
 
     function MAX_MANAGEMENT_RATE() external view returns (uint16);
     function MAX_PERFORMANCE_RATE() external view returns (uint16);
     function MAX_PROTOCOL_RATE() external view returns (uint16);
     function acceptOwnership() external;
-    function addToWhitelist(address[] memory accounts) external;
+    function addToWhitelist(
+        address[] memory accounts
+    ) external;
     function allowance(address owner, address spender) external view returns (uint256);
     function approve(address spender, uint256 value) external returns (bool);
     function asset() external view returns (address);
-    function balanceOf(address account) external view returns (uint256);
+    function balanceOf(
+        address account
+    ) external view returns (uint256);
     function cancelRequestDeposit() external;
-    function claimSharesAndRequestRedeem(uint256 sharesToRedeem) external returns (uint40 requestId);
-    function claimSharesOnBehalf(address[] memory controllers) external;
-    function claimableDepositRequest(uint256 requestId, address controller) external view returns (uint256 assets);
-    function claimableRedeemRequest(uint256 requestId, address controller) external view returns (uint256 shares);
-    function close(uint256 _newTotalAssets) external;
-    function convertToAssets(uint256 shares) external view returns (uint256);
+    function claimSharesAndRequestRedeem(
+        uint256 sharesToRedeem
+    ) external returns (uint40 requestId);
+    function claimSharesOnBehalf(
+        address[] memory controllers
+    ) external;
+    function claimableDepositRequest(
+        uint256 requestId,
+        address controller
+    ) external view returns (uint256 assets);
+    function claimableRedeemRequest(
+        uint256 requestId,
+        address controller
+    ) external view returns (uint256 shares);
+    function close(
+        uint256 _newTotalAssets
+    ) external;
+    function convertToAssets(
+        uint256 shares
+    ) external view returns (uint256);
     function convertToAssets(uint256 shares, uint256 requestId) external view returns (uint256);
-    function convertToShares(uint256 assets) external view returns (uint256);
+    function convertToShares(
+        uint256 assets
+    ) external view returns (uint256);
     function convertToShares(uint256 assets, uint256 requestId) external view returns (uint256);
     function decimals() external view returns (uint8);
     function deposit(uint256 assets, address receiver, address controller) external returns (uint256);
@@ -137,57 +171,116 @@ interface Vault {
     function initiateClosing() external;
     function isOperator(address controller, address operator) external view returns (bool);
     function isWhitelistActivated() external view returns (bool);
-    function isWhitelisted(address account) external view returns (bool);
-    function lastDepositRequestId(address controller) external view returns (uint40);
+    function isWhitelisted(
+        address account
+    ) external view returns (bool);
+    function lastDepositRequestId(
+        address controller
+    ) external view returns (uint40);
     function lastFeeTime() external view returns (uint256);
-    function lastRedeemRequestId(address controller) external view returns (uint40);
-    function maxDeposit(address controller) external view returns (uint256);
-    function maxMint(address controller) external view returns (uint256);
-    function maxRedeem(address controller) external view returns (uint256);
-    function maxWithdraw(address controller) external view returns (uint256);
+    function lastRedeemRequestId(
+        address controller
+    ) external view returns (uint40);
+    function maxDeposit(
+        address controller
+    ) external view returns (uint256);
+    function maxMint(
+        address controller
+    ) external view returns (uint256);
+    function maxRedeem(
+        address controller
+    ) external view returns (uint256);
+    function maxWithdraw(
+        address controller
+    ) external view returns (uint256);
     function mint(uint256 shares, address receiver) external returns (uint256);
     function mint(uint256 shares, address receiver, address controller) external returns (uint256);
     function name() external view returns (string memory);
     function owner() external view returns (address);
     function pause() external;
     function paused() external view returns (bool);
-    function pendingDepositRequest(uint256 requestId, address controller) external view returns (uint256 assets);
+    function pendingDepositRequest(
+        uint256 requestId,
+        address controller
+    ) external view returns (uint256 assets);
     function pendingOwner() external view returns (address);
-    function pendingRedeemRequest(uint256 requestId, address controller) external view returns (uint256 shares);
+    function pendingRedeemRequest(
+        uint256 requestId,
+        address controller
+    ) external view returns (uint256 shares);
     function pendingSilo() external view returns (address);
-    function previewDeposit(uint256) external pure returns (uint256);
-    function previewMint(uint256) external pure returns (uint256);
-    function previewRedeem(uint256) external pure returns (uint256);
-    function previewWithdraw(uint256) external pure returns (uint256);
+    function previewDeposit(
+        uint256
+    ) external pure returns (uint256);
+    function previewMint(
+        uint256
+    ) external pure returns (uint256);
+    function previewRedeem(
+        uint256
+    ) external pure returns (uint256);
+    function previewWithdraw(
+        uint256
+    ) external pure returns (uint256);
     function redeem(uint256 shares, address receiver, address controller) external returns (uint256 assets);
     function renounceOwnership() external;
-    function requestDeposit(uint256 assets, address controller, address owner)
-        external
-        payable
-        returns (uint256 requestId);
-    function requestDeposit(uint256 assets, address controller, address owner, address referral)
-        external
-        payable
-        returns (uint256 requestId);
-    function requestRedeem(uint256 shares, address controller, address owner) external returns (uint256 requestId);
-    function revokeFromWhitelist(address[] memory accounts) external;
+    function requestDeposit(
+        uint256 assets,
+        address controller,
+        address owner
+    ) external payable returns (uint256 requestId);
+    function requestDeposit(
+        uint256 assets,
+        address controller,
+        address owner,
+        address referral
+    ) external payable returns (uint256 requestId);
+    function requestRedeem(
+        uint256 shares,
+        address controller,
+        address owner
+    ) external returns (uint256 requestId);
+    function revokeFromWhitelist(
+        address[] memory accounts
+    ) external;
     function setOperator(address operator, bool approved) external returns (bool success);
-    function settleDeposit(uint256 _newTotalAssets) external;
-    function settleRedeem(uint256 _newTotalAssets) external;
+    function settleDeposit(
+        uint256 _newTotalAssets
+    ) external;
+    function settleRedeem(
+        uint256 _newTotalAssets
+    ) external;
     function share() external view returns (address);
-    function supportsInterface(bytes4 interfaceId) external view returns (bool);
+    function supportsInterface(
+        bytes4 interfaceId
+    ) external view returns (bool);
     function symbol() external view returns (string memory);
     function totalAssets() external view returns (uint256);
     function totalSupply() external view returns (uint256);
     function transfer(address to, uint256 value) external returns (bool);
     function transferFrom(address from, address to, uint256 value) external returns (bool);
-    function transferOwnership(address newOwner) external;
+    function transferOwnership(
+        address newOwner
+    ) external;
     function unpause() external;
-    function updateFeeReceiver(address _feeReceiver) external;
-    function updateNewTotalAssets(uint256 _newTotalAssets) external;
-    function updateRates(Rates memory newRates) external;
-    function updateValuationManager(address _valuationManager) external;
-    function updateWhitelistManager(address _whitelistManager) external;
+    function updateFeeReceiver(
+        address _feeReceiver
+    ) external;
+    function updateNewTotalAssets(
+        uint256 _newTotalAssets
+    ) external;
+    function updateRates(
+        Rates memory newRates
+    ) external;
+    function updateValuationManager(
+        address _valuationManager
+    ) external;
+    function updateWhitelistManager(
+        address _whitelistManager
+    ) external;
     function version() external pure returns (string memory);
-    function withdraw(uint256 assets, address receiver, address controller) external returns (uint256 shares);
+    function withdraw(
+        uint256 assets,
+        address receiver,
+        address controller
+    ) external returns (uint256 shares);
 }

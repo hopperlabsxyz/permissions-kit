@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.28;
 
+import "@forge-std/Test.sol";
 import {BaseTest, IUsdc} from "@test/Base.t.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
 import {Vault} from "@test/interfaces/IVault.sol";
-import "@forge-std/Test.sol";
 
 address constant TARGET = 0x07ed467acD4ffd13023046968b0859781cb90D9B; // 9SETH
 address constant ASSET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // USDC
@@ -19,28 +19,19 @@ contract LagoonTest is BaseTest(1) {
         _loadPermissions("test/data/permissions.json");
     }
 
-    function _loadPermissions(string memory path) internal {
+    function _loadPermissions(
+        string memory path
+    ) internal {
         string memory json = vm.readFile(path);
 
-        manageVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.manageVault"),
-            (bytes[])
-        );
+        manageVault = abi.decode(vm.parseJson(json, "$.lagoon.manageVault"), (bytes[]));
 
-        closeVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.closeVault"),
-            (bytes[])
-        );
+        closeVault = abi.decode(vm.parseJson(json, "$.lagoon.closeVault"), (bytes[]));
 
-        settleVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.settleVault"),
-            (bytes[])
-        );
+        settleVault = abi.decode(vm.parseJson(json, "$.lagoon.settleVault"), (bytes[]));
 
-        depositAndWithdrawFromVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.depositAndWithdrawFromVault"),
-            (bytes[])
-        );
+        depositAndWithdrawFromVault =
+            abi.decode(vm.parseJson(json, "$.lagoon.depositAndWithdrawFromVault"), (bytes[]));
     }
 }
 
@@ -50,29 +41,19 @@ contract SettleVaultTest is LagoonTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(
-            IUsdc(ASSET).approve.selector,
-            TARGET,
-            10
-        );
+        bytes memory call = abi.encodeWithSelector(IUsdc(ASSET).approve.selector, TARGET, 10);
         vm.prank(manager);
         role.execTransactionWithRole(ASSET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_settleDeposit() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).settleDeposit.selector,
-            42
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).settleDeposit.selector, 42);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_settleRedeem() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).settleRedeem.selector,
-            42
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).settleRedeem.selector, 42);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
@@ -84,28 +65,19 @@ contract CloseVaultTest is LagoonTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(
-            IUsdc(ASSET).approve.selector,
-            TARGET,
-            10
-        );
+        bytes memory call = abi.encodeWithSelector(IUsdc(ASSET).approve.selector, TARGET, 10);
         vm.prank(manager);
         role.execTransactionWithRole(ASSET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_initiateClosing() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).initiateClosing.selector
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).initiateClosing.selector);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_close() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).close.selector,
-            42
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).close.selector, 42);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
@@ -117,46 +89,31 @@ contract ManageVaultTest is LagoonTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(
-            IUsdc(ASSET).approve.selector,
-            TARGET,
-            10
-        );
+        bytes memory call = abi.encodeWithSelector(IUsdc(ASSET).approve.selector, TARGET, 10);
         vm.prank(manager);
         role.execTransactionWithRole(ASSET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_settleDeposit() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).settleDeposit.selector,
-            42
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).settleDeposit.selector, 42);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_settleRedeem() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).settleRedeem.selector,
-            42
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).settleRedeem.selector, 42);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_initiateClosing() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).initiateClosing.selector
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).initiateClosing.selector);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_close() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).close.selector,
-            42
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).close.selector, 42);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
@@ -168,17 +125,14 @@ contract ManageVaultTest is LagoonTest {
 
     function test_updateRates() public {
         bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).updateRates.selector,
-            Rates({managementRate: 42, performanceRate: 42})
+            Vault(TARGET).updateRates.selector, Rates({managementRate: 42, performanceRate: 42})
         );
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_canClaimSharesOnBehalf() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).claimSharesOnBehalf.selector
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).claimSharesOnBehalf.selector);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
@@ -190,21 +144,14 @@ contract DepositAndWithdrawFromVaultTest is LagoonTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(
-            IUsdc(ASSET).approve.selector,
-            TARGET,
-            10
-        );
+        bytes memory call = abi.encodeWithSelector(IUsdc(ASSET).approve.selector, TARGET, 10);
         vm.prank(manager);
         role.execTransactionWithRole(ASSET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_requestDeposit1() public {
         bytes memory call = abi.encodeWithSignature(
-            "requestDeposit(uint256,address,address)",
-            42,
-            address(avatar),
-            address(avatar)
+            "requestDeposit(uint256,address,address)", 42, address(avatar), address(avatar)
         );
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
@@ -224,84 +171,54 @@ contract DepositAndWithdrawFromVaultTest is LagoonTest {
 
     function test_requestRedeem() public {
         bytes memory call = abi.encodeWithSignature(
-            "requestRedeem(uint256,address,address)",
-            42,
-            address(avatar),
-            address(avatar)
+            "requestRedeem(uint256,address,address)", 42, address(avatar), address(avatar)
         );
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_claimSharesAndRequestRedeem() public {
-        bytes memory call = abi.encodeWithSignature(
-            "claimSharesAndRequestRedeem(uint256)",
-            42
-        );
+        bytes memory call = abi.encodeWithSignature("claimSharesAndRequestRedeem(uint256)", 42);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_deposit1() public {
-        bytes memory call = abi.encodeWithSignature(
-            "deposit(uint256,address)",
-            42,
-            address(avatar)
-        );
+        bytes memory call = abi.encodeWithSignature("deposit(uint256,address)", 42, address(avatar));
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_deposit2() public {
-        bytes memory call = abi.encodeWithSignature(
-            "deposit(uint256,address,address)",
-            42,
-            address(avatar),
-            address(avatar)
-        );
+        bytes memory call =
+            abi.encodeWithSignature("deposit(uint256,address,address)", 42, address(avatar), address(avatar));
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_mint1() public {
-        bytes memory call = abi.encodeWithSignature(
-            "mint(uint256,address,address)",
-            42,
-            address(avatar),
-            address(avatar)
-        );
+        bytes memory call =
+            abi.encodeWithSignature("mint(uint256,address,address)", 42, address(avatar), address(avatar));
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_mint2() public {
-        bytes memory call = abi.encodeWithSignature(
-            "mint(uint256,address)",
-            42,
-            address(avatar)
-        );
+        bytes memory call = abi.encodeWithSignature("mint(uint256,address)", 42, address(avatar));
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_redeem() public {
-        bytes memory call = abi.encodeWithSignature(
-            "redeem(uint256,address,address)",
-            42,
-            address(avatar),
-            address(avatar)
-        );
+        bytes memory call =
+            abi.encodeWithSignature("redeem(uint256,address,address)", 42, address(avatar), address(avatar));
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_withdraw() public {
-        bytes memory call = abi.encodeWithSignature(
-            "withdraw(uint256,address,address)",
-            42,
-            address(avatar),
-            address(avatar)
-        );
+        bytes memory call =
+            abi.encodeWithSignature("withdraw(uint256,address,address)", 42, address(avatar), address(avatar));
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
