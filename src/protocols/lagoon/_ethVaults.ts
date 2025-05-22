@@ -18,5 +18,10 @@ export default [
     symbol: "tacETH9s",
     address: "0xDe7CFf032D453Ce6B0a796043E75d380Df258812",
     asset: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
-  }
+  },
+  {
+    symbol: "tacUSN",
+    address: "0x7895a046b26cc07272b022a0c9bafc046e6f6396",
+    asset: "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+  },
 ] as const;

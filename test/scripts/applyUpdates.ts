@@ -97,24 +97,22 @@ async function getCallsFromPermissions(permissions: Permission[]) {
 
 const ethPermissions = {
   lagoon: {
-    manageVault: await ethkit.lagoon.manageVault({
-      targets: [
-        {
-          vault: "0x07ed467acd4ffd13023046968b0859781cb90d9b",
-          rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
-          canClaimSharesOnBehalf: true,
-        },
-      ],
-    }),
-    settleVault: await ethkit.lagoon.settleVault({
-      targets: ["0x07ed467acd4ffd13023046968b0859781cb90d9b"],
-    }),
-    closeVault: await ethkit.lagoon.closeVault({
-      targets: ["0x07ed467acd4ffd13023046968b0859781cb90d9b"],
-    }),
-    depositAndWithdrawFromVault: await ethkit.lagoon.depositAndWithdrawFromVault({
-      targets: ["0x07ed467acd4ffd13023046968b0859781cb90d9b"],
-    }),
+    manageVault: await ethkit.lagoon.manageVault(
+      {
+        targets:
+          [
+            {
+              vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
+              rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
+              canClaimSharesOnBehalf: true,
+              lifespan: c.lt(86400) // 1 day
+            }
+          ]
+      }
+    ),
+    settleVault: await ethkit.lagoon.settleVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
+    closeVault: await ethkit.lagoon.closeVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
+    depositAndWithdrawFromVault: await ethkit.lagoon.depositAndWithdrawFromVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
   },
   resupply: {
     deposit: await ethkit.resupply.deposit({
@@ -133,6 +131,7 @@ const ethPermissions = {
       targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50"],
     }),
   },
+
   convex: {
     deposit: await ethkit.convex.deposit({ targets: [440] }),
   },
@@ -141,6 +140,19 @@ const ethPermissions = {
   },
   etherfi: {
     deposit: await ethkit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
+  },
+  se7enseas: {
+    depositBoringVault: await ethkit.se7enseas.depositBoringVault({
+      targets: [
+        {
+          vault: {
+            boringVault: '0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad',
+            teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73",
+            assets: ['ETH', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'],
+          }
+        }
+      ]
+    })
   },
   bridge: {
     canonical: {
