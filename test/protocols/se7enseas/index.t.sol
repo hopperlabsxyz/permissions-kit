@@ -17,16 +17,7 @@ contract Se7enseasTest is BaseTest(1) {
     bytes[] depositBoringVault;
 
     constructor() {
-        _loadPermissions("test/permissions/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        depositBoringVault = abi.decode(
-            vm.parseJson(json, "$.se7enseas.depositBoringVault"),
-            (bytes[])
-        );
+        depositBoringVault = loadPermissions("$.se7enseas.depositBoringVault");
     }
 }
 

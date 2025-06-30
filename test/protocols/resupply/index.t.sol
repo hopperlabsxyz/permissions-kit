@@ -17,21 +17,9 @@ contract ResupplyTest is BaseTest(1) {
     bytes[] borrow;
 
     constructor() {
-        _loadPermissions("test/permissions/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        depositAndBorrow = abi.decode(
-            vm.parseJson(json, "$.resupply.depositAndBorrow"),
-            (bytes[])
-        );
-        deposit = abi.decode(
-            vm.parseJson(json, "$.resupply.deposit"),
-            (bytes[])
-        );
-        borrow = abi.decode(vm.parseJson(json, "$.resupply.borrow"), (bytes[]));
+        depositAndBorrow = loadPermissions("$.resupply.depositAndBorrow");
+        deposit = loadPermissions("$.resupply.deposit");
+        borrow = loadPermissions("$.resupply.borrow");
     }
 }
 

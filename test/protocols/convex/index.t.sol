@@ -14,13 +14,7 @@ contract CurveTest is BaseTest(1) {
     bytes[] deposit;
 
     constructor() {
-        _loadPermissions("test/permissions/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        deposit = abi.decode(vm.parseJson(json, "$.convex.deposit"), (bytes[]));
+        deposit = loadPermissions("$.convex.deposit");
     }
 }
 

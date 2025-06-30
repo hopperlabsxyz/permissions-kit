@@ -21,20 +21,8 @@ contract CurveTest is BaseTest(1) {
     bytes[] depositStableSwapNg;
 
     constructor() {
-        _loadPermissions("test/permissions/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        stakeCrvUSD = abi.decode(
-            vm.parseJson(json, "$.curve.stakeCrvUSD"),
-            (bytes[])
-        );
-        depositStableSwapNg = abi.decode(
-            vm.parseJson(json, "$.curve.depositStableSwapNg"),
-            (bytes[])
-        );
+        stakeCrvUSD = loadPermissions("$.curve.stakeCrvUSD");
+        depositStableSwapNg = loadPermissions("$.curve.depositStableSwapNg");
     }
 }
 

@@ -11,37 +11,17 @@ address constant ASSET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // USDC
 
 contract LagoonTest is BaseTest(1) {
     bytes[] depositAndWithdrawFromVault;
-    bytes[] syncDeposit;
     bytes[] manageVault;
     bytes[] closeVault;
     bytes[] settleVault;
 
     constructor() {
-        _loadPermissions("test/permissions/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        manageVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.manageVault"),
-            (bytes[])
+        depositAndWithdrawFromVault = loadPermissions(
+            "$.lagoon.depositAndWithdrawFromVault"
         );
-
-        closeVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.closeVault"),
-            (bytes[])
-        );
-
-        settleVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.settleVault"),
-            (bytes[])
-        );
-
-        depositAndWithdrawFromVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.depositAndWithdrawFromVault"),
-            (bytes[])
-        );
+        manageVault = loadPermissions("$.lagoon.manageVault");
+        closeVault = loadPermissions("$.lagoon.closeVault");
+        settleVault = loadPermissions("$.lagoon.settleVault");
     }
 }
 

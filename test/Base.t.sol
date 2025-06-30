@@ -13,9 +13,8 @@ import {ISimpleOFTAdapter} from "@test/interfaces/ISimpleOFTAdapter.sol";
 import {IUsdc} from "@test/interfaces/IUsdc.sol";
 
 contract BaseTest is ZodiacHelpers {
-    constructor(
-        uint256 chainId
-    ) ZodiacHelpers(chainId) {
+    constructor(uint256 _chainId) ZodiacHelpers(chainId) {
+        chainId = _chainId;
         string memory key = vm.envString("ALCHEMY_API_KEY");
         string memory url;
 

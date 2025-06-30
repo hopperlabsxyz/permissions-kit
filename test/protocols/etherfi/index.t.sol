@@ -15,16 +15,7 @@ contract EtherfiTest is BaseTest(1) {
     bytes[] deposit;
 
     constructor() {
-        _loadPermissions("test/permissions/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        deposit = abi.decode(
-            vm.parseJson(json, "$.etherfi.deposit"),
-            (bytes[])
-        );
+        deposit = loadPermissions("$.etherfi.deposit");
     }
 }
 

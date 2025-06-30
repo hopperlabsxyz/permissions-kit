@@ -15,15 +15,7 @@ contract StargateBridgeTest is BaseTest(8453) {
     bytes[] transfer;
 
     constructor() {
-        _loadPermissions("test/permissions/permissions8453.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-        transfer = abi.decode(
-            vm.parseJson(json, "$.bridge.stargate.transfer"),
-            (bytes[])
-        );
+        transfer = loadPermissions("$.bridge.stargate.transfer");
     }
 }
 
