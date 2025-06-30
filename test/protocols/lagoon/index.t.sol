@@ -108,28 +108,21 @@ contract ManageVaultTest is LagoonTest {
     }
 
     function test_update_lifespan() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).updateTotalAssetsLifespan.selector,
-            24
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).updateTotalAssetsLifespan.selector, 24);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_update_invalid_lifespan() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).updateTotalAssetsLifespan.selector,
-            300000000000000
-        );
+        bytes memory call =
+            abi.encodeWithSelector(Vault(TARGET).updateTotalAssetsLifespan.selector, 300_000_000_000_000);
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_expireTotalAssets() public {
-        bytes memory call = abi.encodeWithSelector(
-            Vault(TARGET).expireTotalAssets.selector
-        );
+        bytes memory call = abi.encodeWithSelector(Vault(TARGET).expireTotalAssets.selector);
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);
     }
@@ -226,10 +219,7 @@ contract DepositAndWithdrawFromVaultTest is LagoonTest {
 
     function test_sync_deposit() public {
         bytes memory call = abi.encodeWithSignature(
-            "syncDeposit(uint256,address,address)",
-            24,
-            address(avatar),
-            address(avatar)
+            "syncDeposit(uint256,address,address)", 24, address(avatar), address(avatar)
         );
         vm.prank(manager);
         role.execTransactionWithRole(TARGET, 0, call, 0, TEST_ROLE, false);

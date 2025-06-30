@@ -84,8 +84,8 @@ contract Transfer is StargateBridgeTest {
 
     function test_send_should_revert_with_unvalid_destination() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
-            dstEid: 30_332,
-            to: bytes32(uint256(uint160(address(0)))),
+            dstEid: 30_111,
+            to: bytes32(uint256(uint160(address(42)))),
             amountLD: 100,
             minAmountLD: 0,
             extraOptions: "",
