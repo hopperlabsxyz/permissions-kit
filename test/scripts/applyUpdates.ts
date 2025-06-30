@@ -12,7 +12,6 @@ import {
 import { kit as ethkit } from "../../dist/eth";
 import { kit as basekit } from "../../dist/base";
 
-const chainId = 8453; //base
 interface ApplyUpdates {
   chainId: ChainId;
   address: Address;
@@ -80,7 +79,7 @@ const currentRole: Role = {
   lastUpdate: 0,
 };
 
-async function getCallsFromPermissions(permissions: Permission[]) {
+async function getCallsFromPermissions(permissions: Permission[], chainId: ChainId) {
   const { targets } = processPermissions(permissions);
 
   return (
@@ -128,7 +127,7 @@ const ethPermissions = {
   curve: {
     stakeCrvUSD: await ethkit.curve.stakeCrvUSD(),
     depositStableSwapNg: await ethkit.curve.depositStableSwapNg({
-      targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50"],
+      targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50", "0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F"],
     }),
   },
 
@@ -219,53 +218,62 @@ function getPermissions(chainId: ChainId) {
   }
   throw new Error(`Unsupported chainId: ${chainId}`);
 }
-const permissions = getPermissions(chainId);
 
-const kit = getKit(chainId);
+async function generate(chainId: ChainId) {
 
-const protocols = Object.keys(kit).filter((p) => p !== "bridge");
+  const permissions = getPermissions(chainId);
+  const kit = getKit(chainId);
 
-const calls = await protocols.reduce(async (accP, protocol) => {
-  const acc: any = await accP;
-  acc[protocol] = {};
+  const protocols = Object.keys(kit).filter((p) => p !== "bridge");
 
-  let actions = Object.keys((kit as any)[protocol]);
+  const calls = await protocols.reduce(async (accP, protocol) => {
+    const acc: any = await accP;
+    acc[protocol] = {};
 
-  await Promise.all(
-    actions.map(async (action) => {
-      acc[protocol][action] = await getCallsFromPermissions(
-        (permissions as any)[protocol][action]
-      );
-    })
+    let actions = Object.keys((kit as any)[protocol]);
+
+    await Promise.all(
+      actions.map(async (action) => {
+        acc[protocol][action] = await getCallsFromPermissions(
+          (permissions as any)[protocol][action], chainId
+        );
+      })
+    );
+
+    return acc;
+  }, Promise.resolve({}));
+
+  const bridgeProtocols = Object.keys(kit["bridge"]);
+
+  const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
+    const acc: any = await accP;
+    if (!acc["bridge"]) {
+      acc["bridge"] = {};
+    }
+    acc["bridge"][protocol] = {};
+
+    let actions = Object.keys((ethkit.bridge as any)[protocol]);
+
+    await Promise.all(
+      actions.map(async (action) => {
+        acc["bridge"][protocol][action] = await getCallsFromPermissions(
+          (permissions as any)["bridge"][protocol][action], chainId
+        );
+      })
+    );
+
+    return acc;
+  }, calls);
+
+  await Bun.write(
+    `test/permissions/${chainId}.json`,
+    JSON.stringify(bridgeCalls, null, 2)
   );
+}
 
-  return acc;
-}, Promise.resolve({}));
-
-const bridgeProtocols = Object.keys(kit["bridge"]);
-
-const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
-  const acc: any = await accP;
-  if (!acc["bridge"]) {
-    acc["bridge"] = {};
-  }
-  acc["bridge"][protocol] = {};
-
-  let actions = Object.keys((ethkit.bridge as any)[protocol]);
-
-  await Promise.all(
-    actions.map(async (action) => {
-      acc["bridge"][protocol][action] = await getCallsFromPermissions(
-        (permissions as any)["bridge"][protocol][action]
-      );
-    })
-  );
-
-  return acc;
-}, calls);
-
-
-await Bun.write(
-  `test/permissions/permissions${chainId}.json`,
-  JSON.stringify(bridgeCalls, null, 2)
+await Promise.all([
+  generate(1),
+  generate(8453)]
 );
+
+

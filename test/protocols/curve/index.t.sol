@@ -17,6 +17,7 @@ address constant reUSDsCRV = 0xc522A6606BBA746d7960404F22a3DB936B6F4F50;
 contract CurveTest is BaseTest(1) {
     address constant POOL = 0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F;
     address constant GAUGE = 0x92219862F9F40fe27444e45a9554E824e8556A62;
+
     bytes[] stakeCrvUSD;
     bytes[] depositStableSwapNg;
 
@@ -43,10 +44,12 @@ contract DepositStableSwapNg is CurveTest {
 
     function test_approve_on_gauge() public {
         bytes memory call = abi.encodeWithSelector(
-            IUsdc(GAUGE).approve.selector,
+            IUsdc(address(0)).approve.selector,
             GAUGE,
             42
         );
+        console.log("gauge", GAUGE);
+        console.log("pool", POOL);
         vm.prank(manager);
         role.execTransactionWithRole(POOL, 0, call, 0, TEST_ROLE, false);
     }
