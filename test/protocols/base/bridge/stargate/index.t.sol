@@ -42,7 +42,7 @@ contract Transfer is StargateBridgeTest {
     function test_bridge_usr_from_base() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
             dstEid: 30_111,
-            to: bytes32(0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f),
+            to: bytes32(uint256(uint160(avatar))),
             amountLD: 100,
             minAmountLD: 0,
             extraOptions: "",
@@ -63,7 +63,7 @@ contract Transfer is StargateBridgeTest {
     function test_send_with_different_chain_id() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
             dstEid: 30_333,
-            to: bytes32(0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f),
+            to: bytes32(uint256(uint160(avatar))),
             amountLD: 100,
             minAmountLD: 0,
             extraOptions: "",
@@ -85,7 +85,7 @@ contract Transfer is StargateBridgeTest {
     function test_send_should_revert_with_unvalid_destination() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
             dstEid: 30_332,
-            to: bytes32(0x0000000000000000000000000000000000000000000000000000000000000000),
+            to: bytes32(uint256(uint160(address(0)))),
             amountLD: 100,
             minAmountLD: 0,
             extraOptions: "",
@@ -107,7 +107,7 @@ contract Transfer is StargateBridgeTest {
     function test_send_should_revert_with_wrong_refund_address() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
             dstEid: 30_332,
-            to: bytes32(0x0000000000000000000000005615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f),
+            to: bytes32(uint256(uint160(avatar))),
             amountLD: 100,
             minAmountLD: 0,
             extraOptions: "",
