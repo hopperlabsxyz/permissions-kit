@@ -21,16 +21,20 @@ contract CurveTest is BaseTest(1) {
     bytes[] depositStableSwapNg;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
+        _loadPermissions("test/permissions/permissions.json");
     }
 
-    function _loadPermissions(
-        string memory path
-    ) internal {
+    function _loadPermissions(string memory path) internal {
         string memory json = vm.readFile(path);
 
-        stakeCrvUSD = abi.decode(vm.parseJson(json, "$.curve.stakeCrvUSD"), (bytes[]));
-        depositStableSwapNg = abi.decode(vm.parseJson(json, "$.curve.depositStableSwapNg"), (bytes[]));
+        stakeCrvUSD = abi.decode(
+            vm.parseJson(json, "$.curve.stakeCrvUSD"),
+            (bytes[])
+        );
+        depositStableSwapNg = abi.decode(
+            vm.parseJson(json, "$.curve.depositStableSwapNg"),
+            (bytes[])
+        );
     }
 }
 
@@ -40,25 +44,41 @@ contract DepositStableSwapNg is CurveTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(IUsdc(SCRVUSD).approve.selector, reUSDsCRV, 42);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(SCRVUSD).approve.selector,
+            reUSDsCRV,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_approve_on_gauge() public {
-        bytes memory call = abi.encodeWithSelector(IUsdc(GAUGE).approve.selector, GAUGE, 42);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(GAUGE).approve.selector,
+            GAUGE,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_add_liquidity() public {
         uint256[] memory arr;
-        bytes memory call =
-            abi.encodeWithSignature("add_liquidity(uint256[],uint256,address)", arr, 42, avatar);
+        bytes memory call = abi.encodeWithSignature(
+            "add_liquidity(uint256[],uint256,address)",
+            arr,
+            42,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
 
-        call = abi.encodeWithSignature("add_liquidity(uint256[],uint256)", arr, 42);
+        call = abi.encodeWithSignature(
+            "add_liquidity(uint256[],uint256)",
+            arr,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
     }
@@ -78,8 +98,12 @@ contract DepositStableSwapNg is CurveTest {
 
     function test_add_liquidity_revert() public {
         uint256[] memory arr;
-        bytes memory call =
-            abi.encodeWithSignature("add_liquidity(uint256[],uint256,address)", arr, 42, address(0xdead));
+        bytes memory call = abi.encodeWithSignature(
+            "add_liquidity(uint256[],uint256,address)",
+            arr,
+            42,
+            address(0xdead)
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
@@ -87,16 +111,30 @@ contract DepositStableSwapNg is CurveTest {
 
     function test_remove_liquidity() public {
         uint256[] memory arr;
-        bytes memory call =
-            abi.encodeWithSignature("remove_liquidity(uint256,uint256[],address,bool)", 42, arr, avatar, true);
+        bytes memory call = abi.encodeWithSignature(
+            "remove_liquidity(uint256,uint256[],address,bool)",
+            42,
+            arr,
+            avatar,
+            true
+        );
         vm.prank(manager);
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
 
-        call = abi.encodeWithSignature("remove_liquidity(uint256,uint256[],address)", 42, arr, avatar);
+        call = abi.encodeWithSignature(
+            "remove_liquidity(uint256,uint256[],address)",
+            42,
+            arr,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
 
-        call = abi.encodeWithSignature("remove_liquidity(uint256,uint256[])", 42, arr);
+        call = abi.encodeWithSignature(
+            "remove_liquidity(uint256,uint256[])",
+            42,
+            arr
+        );
         vm.prank(manager);
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
     }
@@ -104,14 +142,22 @@ contract DepositStableSwapNg is CurveTest {
     function test_remove_liquidity_revert() public {
         uint256[] memory arr;
         bytes memory call = abi.encodeWithSignature(
-            "remove_liquidity(uint256,uint256[],address,bool)", 42, arr, address(0xdead), true
+            "remove_liquidity(uint256,uint256[],address,bool)",
+            42,
+            arr,
+            address(0xdead),
+            true
         );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
 
-        call =
-            abi.encodeWithSignature("remove_liquidity(uint256,uint256[],address)", 42, arr, address(0xdead));
+        call = abi.encodeWithSignature(
+            "remove_liquidity(uint256,uint256[],address)",
+            42,
+            arr,
+            address(0xdead)
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
@@ -124,51 +170,86 @@ contract StakeCrvUSD is CurveTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(IUsdc(CRVUSD).approve.selector, SCRVUSD, 42);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(CRVUSD).approve.selector,
+            SCRVUSD,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(CRVUSD, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_deposit() public {
-        bytes memory call = abi.encodeWithSelector(YearnV3Vault(SCRVUSD).deposit.selector, 42, avatar);
+        bytes memory call = abi.encodeWithSelector(
+            YearnV3Vault(SCRVUSD).deposit.selector,
+            42,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_deposit_revert() public {
-        bytes memory call =
-            abi.encodeWithSelector(YearnV3Vault(SCRVUSD).deposit.selector, 42, address(0xdead));
+        bytes memory call = abi.encodeWithSelector(
+            YearnV3Vault(SCRVUSD).deposit.selector,
+            42,
+            address(0xdead)
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_redeem() public {
-        bytes memory call = abi.encodeWithSignature("redeem(uint256,address,address)", 42, avatar, avatar);
+        bytes memory call = abi.encodeWithSignature(
+            "redeem(uint256,address,address)",
+            42,
+            avatar,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
 
-        call = abi.encodeWithSignature("redeem(uint256,address,address,uint256)", 42, avatar, avatar, 42);
+        call = abi.encodeWithSignature(
+            "redeem(uint256,address,address,uint256)",
+            42,
+            avatar,
+            avatar,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
 
         address[] memory addr;
         call = abi.encodeWithSignature(
-            "redeem(uint256,address,address,uint256,address[])", 42, avatar, avatar, 42, addr
+            "redeem(uint256,address,address,uint256,address[])",
+            42,
+            avatar,
+            avatar,
+            42,
+            addr
         );
         vm.prank(manager);
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_redeem_revert() public {
-        bytes memory call =
-            abi.encodeWithSignature("redeem(uint256,address,address)", 42, address(0xdead), address(0xdead));
+        bytes memory call = abi.encodeWithSignature(
+            "redeem(uint256,address,address)",
+            42,
+            address(0xdead),
+            address(0xdead)
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(SCRVUSD, 0, call, 0, TEST_ROLE, false);
 
         call = abi.encodeWithSignature(
-            "redeem(uint256,address,address,uint256)", 42, address(0xdead), address(0xdead), 42
+            "redeem(uint256,address,address,uint256)",
+            42,
+            address(0xdead),
+            address(0xdead),
+            42
         );
         vm.prank(manager);
         vm.expectRevert();

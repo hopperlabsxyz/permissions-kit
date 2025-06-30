@@ -17,16 +17,20 @@ contract ResupplyTest is BaseTest(1) {
     bytes[] borrow;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
+        _loadPermissions("test/permissions/permissions.json");
     }
 
-    function _loadPermissions(
-        string memory path
-    ) internal {
+    function _loadPermissions(string memory path) internal {
         string memory json = vm.readFile(path);
 
-        depositAndBorrow = abi.decode(vm.parseJson(json, "$.resupply.depositAndBorrow"), (bytes[]));
-        deposit = abi.decode(vm.parseJson(json, "$.resupply.deposit"), (bytes[]));
+        depositAndBorrow = abi.decode(
+            vm.parseJson(json, "$.resupply.depositAndBorrow"),
+            (bytes[])
+        );
+        deposit = abi.decode(
+            vm.parseJson(json, "$.resupply.deposit"),
+            (bytes[])
+        );
         borrow = abi.decode(vm.parseJson(json, "$.resupply.borrow"), (bytes[]));
     }
 }
@@ -37,48 +41,78 @@ contract DepositTest is ResupplyTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(IUsdc(UNDERLYING_TOKEN).approve.selector, PAIR_POOL, 10);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(UNDERLYING_TOKEN).approve.selector,
+            PAIR_POOL,
+            10
+        );
         vm.prank(manager);
-        role.execTransactionWithRole(UNDERLYING_TOKEN, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            UNDERLYING_TOKEN,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_addCollateral() public {
-        bytes memory call =
-            abi.encodeWithSelector(IResupplyPair(PAIR_POOL).addCollateral.selector, 10, avatar);
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).addCollateral.selector,
+            10,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_addCollateral_revert() public {
-        bytes memory call =
-            abi.encodeWithSelector(IResupplyPair(PAIR_POOL).addCollateral.selector, 10, address(0xdead));
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).addCollateral.selector,
+            10,
+            address(0xdead)
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_removeCollateral() public {
-        bytes memory call =
-            abi.encodeWithSelector(IResupplyPair(PAIR_POOL).removeCollateral.selector, 10, avatar);
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).removeCollateral.selector,
+            10,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_getReward() public {
-        bytes memory call = abi.encodeWithSignature("getReward(address)", avatar);
+        bytes memory call = abi.encodeWithSignature(
+            "getReward(address)",
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_getRewardForward() public {
-        bytes memory call = abi.encodeWithSignature("getReward(address,address)", avatar, avatar);
+        bytes memory call = abi.encodeWithSignature(
+            "getReward(address,address)",
+            avatar,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_withdrawCollateral_revert() public {
-        bytes memory call =
-            abi.encodeWithSelector(IResupplyPair(PAIR_POOL).removeCollateral.selector, 10, address(0xdead));
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).removeCollateral.selector,
+            10,
+            address(0xdead)
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
@@ -91,34 +125,54 @@ contract BorrowTest is ResupplyTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(IUsdc(LOAN_TOKEN).approve.selector, PAIR_POOL, 10);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(LOAN_TOKEN).approve.selector,
+            PAIR_POOL,
+            10
+        );
         vm.prank(manager);
         role.execTransactionWithRole(LOAN_TOKEN, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_borrow() public {
-        bytes memory call = abi.encodeWithSelector(IResupplyPair(PAIR_POOL).borrow.selector, 5, 5, avatar);
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).borrow.selector,
+            5,
+            5,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_borrow_revert() public {
-        bytes memory call =
-            abi.encodeWithSelector(IResupplyPair(PAIR_POOL).borrow.selector, 5, 5, address(0xdead));
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).borrow.selector,
+            5,
+            5,
+            address(0xdead)
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_repay() public {
-        bytes memory call = abi.encodeWithSelector(IResupplyPair(PAIR_POOL).repay.selector, 5, avatar);
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).repay.selector,
+            5,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_repay_revert() public {
-        bytes memory call =
-            abi.encodeWithSelector(IResupplyPair(PAIR_POOL).repay.selector, 5, address(0xdead));
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).repay.selector,
+            5,
+            address(0xdead)
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
@@ -131,21 +185,38 @@ contract DepositAndBorrowTest is ResupplyTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(IUsdc(UNDERLYING_TOKEN).approve.selector, PAIR_POOL, 10);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(UNDERLYING_TOKEN).approve.selector,
+            PAIR_POOL,
+            10
+        );
         vm.prank(manager);
-        role.execTransactionWithRole(UNDERLYING_TOKEN, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            UNDERLYING_TOKEN,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_addCollateral() public {
-        bytes memory call =
-            abi.encodeWithSelector(IResupplyPair(PAIR_POOL).addCollateral.selector, 10, avatar);
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).addCollateral.selector,
+            10,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_addCollateral_revert() public {
-        bytes memory call =
-            abi.encodeWithSelector(IResupplyPair(PAIR_POOL).addCollateral.selector, 10, address(0xdead));
+        bytes memory call = abi.encodeWithSelector(
+            IResupplyPair(PAIR_POOL).addCollateral.selector,
+            10,
+            address(0xdead)
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(PAIR_POOL, 0, call, 0, TEST_ROLE, false);

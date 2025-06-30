@@ -266,6 +266,6 @@ const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
 
 
 await Bun.write(
-  `test/data/permissions${chainId}.json`,
+  `test/permissions/permissions${chainId}.json`,
   JSON.stringify(bridgeCalls, null, 2)
 );

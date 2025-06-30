@@ -14,12 +14,10 @@ contract CurveTest is BaseTest(1) {
     bytes[] deposit;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
+        _loadPermissions("test/permissions/permissions.json");
     }
 
-    function _loadPermissions(
-        string memory path
-    ) internal {
+    function _loadPermissions(string memory path) internal {
         string memory json = vm.readFile(path);
 
         deposit = abi.decode(vm.parseJson(json, "$.convex.deposit"), (bytes[]));
@@ -32,53 +30,81 @@ contract DepositStableSwapNg is CurveTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(IUsdc(reUSDsCRV).approve.selector, BOOSTER, 42);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(reUSDsCRV).approve.selector,
+            BOOSTER,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_deposit() public {
-        bytes memory call = abi.encodeWithSelector(Booster(BOOSTER).deposit.selector, 440, 42);
+        bytes memory call = abi.encodeWithSelector(
+            Booster(BOOSTER).deposit.selector,
+            440,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(BOOSTER, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_deposit_revert() public {
-        bytes memory call =
-            abi.encodeWithSelector(Booster(BOOSTER).deposit.selector, 1_111_111_111_111_111, 42);
+        bytes memory call = abi.encodeWithSelector(
+            Booster(BOOSTER).deposit.selector,
+            1_111_111_111_111_111,
+            42
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(BOOSTER, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_depositAll() public {
-        bytes memory call = abi.encodeWithSelector(Booster(BOOSTER).depositAll.selector, 440);
+        bytes memory call = abi.encodeWithSelector(
+            Booster(BOOSTER).depositAll.selector,
+            440
+        );
         vm.prank(manager);
         role.execTransactionWithRole(BOOSTER, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_depositAll_revert() public {
-        bytes memory call =
-            abi.encodeWithSelector(Booster(BOOSTER).depositAll.selector, 1_111_111_111_111_111);
+        bytes memory call = abi.encodeWithSelector(
+            Booster(BOOSTER).depositAll.selector,
+            1_111_111_111_111_111
+        );
         vm.prank(manager);
         vm.expectRevert();
         role.execTransactionWithRole(BOOSTER, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_withdraw() public {
-        bytes memory call = abi.encodeWithSelector(Booster(BOOSTER).withdraw.selector, 440, 42);
+        bytes memory call = abi.encodeWithSelector(
+            Booster(BOOSTER).withdraw.selector,
+            440,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(BOOSTER, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_withdrawAll() public {
-        bytes memory call = abi.encodeWithSelector(Booster(BOOSTER).withdrawAll.selector, 440);
+        bytes memory call = abi.encodeWithSelector(
+            Booster(BOOSTER).withdrawAll.selector,
+            440
+        );
         vm.prank(manager);
         role.execTransactionWithRole(BOOSTER, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_withdrawTo() public {
-        bytes memory call = abi.encodeWithSelector(Booster(BOOSTER).withdrawTo.selector, 440, 42, avatar);
+        bytes memory call = abi.encodeWithSelector(
+            Booster(BOOSTER).withdrawTo.selector,
+            440,
+            42,
+            avatar
+        );
         vm.prank(manager);
         role.execTransactionWithRole(BOOSTER, 0, call, 0, TEST_ROLE, false);
     }

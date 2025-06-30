@@ -15,14 +15,15 @@ contract PendleTest is BaseTest(8453) {
     bytes[] depositToken;
 
     constructor() {
-        _loadPermissions("test/data/permissions8453.json");
+        _loadPermissions("test/permissions/permissions8453.json");
     }
 
-    function _loadPermissions(
-        string memory path
-    ) internal {
+    function _loadPermissions(string memory path) internal {
         string memory json = vm.readFile(path);
-        depositToken = abi.decode(vm.parseJson(json, "$.pendle.depositToken"), (bytes[]));
+        depositToken = abi.decode(
+            vm.parseJson(json, "$.pendle.depositToken"),
+            (bytes[])
+        );
     }
 }
 
@@ -32,14 +33,20 @@ contract depositTokenTest is PendleTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(IUsdc(USR).approve.selector, PENDLEROUTERV4, 30);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(USR).approve.selector,
+            PENDLEROUTERV4,
+            30
+        );
         vm.prank(manager);
         role.execTransactionWithRole(USR, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_pendle_deposit() public {
         bytes memory call = abi.encodeWithSelector(
-            IActionAddRemoveLiqV3(PENDLEROUTERV4).addLiquiditySingleToken.selector,
+            IActionAddRemoveLiqV3(PENDLEROUTERV4)
+                .addLiquiditySingleToken
+                .selector,
             avatar,
             USR_MARKET,
             3,
@@ -47,13 +54,22 @@ contract depositTokenTest is PendleTest {
             0
         );
         vm.prank(manager);
-        role.execTransactionWithRole(PENDLEROUTERV4, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            PENDLEROUTERV4,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     //test should fail
     function test_pendle_deposit_wrong_market() public {
         bytes memory call = abi.encodeWithSelector(
-            IActionAddRemoveLiqV3(PENDLEROUTERV4).addLiquiditySingleToken.selector,
+            IActionAddRemoveLiqV3(PENDLEROUTERV4)
+                .addLiquiditySingleToken
+                .selector,
             avatar,
             PENDLEROUTERV4, //should be USR_MARKET
             3,
@@ -62,6 +78,13 @@ contract depositTokenTest is PendleTest {
         );
         vm.prank(manager);
         vm.expectRevert();
-        role.execTransactionWithRole(PENDLEROUTERV4, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            PENDLEROUTERV4,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 }

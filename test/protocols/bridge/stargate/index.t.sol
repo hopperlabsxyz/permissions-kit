@@ -15,14 +15,15 @@ contract StargateBridgeTest is BaseTest(1) {
     bytes[] transfer;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
+        _loadPermissions("test/permissions/permissions.json");
     }
 
-    function _loadPermissions(
-        string memory path
-    ) internal {
+    function _loadPermissions(string memory path) internal {
         string memory json = vm.readFile(path);
-        transfer = abi.decode(vm.parseJson(json, "$.bridge.stargate.transfer"), (bytes[]));
+        transfer = abi.decode(
+            vm.parseJson(json, "$.bridge.stargate.transfer"),
+            (bytes[])
+        );
     }
 }
 
@@ -32,97 +33,151 @@ contract Transfer is StargateBridgeTest {
     }
 
     function test_approve() public {
-        bytes memory call =
-            abi.encodeWithSelector(IUsdc(UNDERLYING_TOKEN).approve.selector, SIMPLE_OFT_ADAPTER, 42);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(UNDERLYING_TOKEN).approve.selector,
+            SIMPLE_OFT_ADAPTER,
+            42
+        );
         vm.prank(manager);
-        role.execTransactionWithRole(UNDERLYING_TOKEN, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            UNDERLYING_TOKEN,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_send_with_full_parameters_eth() public {
         console.logBytes32(bytes32(uint256(uint160(avatar))));
-        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
-            dstEid: 30_101,
-            to: bytes32(uint256(uint160(avatar))),
-            amountLD: 0,
-            minAmountLD: 0,
-            extraOptions: "",
-            composeMsg: "",
-            oftCmd: ""
-        });
-        ISimpleOFTAdapter.MessagingFee memory messagingFee =
-            ISimpleOFTAdapter.MessagingFee({nativeFee: 0, lzTokenFee: 0});
+        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
+            .SendParam({
+                dstEid: 30_101,
+                to: bytes32(uint256(uint160(avatar))),
+                amountLD: 0,
+                minAmountLD: 0,
+                extraOptions: "",
+                composeMsg: "",
+                oftCmd: ""
+            });
+        ISimpleOFTAdapter.MessagingFee memory messagingFee = ISimpleOFTAdapter
+            .MessagingFee({nativeFee: 0, lzTokenFee: 0});
 
         bytes memory call = abi.encodeWithSelector(
-            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector, sendParam, messagingFee, avatar
+            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
+            sendParam,
+            messagingFee,
+            avatar
         );
 
         vm.prank(manager);
-        role.execTransactionWithRole(SIMPLE_OFT_ADAPTER, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            SIMPLE_OFT_ADAPTER,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_send_with_different_chain_id() public {
-        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
-            dstEid: 30_333,
-            to: bytes32(uint256(uint160(avatar))),
-            amountLD: 100,
-            minAmountLD: 0,
-            extraOptions: "",
-            composeMsg: "",
-            oftCmd: ""
-        });
-        ISimpleOFTAdapter.MessagingFee memory messagingFee =
-            ISimpleOFTAdapter.MessagingFee({nativeFee: 0, lzTokenFee: 0});
+        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
+            .SendParam({
+                dstEid: 30_333,
+                to: bytes32(uint256(uint160(avatar))),
+                amountLD: 100,
+                minAmountLD: 0,
+                extraOptions: "",
+                composeMsg: "",
+                oftCmd: ""
+            });
+        ISimpleOFTAdapter.MessagingFee memory messagingFee = ISimpleOFTAdapter
+            .MessagingFee({nativeFee: 0, lzTokenFee: 0});
 
         bytes memory call = abi.encodeWithSelector(
-            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector, sendParam, messagingFee, avatar
+            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
+            sendParam,
+            messagingFee,
+            avatar
         );
 
         vm.prank(manager);
         vm.expectRevert(); //unsupported chain id
-        role.execTransactionWithRole(SIMPLE_OFT_ADAPTER, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            SIMPLE_OFT_ADAPTER,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_send_should_revert_with_unvalid_destination() public {
-        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
-            dstEid: 30_332,
-            to: bytes32(uint256(uint160(avatar))),
-            amountLD: 100,
-            minAmountLD: 0,
-            extraOptions: "",
-            composeMsg: "",
-            oftCmd: ""
-        });
-        ISimpleOFTAdapter.MessagingFee memory messagingFee =
-            ISimpleOFTAdapter.MessagingFee({nativeFee: 0, lzTokenFee: 0});
+        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
+            .SendParam({
+                dstEid: 30_332,
+                to: bytes32(uint256(uint160(avatar))),
+                amountLD: 100,
+                minAmountLD: 0,
+                extraOptions: "",
+                composeMsg: "",
+                oftCmd: ""
+            });
+        ISimpleOFTAdapter.MessagingFee memory messagingFee = ISimpleOFTAdapter
+            .MessagingFee({nativeFee: 0, lzTokenFee: 0});
 
         bytes memory call = abi.encodeWithSelector(
-            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector, sendParam, messagingFee, avatar
+            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
+            sendParam,
+            messagingFee,
+            avatar
         );
 
         vm.prank(manager);
         vm.expectRevert(); // Should revert since destination  address is invalid
-        role.execTransactionWithRole(SIMPLE_OFT_ADAPTER, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            SIMPLE_OFT_ADAPTER,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_send_should_revert_with_wrong_refund_address() public {
-        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter.SendParam({
-            dstEid: 30_332,
-            to: bytes32(uint256(uint160(avatar))),
-            amountLD: 100,
-            minAmountLD: 0,
-            extraOptions: "",
-            composeMsg: "",
-            oftCmd: ""
-        });
-        ISimpleOFTAdapter.MessagingFee memory messagingFee =
-            ISimpleOFTAdapter.MessagingFee({nativeFee: 0, lzTokenFee: 0});
+        ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
+            .SendParam({
+                dstEid: 30_332,
+                to: bytes32(uint256(uint160(avatar))),
+                amountLD: 100,
+                minAmountLD: 0,
+                extraOptions: "",
+                composeMsg: "",
+                oftCmd: ""
+            });
+        ISimpleOFTAdapter.MessagingFee memory messagingFee = ISimpleOFTAdapter
+            .MessagingFee({nativeFee: 0, lzTokenFee: 0});
 
         bytes memory call = abi.encodeWithSelector(
-            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector, sendParam, messagingFee, address(0)
+            ISimpleOFTAdapter(UNDERLYING_TOKEN).send.selector,
+            sendParam,
+            messagingFee,
+            address(0)
         );
 
         vm.prank(manager);
         vm.expectRevert(); // Should revert since refund address is invalid
-        role.execTransactionWithRole(SIMPLE_OFT_ADAPTER, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            SIMPLE_OFT_ADAPTER,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 }

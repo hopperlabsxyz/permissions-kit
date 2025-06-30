@@ -17,15 +17,16 @@ contract Se7enseasTest is BaseTest(1) {
     bytes[] depositBoringVault;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
+        _loadPermissions("test/permissions/permissions.json");
     }
 
-    function _loadPermissions(
-        string memory path
-    ) internal {
+    function _loadPermissions(string memory path) internal {
         string memory json = vm.readFile(path);
 
-        depositBoringVault = abi.decode(vm.parseJson(json, "$.se7enseas.depositBoringVault"), (bytes[]));
+        depositBoringVault = abi.decode(
+            vm.parseJson(json, "$.se7enseas.depositBoringVault"),
+            (bytes[])
+        );
     }
 }
 
@@ -35,20 +36,40 @@ contract DepositBoringVaultTest is Se7enseasTest {
     }
 
     function test_approve() public {
-        bytes memory call = abi.encodeWithSelector(IUsdc(UNDERLYING_TOKEN).approve.selector, BORING_VAULT, 10);
+        bytes memory call = abi.encodeWithSelector(
+            IUsdc(UNDERLYING_TOKEN).approve.selector,
+            BORING_VAULT,
+            10
+        );
         vm.prank(manager);
-        role.execTransactionWithRole(UNDERLYING_TOKEN, 0, call, 0, TEST_ROLE, false);
+        role.execTransactionWithRole(
+            UNDERLYING_TOKEN,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
     }
 
     function test_erc20() public {
-        bytes memory call =
-            abi.encodeWithSignature("deposit(address,uint256,uint256)", UNDERLYING_TOKEN, 42, 42);
+        bytes memory call = abi.encodeWithSignature(
+            "deposit(address,uint256,uint256)",
+            UNDERLYING_TOKEN,
+            42,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(TELLER, 0, call, 0, TEST_ROLE, false);
     }
 
     function test_eth() public {
-        bytes memory call = abi.encodeWithSignature("deposit(address,uint256,uint256)", ETH, 42, 42);
+        bytes memory call = abi.encodeWithSignature(
+            "deposit(address,uint256,uint256)",
+            ETH,
+            42,
+            42
+        );
         vm.prank(manager);
         role.execTransactionWithRole(TELLER, 0, call, 0, TEST_ROLE, false);
     }
