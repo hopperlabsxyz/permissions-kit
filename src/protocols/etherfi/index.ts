@@ -23,7 +23,7 @@ function deposit(target: Target) {
       {
         ...allow.mainnet.etherfi.depositAdapter.depositWETHForWeETH(undefined, undefined),
         targetAddress: "0xcfC6d9Bd7411962Bfe7145451A7EF71A24b6A7A2"
-      }]
+      }] as Permission[]
   }
   throw new Error(`Unsupported target: ${target}`)
 }

@@ -2,15 +2,13 @@ import { Address } from "@gnosis-guild/eth-sdk";
 import {
   applyMembers,
   applyTargets,
-  c,
   ChainId,
   Permission,
   processPermissions,
   Role,
   Target,
 } from "zodiac-roles-sdk";
-import { kit as ethkit } from "../../dist/eth";
-import { kit as basekit } from "../../dist/base";
+import { CONFIG, createPermissions, SUPPORTED_CHAINS } from "./config";
 
 interface ApplyUpdates {
   chainId: ChainId;
@@ -21,8 +19,23 @@ interface ApplyUpdates {
   targets: Target[];
 }
 
-export async function applyUpdates({
-  chainId: chainId,
+type ProtocolPermissions = Record<string, Permission[]>;
+type BridgePermissions = Record<string, ProtocolPermissions>;
+type ChainPermissions = Record<string, ProtocolPermissions> & {
+  bridge?: BridgePermissions;
+};
+
+export type PermissionsByChain = Record<ChainId, ChainPermissions>;
+
+const currentRole: Role = {
+  key: CONFIG.TEST_ROLE,
+  members: [CONFIG.MANAGER],
+  targets: [],
+  annotations: [],
+  lastUpdate: 0,
+};
+async function applyUpdates({
+  chainId,
   address,
   role,
   members,
@@ -30,248 +43,122 @@ export async function applyUpdates({
 }: ApplyUpdates) {
   const comments: string[] = [];
   const logCall = (log: string) => comments.push(log);
-
   let calls: { to: `0x${string}`; data: `0x${string}` }[] = [];
 
-  if (members) {
-    calls = calls.concat(
-      (
-        await applyMembers(role.key, members, {
-          chainId: chainId,
-          address,
-          mode: "replace",
-          currentMembers: role.members,
-          log: logCall,
-        })
-      ).map((data) => ({ to: address, data }))
-    );
+  if (members?.length) {
+    const memberCalls = await applyMembers(role.key, members, {
+      chainId,
+      address,
+      mode: "replace",
+      currentMembers: role.members,
+      log: logCall,
+    });
+    calls.push(...memberCalls.map((data) => ({ to: address, data })));
   }
 
-  if (targets) {
-    calls = calls.concat(
-      (
-        await applyTargets(role.key, targets, {
-          chainId: chainId,
-          address,
-          mode: "replace",
-          currentTargets: role.targets,
-          log: logCall,
-        })
-      ).map((data) => ({ to: address, data }))
-    );
+  if (targets?.length) {
+    const targetCalls = await applyTargets(role.key, targets, {
+      chainId,
+      address,
+      mode: "replace",
+      currentTargets: role.targets,
+      log: logCall,
+    });
+    calls.push(...targetCalls.map((data) => ({ to: address, data })));
   }
 
   return calls;
 }
 
-const MANAGER = "0xA5d55E7A556fbA22974479497E6bf7e097D81b5e";
-
-const TEST_ROLE =
-  "0x544553542d524f4c450000000000000000000000000000000000000000000000";
-
-const AVATAR = "0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f";
-
-const currentRole: Role = {
-  key: TEST_ROLE,
-  members: [MANAGER],
-  targets: [],
-  annotations: [],
-  lastUpdate: 0,
-};
-
-async function getCallsFromPermissions(permissions: Permission[], chainId: ChainId) {
+async function getCallsFromPermissions(permissions: Permission[], chainId: ChainId): Promise<string[]> {
   const { targets } = processPermissions(permissions);
 
-  return (
-    await applyUpdates({
-      chainId: chainId,
-      address: "0xc128B1307128e8A692c98DD48cd7Ff155521A093",
-      owner: AVATAR,
-      role: currentRole,
-      members: [MANAGER],
-      targets: targets,
+  const calls = await applyUpdates({
+    chainId,
+    address: CONFIG.ROLES_ADDRESS,
+    owner: CONFIG.AVATAR,
+    role: currentRole,
+    members: [CONFIG.MANAGER],
+    targets,
+  });
+
+  return calls.map((call) => call.data);
+}
+
+function getPermissionsForChain(permissions: PermissionsByChain, chainId: ChainId): ChainPermissions {
+  if (!(chainId in permissions)) {
+    throw new Error(`Chain id ${chainId} not supported`);
+  }
+  return permissions[chainId];
+}
+
+async function generatePermissions(
+  protocolPermissions: ProtocolPermissions,
+  chainId: ChainId
+): Promise<Record<string, string[]>> {
+  const result: Record<string, string[]> = {};
+
+  const actions = Object.keys(protocolPermissions);
+
+  await Promise.all(
+    actions.map(async (action) => {
+      result[action] = await getCallsFromPermissions(
+        protocolPermissions[action],
+        chainId
+      );
     })
-  ).map((call) => call.data);
+  );
+
+  return result;
 }
 
-const permissions = {
-  [1]: {
-    lagoon: {
-      manageVault: await ethkit.lagoon.manageVault(
-        {
-          targets:
-            [
-              {
-                vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
-                rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
-                canClaimSharesOnBehalf: true,
-                lifespan: c.lt(86400) // 1 day
-              }
-            ]
-        }
-      ),
-      settleVault: await ethkit.lagoon.settleVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
-      closeVault: await ethkit.lagoon.closeVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
-      depositAndWithdrawFromVault: await ethkit.lagoon.depositAndWithdrawFromVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
-    },
-    resupply: {
-      deposit: await ethkit.resupply.deposit({
-        targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
-      }),
-      borrow: await ethkit.resupply.borrow({
-        targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
-      }),
-      depositAndBorrow: await ethkit.resupply.depositAndBorrow({
-        targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
-      }),
-    },
-    curve: {
-      stakeCrvUSD: await ethkit.curve.stakeCrvUSD(),
-      depositStableSwapNg: await ethkit.curve.depositStableSwapNg({
-        targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50", "0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F"],
-      }),
-    },
+async function generateForChain(chainId: ChainId, allPermissions: PermissionsByChain) {
+  const chainPermissions = getPermissionsForChain(allPermissions, chainId);
 
-    convex: {
-      deposit: await ethkit.convex.deposit({ targets: [440] }),
-    },
-    lido: {
-      deposit: await ethkit.lido.deposit(),
-    },
-    etherfi: {
-      deposit: await ethkit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
-    },
-    se7enseas: {
-      depositBoringVault: await ethkit.se7enseas.depositBoringVault({
-        targets: [
-          {
-            vault: {
-              boringVault: '0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad',
-              teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73",
-              assets: ['ETH', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'],
-            }
-          }
-        ]
-      })
-    },
-    bridge: {
-      canonical: {
-        transfer: await ethkit.bridge.canonical.transfer({
-          targets: [
-            {
-              toChainIds: [130],
-            },
-          ],
-        }),
-      },
-      stargate: {
-        transfer: await ethkit.bridge.stargate.transfer({
-          targets: [
-            {
-              tokenAddress: "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110", //USR eth
-              toChainIds: [1],
-            },
-          ],
-        }),
-      },
-    },
-  },
-  [8453]: {
-    pendle: {
-      depositToken: await basekit.pendle.depositToken({
-        targets: [
-          {
-            market: "0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45",
-            underlying: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9",
-          },
-        ],
-      }),
-    },
-    bridge: {
-      stargate: {
-        transfer: await basekit.bridge.stargate.transfer({
-          targets: [
-            {
-              tokenAddress: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9", //USR base
-              toChainIds: [10],
-            },
-          ],
-        }),
-      },
-    },
+  const result: Record<string, Record<string, string[]>> = {};
 
-  }
-};
+  const protocols = Object.keys(chainPermissions);
 
-function getKit(chainId: ChainId) {
-  if (chainId === 1) {
-    return ethkit;
-  } else if (chainId === 8453) {
-    return basekit;
-  }
-  throw new Error(`Unsupported chainId: ${chainId}`);
-}
-function getPermissions(chainId: ChainId) {
-  if (chainId in permissions === false)
-    throw new Error("Chain id not supported");
-  return permissions[chainId as keyof typeof permissions];
-}
+  for (const protocol of protocols) {
+    if (protocol === 'bridge') {
+      // Special handling for bridge - it has nested protocols
+      const bridgeProtocols = chainPermissions.bridge!;
+      const bridgeResult: Record<string, Record<string, string[]>> = {};
 
-async function generate(chainId: ChainId) {
-
-  const permissions = getPermissions(chainId);
-  const kit = getKit(chainId);
-
-  const protocols = Object.keys(kit).filter((p) => p !== "bridge");
-
-  const calls = await protocols.reduce(async (accP, protocol) => {
-    const acc: any = await accP;
-    acc[protocol] = {};
-
-    let actions = Object.keys((kit as any)[protocol]);
-
-    await Promise.all(
-      actions.map(async (action) => {
-        acc[protocol][action] = await getCallsFromPermissions(
-          (permissions as any)[protocol][action], chainId
+      for (const bridgeProtocol of Object.keys(bridgeProtocols)) {
+        bridgeResult[bridgeProtocol] = await generatePermissions(
+          bridgeProtocols[bridgeProtocol],
+          chainId
         );
-      })
-    );
+      }
 
-    return acc;
-  }, Promise.resolve({}));
-
-  const bridgeProtocols = Object.keys(kit["bridge"]);
-
-  const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
-    const acc: any = await accP;
-    if (!acc["bridge"]) {
-      acc["bridge"] = {};
+      result.bridge = bridgeResult as any;
+    } else {
+      // Regular protocol processing
+      result[protocol] = await generatePermissions(
+        chainPermissions[protocol] as ProtocolPermissions,
+        chainId
+      );
     }
-    acc["bridge"][protocol] = {};
-
-    let actions = Object.keys((ethkit.bridge as any)[protocol]);
-
-    await Promise.all(
-      actions.map(async (action) => {
-        acc["bridge"][protocol][action] = await getCallsFromPermissions(
-          (permissions as any)["bridge"][protocol][action], chainId
-        );
-      })
-    );
-
-    return acc;
-  }, calls);
-
+  }
   await Bun.write(
     `test/permissions/${chainId}.json`,
-    JSON.stringify(bridgeCalls, null, 2)
+    JSON.stringify(result, null, 2)
   );
 }
 
-await Promise.all([
-  generate(1),
-  generate(8453)]
-);
+async function main() {
+  try {
+    const permissions = await createPermissions();
+    await Promise.all(
+      SUPPORTED_CHAINS.map(chainId => generateForChain(chainId, permissions))
+    );
 
+    console.log("All permission files generated successfully!");
+  } catch (error) {
+    console.error("Error generating permissions:", error);
+    process.exit(1);
+  }
+}
 
+await main();
