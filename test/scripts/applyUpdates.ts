@@ -94,111 +94,113 @@ async function getCallsFromPermissions(permissions: Permission[], chainId: Chain
   ).map((call) => call.data);
 }
 
-const ethPermissions = {
-  lagoon: {
-    manageVault: await ethkit.lagoon.manageVault(
-      {
-        targets:
-          [
-            {
-              vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
-              rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
-              canClaimSharesOnBehalf: true,
-              lifespan: c.lt(86400) // 1 day
-            }
-          ]
-      }
-    ),
-    settleVault: await ethkit.lagoon.settleVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
-    closeVault: await ethkit.lagoon.closeVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
-    depositAndWithdrawFromVault: await ethkit.lagoon.depositAndWithdrawFromVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
-  },
-  resupply: {
-    deposit: await ethkit.resupply.deposit({
-      targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
-    }),
-    borrow: await ethkit.resupply.borrow({
-      targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
-    }),
-    depositAndBorrow: await ethkit.resupply.depositAndBorrow({
-      targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
-    }),
-  },
-  curve: {
-    stakeCrvUSD: await ethkit.curve.stakeCrvUSD(),
-    depositStableSwapNg: await ethkit.curve.depositStableSwapNg({
-      targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50", "0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F"],
-    }),
-  },
-
-  convex: {
-    deposit: await ethkit.convex.deposit({ targets: [440] }),
-  },
-  lido: {
-    deposit: await ethkit.lido.deposit(),
-  },
-  etherfi: {
-    deposit: await ethkit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
-  },
-  se7enseas: {
-    depositBoringVault: await ethkit.se7enseas.depositBoringVault({
-      targets: [
+const permissions = {
+  [1]: {
+    lagoon: {
+      manageVault: await ethkit.lagoon.manageVault(
         {
-          vault: {
-            boringVault: '0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad',
-            teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73",
-            assets: ['ETH', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'],
-          }
+          targets:
+            [
+              {
+                vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
+                rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
+                canClaimSharesOnBehalf: true,
+                lifespan: c.lt(86400) // 1 day
+              }
+            ]
         }
-      ]
-    })
-  },
-  bridge: {
-    canonical: {
-      transfer: await ethkit.bridge.canonical.transfer({
-        targets: [
-          {
-            toChainIds: [130],
-          },
-        ],
+      ),
+      settleVault: await ethkit.lagoon.settleVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
+      closeVault: await ethkit.lagoon.closeVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
+      depositAndWithdrawFromVault: await ethkit.lagoon.depositAndWithdrawFromVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
+    },
+    resupply: {
+      deposit: await ethkit.resupply.deposit({
+        targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
+      }),
+      borrow: await ethkit.resupply.borrow({
+        targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
+      }),
+      depositAndBorrow: await ethkit.resupply.depositAndBorrow({
+        targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
       }),
     },
-    stargate: {
-      transfer: await ethkit.bridge.stargate.transfer({
-        targets: [
-          {
-            tokenAddress: "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110", //USR eth
-            toChainIds: [1],
-          },
-        ],
+    curve: {
+      stakeCrvUSD: await ethkit.curve.stakeCrvUSD(),
+      depositStableSwapNg: await ethkit.curve.depositStableSwapNg({
+        targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50", "0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F"],
       }),
     },
-  },
-};
 
-const basePermissions = {
-  pendle: {
-    depositToken: await basekit.pendle.depositToken({
-      targets: [
-        {
-          market: "0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45",
-          underlying: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9",
-        },
-      ],
-    }),
-  },
-  bridge: {
-    stargate: {
-      transfer: await basekit.bridge.stargate.transfer({
+    convex: {
+      deposit: await ethkit.convex.deposit({ targets: [440] }),
+    },
+    lido: {
+      deposit: await ethkit.lido.deposit(),
+    },
+    etherfi: {
+      deposit: await ethkit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
+    },
+    se7enseas: {
+      depositBoringVault: await ethkit.se7enseas.depositBoringVault({
         targets: [
           {
-            tokenAddress: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9", //USR base
-            toChainIds: [10],
+            vault: {
+              boringVault: '0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad',
+              teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73",
+              assets: ['ETH', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'],
+            }
+          }
+        ]
+      })
+    },
+    bridge: {
+      canonical: {
+        transfer: await ethkit.bridge.canonical.transfer({
+          targets: [
+            {
+              toChainIds: [130],
+            },
+          ],
+        }),
+      },
+      stargate: {
+        transfer: await ethkit.bridge.stargate.transfer({
+          targets: [
+            {
+              tokenAddress: "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110", //USR eth
+              toChainIds: [1],
+            },
+          ],
+        }),
+      },
+    },
+  },
+  [8453]: {
+    pendle: {
+      depositToken: await basekit.pendle.depositToken({
+        targets: [
+          {
+            market: "0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45",
+            underlying: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9",
           },
         ],
       }),
     },
-  },
+    bridge: {
+      stargate: {
+        transfer: await basekit.bridge.stargate.transfer({
+          targets: [
+            {
+              tokenAddress: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9", //USR base
+              toChainIds: [10],
+            },
+          ],
+        }),
+      },
+    },
+
+  }
 };
 
 function getKit(chainId: ChainId) {
@@ -210,13 +212,9 @@ function getKit(chainId: ChainId) {
   throw new Error(`Unsupported chainId: ${chainId}`);
 }
 function getPermissions(chainId: ChainId) {
-  if (chainId === 1) {
-    return ethPermissions;
-  }
-  if (chainId === 8453) {
-    return basePermissions;
-  }
-  throw new Error(`Unsupported chainId: ${chainId}`);
+  if (chainId in permissions === false)
+    throw new Error("Chain id not supported");
+  return permissions[chainId as keyof typeof permissions];
 }
 
 async function generate(chainId: ChainId) {
