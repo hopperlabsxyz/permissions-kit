@@ -52,7 +52,7 @@ const permissions = await kit.lido.deposit();
 ```typescript
 import { kit } from "@hopperlabsxyz/permissions-kit/base";
 
-const pendlePermissions = await kit.pendle.addLiquidity({
+const pendlePermissions = await kit.pendle.deposit({
   targets: ["0xMarketAddress"]
 });
 ```
