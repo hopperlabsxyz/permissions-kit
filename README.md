@@ -37,18 +37,6 @@ bun add @hopperlabsxyz/permissions-kit
 - **Pendle**: Deposit and remove liquidity 
 - **Bridge**: Stargate cross-chain bridging
 
-## Installation
-
-```bash
-npm install @hopperlabsxyz/permissions-kit
-# or
-yarn add @hopperlabsxyz/permissions-kit
-# or
-bun add @hopperlabsxyz/permissions-kit
-```
-
-## Quick Start
-
 ### Basic Usage
 
 #### Ethereum network protocols
