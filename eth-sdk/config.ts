@@ -1,4 +1,4 @@
-import { defineConfig } from '@gnosis-guild/eth-sdk';
+import { defineConfig } from "@gnosis-guild/eth-sdk";
 
 export const contracts = {
   mainnet: {
@@ -19,7 +19,7 @@ export const contracts = {
     },
     convex: {
       booster: "0xf403c135812408bfbe8713b5a23a04b3d48aae31",
-      baseRewardPool: "0x7Fafc1876970dBD9F6568586EFa7d0FAc0FE8EA8"
+      baseRewardPool: "0x7Fafc1876970dBD9F6568586EFa7d0FAc0FE8EA8",
     },
     lido: {
       stEth: "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
@@ -38,12 +38,22 @@ export const contracts = {
         simpleOFTAdapter: "0xC4543073Bfaba77781B46dfb4D43b5Ae4e30Eb28", //implementation
       },
       canonical: {
-        l1ChugSplashProxy: "0x0b09ba359A106C9ea3b181CBc5F394570c7d2a7A" // implemnetation
-      }
+        l1ChugSplashProxy: "0x0b09ba359A106C9ea3b181CBc5F394570c7d2a7A", // implemnetation
+      },
     },
   },
-} as const
+  base: {
+    pendle: {
+      ActionAddRemoveLiqV3: "0x663C21103915B68e9dA797CfdF3cAb01a037D5Ff", //contain function needed
+    },
+    bridge: {
+      stargate: {
+        simpleOFT: "0x2492d0006411af6c8bbb1c8afc1b0197350a79e9",
+      },
+    },
+  },
+} as const;
 
 export default defineConfig({
-  contracts
-})
+  contracts,
+});

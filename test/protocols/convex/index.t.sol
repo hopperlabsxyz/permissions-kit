@@ -1,26 +1,20 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.28;
 
+import "@forge-std/Test.sol";
 import {BaseTest, IUsdc} from "@test/Base.t.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
-import {Vault} from "@test/interfaces/IVault.sol";
 import {Booster} from "@test/interfaces/IBooster.sol";
-import "@forge-std/Test.sol";
+import {Vault} from "@test/interfaces/IVault.sol";
 
 address constant BOOSTER = 0xF403C135812408BFbE8713b5A23a04b3D48AAE31;
 address constant reUSDsCRV = 0xc522A6606BBA746d7960404F22a3DB936B6F4F50;
 
-contract CurveTest is BaseTest {
+contract CurveTest is BaseTest(1) {
     bytes[] deposit;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        deposit = abi.decode(vm.parseJson(json, "$.convex.deposit"), (bytes[]));
+        deposit = loadPermissions("$.convex.deposit");
     }
 }
 
@@ -52,7 +46,7 @@ contract DepositStableSwapNg is CurveTest {
     function test_deposit_revert() public {
         bytes memory call = abi.encodeWithSelector(
             Booster(BOOSTER).deposit.selector,
-            1111111111111111,
+            1_111_111_111_111_111,
             42
         );
         vm.prank(manager);
@@ -72,7 +66,7 @@ contract DepositStableSwapNg is CurveTest {
     function test_depositAll_revert() public {
         bytes memory call = abi.encodeWithSelector(
             Booster(BOOSTER).depositAll.selector,
-            1111111111111111
+            1_111_111_111_111_111
         );
         vm.prank(manager);
         vm.expectRevert();

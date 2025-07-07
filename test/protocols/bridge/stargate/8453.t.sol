@@ -8,10 +8,10 @@ import {TestAvatar} from "@test/TestAvatar.sol";
 import {IUsdc} from "@test/interfaces/IUsdc.sol";
 import {Vault} from "@test/interfaces/IVault.sol";
 
-address constant UNDERLYING_TOKEN = 0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110;
-address constant SIMPLE_OFT_ADAPTER = 0xD2eE2776F34Ef4E7325745b06E6d464b08D4be0E;
+address constant UNDERLYING_TOKEN = 0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9;
+address constant SIMPLE_OFT_BASE = 0x2492D0006411Af6C8bbb1c8afc1B0197350a79e9;
 
-contract StargateBridgeTest is BaseTest(1) {
+contract StargateBridgeTest is BaseTest(8453) {
     bytes[] transfer;
 
     constructor() {
@@ -27,7 +27,7 @@ contract Transfer is StargateBridgeTest {
     function test_approve() public {
         bytes memory call = abi.encodeWithSelector(
             IUsdc(UNDERLYING_TOKEN).approve.selector,
-            SIMPLE_OFT_ADAPTER,
+            SIMPLE_OFT_BASE,
             42
         );
         vm.prank(manager);
@@ -41,13 +41,13 @@ contract Transfer is StargateBridgeTest {
         );
     }
 
-    function test_send_with_full_parameters_eth() public {
-        console.logBytes32(bytes32(uint256(uint160(avatar))));
+    // WIP base, on hold for now
+    function test_bridge_usr_from_base() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
-                dstEid: 30_101,
+                dstEid: 30_111,
                 to: bytes32(uint256(uint160(avatar))),
-                amountLD: 0,
+                amountLD: 100,
                 minAmountLD: 0,
                 extraOptions: "",
                 composeMsg: "",
@@ -65,7 +65,7 @@ contract Transfer is StargateBridgeTest {
 
         vm.prank(manager);
         role.execTransactionWithRole(
-            SIMPLE_OFT_ADAPTER,
+            SIMPLE_OFT_BASE,
             0,
             call,
             0,
@@ -98,7 +98,7 @@ contract Transfer is StargateBridgeTest {
         vm.prank(manager);
         vm.expectRevert(); //unsupported chain id
         role.execTransactionWithRole(
-            SIMPLE_OFT_ADAPTER,
+            SIMPLE_OFT_BASE,
             0,
             call,
             0,
@@ -110,8 +110,8 @@ contract Transfer is StargateBridgeTest {
     function test_send_should_revert_with_unvalid_destination() public {
         ISimpleOFTAdapter.SendParam memory sendParam = ISimpleOFTAdapter
             .SendParam({
-                dstEid: 30_332,
-                to: bytes32(uint256(uint160(avatar))),
+                dstEid: 30_111,
+                to: bytes32(uint256(uint160(address(42)))),
                 amountLD: 100,
                 minAmountLD: 0,
                 extraOptions: "",
@@ -131,7 +131,7 @@ contract Transfer is StargateBridgeTest {
         vm.prank(manager);
         vm.expectRevert(); // Should revert since destination  address is invalid
         role.execTransactionWithRole(
-            SIMPLE_OFT_ADAPTER,
+            SIMPLE_OFT_BASE,
             0,
             call,
             0,
@@ -164,7 +164,7 @@ contract Transfer is StargateBridgeTest {
         vm.prank(manager);
         vm.expectRevert(); // Should revert since refund address is invalid
         role.execTransactionWithRole(
-            SIMPLE_OFT_ADAPTER,
+            SIMPLE_OFT_BASE,
             0,
             call,
             0,

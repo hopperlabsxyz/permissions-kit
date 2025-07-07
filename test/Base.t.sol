@@ -2,16 +2,29 @@
 pragma solidity >=0.8.28;
 
 import "@forge-std/Test.sol";
-import "@forge-std/console.sol";
+
 import {VmSafe} from "@forge-std/Vm.sol";
+import "@forge-std/console.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
-import {IUsdc} from "@test/interfaces/IUsdc.sol";
+
+import {ZodiacHelpers} from "@test/ZodiacHelpers.t.sol";
 import {IRoles} from "@test/interfaces/IRoles.sol";
 import {ISimpleOFTAdapter} from "@test/interfaces/ISimpleOFTAdapter.sol";
-import {ZodiacHelpers} from "@test/ZodiacHelpers.t.sol";
+import {IUsdc} from "@test/interfaces/IUsdc.sol";
 
 contract BaseTest is ZodiacHelpers {
-    constructor() {
+    constructor(uint256 _chainId) ZodiacHelpers(chainId) {
+        chainId = _chainId;
+        string memory key = vm.envString("ALCHEMY_API_KEY");
+        string memory url;
+
+        if (chainId == 1) {
+            url = string.concat("https://eth-mainnet.g.alchemy.com/v2/", key);
+        } else if (chainId == 8453) {
+            url = string.concat("https://base-mainnet.g.alchemy.com/v2/", key);
+        }
+        vm.createSelectFork(url);
+
         avatar = deployTestAvatar();
         role = deployRolesModifier(roleFactory, address(avatar), roleOwner);
         console.log("ROLE ADDRESS", address(role));

@@ -7,6 +7,7 @@ export default defineConfig({
   entry: [
     "./src/index.ts",
     "./src/eth.ts",
+    "./src/base.ts",
   ],
   dts: {
     resolve: true,

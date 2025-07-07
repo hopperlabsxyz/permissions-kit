@@ -6,6 +6,7 @@ solc_version = "0.8.28"
 optimizer_runs = 200
 evm_version = 'cancun' # soon to be replace with pectra
 fs_permissions = [{ access = "read", path = "test/"}]
+env = { ALCHEMY_API_KEY = "${ALCHEMY_API_KEY}" }
 
 [soldeer]
 remappings_generate = false

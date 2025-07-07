@@ -1,41 +1,29 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.28;
 
+import "@forge-std/Test.sol";
 import {BaseTest, IUsdc} from "@test/Base.t.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
-import {Vault} from "@test/interfaces/IVault.sol";
 import {IResupplyPair} from "@test/interfaces/IResupplyPair.sol";
-import {YearnV3Vault} from "@test/interfaces/YearnV3Vault.sol";
 import {CurveStableSwapNG} from "@test/interfaces/IStableSwapNg.sol";
-import "@forge-std/Test.sol";
+import {Vault} from "@test/interfaces/IVault.sol";
+import {YearnV3Vault} from "@test/interfaces/YearnV3Vault.sol";
 
 address constant CRVUSD = 0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E;
 address constant SCRVUSD = 0x0655977FEb2f289A4aB78af67BAB0d17aAb84367;
 
 address constant reUSDsCRV = 0xc522A6606BBA746d7960404F22a3DB936B6F4F50;
 
-address constant POOL = 0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F;
-address constant GAUGE = 0x92219862F9F40fe27444e45a9554E824e8556A62;
+contract CurveTest is BaseTest(1) {
+    address constant POOL = 0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F;
+    address constant GAUGE = 0x92219862F9F40fe27444e45a9554E824e8556A62;
 
-contract CurveTest is BaseTest {
     bytes[] stakeCrvUSD;
     bytes[] depositStableSwapNg;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        stakeCrvUSD = abi.decode(
-            vm.parseJson(json, "$.curve.stakeCrvUSD"),
-            (bytes[])
-        );
-        depositStableSwapNg = abi.decode(
-            vm.parseJson(json, "$.curve.depositStableSwapNg"),
-            (bytes[])
-        );
+        stakeCrvUSD = loadPermissions("$.curve.stakeCrvUSD");
+        depositStableSwapNg = loadPermissions("$.curve.depositStableSwapNg");
     }
 }
 
@@ -56,10 +44,12 @@ contract DepositStableSwapNg is CurveTest {
 
     function test_approve_on_gauge() public {
         bytes memory call = abi.encodeWithSelector(
-            IUsdc(GAUGE).approve.selector,
+            IUsdc(address(0)).approve.selector,
             GAUGE,
             42
         );
+        console.log("gauge", GAUGE);
+        console.log("pool", POOL);
         vm.prank(manager);
         role.execTransactionWithRole(POOL, 0, call, 0, TEST_ROLE, false);
     }

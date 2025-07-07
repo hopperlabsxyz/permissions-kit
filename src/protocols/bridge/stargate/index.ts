@@ -13,6 +13,13 @@ function getOFTAdapterAddress(chainId: ChainId, token: Address) {
       return adapters[lowerCaseToken as keyof typeof adapters]
     }
   }
+  else if (chainId === 8453) {
+    const adapters = oftAdapters[chainId];
+    const lowerCaseToken = token.toLowerCase()
+    if (lowerCaseToken in adapters) {
+      return adapters[lowerCaseToken as keyof typeof adapters]
+    }
+  }
   throw new Error(
     `OFT Adapter addresses not found on chain id ${chainId} for token ${token}. Please provide a custom oft adapter address in the optional parameters.`
   );

@@ -2,14 +2,13 @@ import { Address } from "@gnosis-guild/eth-sdk";
 import {
   applyMembers,
   applyTargets,
-  c,
   ChainId,
   Permission,
   processPermissions,
   Role,
   Target,
 } from "zodiac-roles-sdk";
-import { kit } from "../../dist/eth";
+import { CONFIG, createPermissions, SUPPORTED_CHAINS } from "./config";
 
 interface ApplyUpdates {
   chainId: ChainId;
@@ -20,7 +19,22 @@ interface ApplyUpdates {
   targets: Target[];
 }
 
-export async function applyUpdates({
+type ProtocolPermissions = Record<string, Permission[]>;
+type BridgePermissions = Record<string, ProtocolPermissions>;
+type ChainPermissions = Record<string, ProtocolPermissions> & {
+  bridge?: BridgePermissions;
+};
+
+export type PermissionsByChain = Record<ChainId, ChainPermissions>;
+
+const currentRole: Role = {
+  key: CONFIG.TEST_ROLE,
+  members: [CONFIG.MANAGER],
+  targets: [],
+  annotations: [],
+  lastUpdate: 0,
+};
+async function applyUpdates({
   chainId,
   address,
   role,
@@ -29,200 +43,122 @@ export async function applyUpdates({
 }: ApplyUpdates) {
   const comments: string[] = [];
   const logCall = (log: string) => comments.push(log);
-
   let calls: { to: `0x${string}`; data: `0x${string}` }[] = [];
 
-  if (members) {
-    calls = calls.concat(
-      (
-        await applyMembers(role.key, members, {
-          chainId,
-          address,
-          mode: "replace",
-          currentMembers: role.members,
-          log: logCall,
-        })
-      ).map((data) => ({ to: address, data }))
-    );
+  if (members?.length) {
+    const memberCalls = await applyMembers(role.key, members, {
+      chainId,
+      address,
+      mode: "replace",
+      currentMembers: role.members,
+      log: logCall,
+    });
+    calls.push(...memberCalls.map((data) => ({ to: address, data })));
   }
 
-  if (targets) {
-    calls = calls.concat(
-      (
-        await applyTargets(role.key, targets, {
-          chainId,
-          address,
-          mode: "replace",
-          currentTargets: role.targets,
-          log: logCall,
-        })
-      ).map((data) => ({ to: address, data }))
-    );
+  if (targets?.length) {
+    const targetCalls = await applyTargets(role.key, targets, {
+      chainId,
+      address,
+      mode: "replace",
+      currentTargets: role.targets,
+      log: logCall,
+    });
+    calls.push(...targetCalls.map((data) => ({ to: address, data })));
   }
 
   return calls;
 }
 
-const MANAGER = "0xA5d55E7A556fbA22974479497E6bf7e097D81b5e";
-
-const TEST_ROLE =
-  "0x544553542d524f4c450000000000000000000000000000000000000000000000";
-
-const AVATAR = "0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f";
-
-const currentRole: Role = {
-  key: TEST_ROLE,
-  members: [MANAGER],
-  targets: [],
-  annotations: [],
-  lastUpdate: 0,
-};
-
-async function getCallsFromPermissions(permissions: Permission[]) {
+async function getCallsFromPermissions(permissions: Permission[], chainId: ChainId): Promise<string[]> {
   const { targets } = processPermissions(permissions);
 
-  return (
-    await applyUpdates({
-      chainId: 1,
-      address: "0xc128B1307128e8A692c98DD48cd7Ff155521A093",
-      owner: AVATAR,
-      role: currentRole,
-      members: [MANAGER],
-      targets: targets,
-    })
-  ).map((call) => call.data);
+  const calls = await applyUpdates({
+    chainId,
+    address: CONFIG.ROLES_ADDRESS,
+    owner: CONFIG.AVATAR,
+    role: currentRole,
+    members: [CONFIG.MANAGER],
+    targets,
+  });
+
+  return calls.map((call) => call.data);
 }
 
-const permissions = {
-  lagoon: {
-    manageVault: await kit.lagoon.manageVault(
-      {
-        targets:
-          [
-            {
-              vault: '0x07ed467acd4ffd13023046968b0859781cb90d9b',
-              rates: { managementRate: c.eq(42), performanceRate: c.eq(42) },
-              canClaimSharesOnBehalf: true,
-              lifespan: c.lt(86400) // 1 day
-            }
-          ]
-      }
-    ),
-    settleVault: await kit.lagoon.settleVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
-    closeVault: await kit.lagoon.closeVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] }),
-    depositAndWithdrawFromVault: await kit.lagoon.depositAndWithdrawFromVault({ targets: ['0x07ed467acd4ffd13023046968b0859781cb90d9b'] })
-  },
-  resupply: {
-    deposit: await kit.resupply.deposit({
-      targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
-    }),
-    borrow: await kit.resupply.borrow({
-      targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
-    }),
-    depositAndBorrow: await kit.resupply.depositAndBorrow({
-      targets: ["0xCF1deb0570c2f7dEe8C07A7e5FA2bd4b2B96520D"],
-    }),
-  },
-  curve: {
-    stakeCrvUSD: await kit.curve.stakeCrvUSD(),
-    depositStableSwapNg: await kit.curve.depositStableSwapNg({
-      targets: ["0xc522a6606bba746d7960404f22a3db936b6f4f50", "0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F"],
-    }),
-  },
-
-  convex: {
-    deposit: await kit.convex.deposit({ targets: [440] }),
-  },
-  lido: {
-    deposit: await kit.lido.deposit()
-  },
-  etherfi: {
-    deposit: await kit.etherfi.deposit({ targets: ['ETH', 'WETH'] })
-  },
-  se7enseas: {
-    depositBoringVault: await kit.se7enseas.depositBoringVault({
-      targets: [
-        {
-          vault: {
-            boringVault: '0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad',
-            teller: "0xe97365b41B340352d3d32CA2C7230330F19A1e73",
-            assets: ['ETH', '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'],
-          }
-        }
-      ]
-    })
-  },
-  bridge: {
-    canonical: {
-      transfer: await kit.bridge.canonical.transfer({
-        targets: [
-          {
-            toChainIds: [130]
-          }
-        ]
-      })
-    },
-    stargate: {
-      transfer: await kit.bridge.stargate.transfer({
-        targets: [
-          {
-            tokenAddress: "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110", //USR eth
-            toChainIds: [1],
-          },
-          //WIP base
-          // {
-          //   tokenAddresses: ["0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"],// USR base
-          //   dstChainIds: [30101],
-          //   receiver: `0x000000000000000000000000${AVATAR.slice(2)}`,
-          // }
-        ],
-      }),
-    },
-  },
-};
-
-const protocols = Object.keys(kit).filter((p) => p !== "bridge");
-
-const calls = await protocols.reduce(async (accP, protocol) => {
-  const acc: any = await accP;
-  acc[protocol] = {};
-
-  let actions = Object.keys((kit as any)[protocol]);
-
-  await Promise.all(
-    actions.map(async (action) => {
-      acc[protocol][action] = await getCallsFromPermissions(
-        (permissions as any)[protocol][action]
-      );
-    })
-  );
-
-  return acc;
-}, Promise.resolve({}));
-
-const bridgeProtocols = Object.keys(kit["bridge"]);
-
-const bridgeCalls = await bridgeProtocols.reduce(async (accP, protocol) => {
-  const acc: any = await accP;
-  if (!acc["bridge"]) {
-    acc["bridge"] = {};
+function getPermissionsForChain(permissions: PermissionsByChain, chainId: ChainId): ChainPermissions {
+  if (!(chainId in permissions)) {
+    throw new Error(`Chain id ${chainId} not supported`);
   }
-  acc["bridge"][protocol] = {};
+  return permissions[chainId];
+}
 
-  let actions = Object.keys((kit.bridge as any)[protocol]);
+async function generatePermissions(
+  protocolPermissions: ProtocolPermissions,
+  chainId: ChainId
+): Promise<Record<string, string[]>> {
+  const result: Record<string, string[]> = {};
+
+  const actions = Object.keys(protocolPermissions);
 
   await Promise.all(
     actions.map(async (action) => {
-      acc["bridge"][protocol][action] = await getCallsFromPermissions(
-        (permissions as any)["bridge"][protocol][action]
+      result[action] = await getCallsFromPermissions(
+        protocolPermissions[action],
+        chainId
       );
     })
   );
 
-  return acc;
-}, calls);
+  return result;
+}
 
-await Bun.write(
-  "test/data/permissions.json",
-  JSON.stringify(bridgeCalls, null, 2)
-);
+async function generateForChain(chainId: ChainId, allPermissions: PermissionsByChain) {
+  const chainPermissions = getPermissionsForChain(allPermissions, chainId);
+
+  const result: Record<string, Record<string, string[]>> = {};
+
+  const protocols = Object.keys(chainPermissions);
+
+  for (const protocol of protocols) {
+    if (protocol === 'bridge') {
+      // Special handling for bridge - it has nested protocols
+      const bridgeProtocols = chainPermissions.bridge!;
+      const bridgeResult: Record<string, Record<string, string[]>> = {};
+
+      for (const bridgeProtocol of Object.keys(bridgeProtocols)) {
+        bridgeResult[bridgeProtocol] = await generatePermissions(
+          bridgeProtocols[bridgeProtocol],
+          chainId
+        );
+      }
+
+      result.bridge = bridgeResult as any;
+    } else {
+      // Regular protocol processing
+      result[protocol] = await generatePermissions(
+        chainPermissions[protocol] as ProtocolPermissions,
+        chainId
+      );
+    }
+  }
+  await Bun.write(
+    `test/permissions/${chainId}.json`,
+    JSON.stringify(result, null, 2)
+  );
+}
+
+async function main() {
+  try {
+    const permissions = await createPermissions();
+    await Promise.all(
+      SUPPORTED_CHAINS.map(chainId => generateForChain(chainId, permissions))
+    );
+
+    console.log("All permission files generated successfully!");
+  } catch (error) {
+    console.error("Error generating permissions:", error);
+    process.exit(1);
+  }
+}
+
+await main();

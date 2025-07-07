@@ -12,19 +12,11 @@ address payable constant MAINNET_TO_UNICHAIN = payable(
     0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA
 );
 
-contract CanonicalBridgeTest is BaseTest {
+contract CanonicalBridgeTest is BaseTest(1) {
     bytes[] transfer;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-        transfer = abi.decode(
-            vm.parseJson(json, "$.bridge.canonical.transfer"),
-            (bytes[])
-        );
+        transfer = loadPermissions("$.bridge.canonical.transfer");
     }
 }
 
