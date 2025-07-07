@@ -44,9 +44,7 @@ bun add @hopperlabsxyz/permissions-kit
 ```typescript
 import { kit } from "@hopperlabsxyz/permissions-kit/eth";
 
-const permissions = await kit.lido.stake({
-  targets: ["0xstETHAddress"]
-});
+const permissions = await kit.lido.deposit();
 ```
 
 #### Base network protocols

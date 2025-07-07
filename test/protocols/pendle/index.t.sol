@@ -12,16 +12,16 @@ address constant USR_MARKET = 0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45; //USR-
 address constant PENDLEROUTERV4 = 0x888888888889758F76e7103c6CbF23ABbF58F946; //proxy
 
 contract PendleTest is BaseTest(8453) {
-    bytes[] depositToken;
+    bytes[] deposit;
 
     constructor() {
-        depositToken = loadPermissions("$.pendle.depositToken");
+        deposit = loadPermissions("$.pendle.deposit");
     }
 }
 
 contract DepositTokenTest is PendleTest {
     function setUp() public {
-        applyPermissionsOnRole(depositToken);
+        applyPermissionsOnRole(deposit);
     }
 
     function test_approve() public {

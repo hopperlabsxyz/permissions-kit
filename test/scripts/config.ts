@@ -90,7 +90,7 @@ export async function createPermissions(): Promise<PermissionsByChain> {
     },
     [8453]: {
       pendle: {
-        depositToken: await basekit.pendle.depositToken({
+        deposit: await basekit.pendle.deposit({
           targets: ["0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45"],
         }),
       },

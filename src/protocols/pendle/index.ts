@@ -34,7 +34,7 @@ function getRouterAddress(chainId: ChainId) {
   );
 }
 
-function depositToken(chainId: ChainId, targetInfo: TargetInfo): Permission[] {
+function deposit(chainId: ChainId, targetInfo: TargetInfo): Permission[] {
   const pendleRouter = getRouterAddress(chainId);
   return [
     ...allowErc20Approve([targetInfo.underlying], [pendleRouter]),
@@ -68,9 +68,9 @@ export interface tokens {
 }
 
 export const base = {
-  depositToken: async ({ targets }: { targets: Targets }) => {
+  deposit: async ({ targets }: { targets: Targets }) => {
     return targets.flatMap((target) =>
-      depositToken(8453, getTargetInfo(target))
+      deposit(8453, getTargetInfo(target))
     );
   },
 };
