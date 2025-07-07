@@ -19,7 +19,7 @@ contract PendleTest is BaseTest(8453) {
     }
 }
 
-contract depositTokenTest is PendleTest {
+contract DepositTokenTest is PendleTest {
     function setUp() public {
         applyPermissionsOnRole(depositToken);
     }
@@ -34,7 +34,7 @@ contract depositTokenTest is PendleTest {
         role.execTransactionWithRole(USR, 0, call, 0, TEST_ROLE, false);
     }
 
-    function test_pendle_deposit() public {
+    function test_pendle_addLiquiditySingleToken() public {
         bytes memory call = abi.encodeWithSelector(
             IActionAddRemoveLiqV3(PENDLEROUTERV4)
                 .addLiquiditySingleToken
@@ -57,10 +57,55 @@ contract depositTokenTest is PendleTest {
     }
 
     //test should fail
-    function test_pendle_deposit_wrong_market() public {
+    function test_pendle_addLiquiditySingleToken_wrong_market() public {
         bytes memory call = abi.encodeWithSelector(
             IActionAddRemoveLiqV3(PENDLEROUTERV4)
                 .addLiquiditySingleToken
+                .selector,
+            avatar,
+            PENDLEROUTERV4, //should be USR_MARKET
+            3,
+            0,
+            0
+        );
+        vm.prank(manager);
+        vm.expectRevert();
+        role.execTransactionWithRole(
+            PENDLEROUTERV4,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
+    }
+
+    function test_pendle_removeLiquiditySingleToken() public {
+        bytes memory call = abi.encodeWithSelector(
+            IActionAddRemoveLiqV3(PENDLEROUTERV4)
+                .removeLiquiditySingleToken
+                .selector,
+            avatar,
+            USR_MARKET,
+            3,
+            0,
+            0
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(
+            PENDLEROUTERV4,
+            0,
+            call,
+            0,
+            TEST_ROLE,
+            false
+        );
+    }
+
+    function test_pendle_removeLiquiditySingleToken_wrong_market() public {
+        bytes memory call = abi.encodeWithSelector(
+            IActionAddRemoveLiqV3(PENDLEROUTERV4)
+                .removeLiquiditySingleToken
                 .selector,
             avatar,
             PENDLEROUTERV4, //should be USR_MARKET

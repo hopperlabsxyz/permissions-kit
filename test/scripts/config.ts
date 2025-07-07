@@ -91,10 +91,7 @@ export async function createPermissions(): Promise<PermissionsByChain> {
     [8453]: {
       pendle: {
         depositToken: await basekit.pendle.depositToken({
-          targets: [{
-            market: "0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45",
-            underlying: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9",
-          }],
+          targets: ["0x715509Bde846104cF2cCeBF6fdF7eF1BB874Bc45"],
         }),
       },
       bridge: {

@@ -19,9 +19,6 @@ export interface UnknownMarket {
 
 export type Target =
   | BaseMarket["address"]
-  | {
-      market: BaseMarket["address"] | UnknownMarket;
-      underlying: BaseMarket["underlying"];
-    };
+  | UnknownMarket
 
 export type Targets = Target[];

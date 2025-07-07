@@ -7,27 +7,16 @@ import baseMarkets from "./_baseMarkets.ts";
 
 function getTargetInfo(target: Target): TargetInfo {
   if (typeof target === "string") {
-    const res = baseMarkets.find((t) => t.address === target);
-    if (res === undefined) {
+    const market = baseMarkets.find((t) => t.address === target);
+    if (market === undefined) {
       throw new Error("Unknown target");
     }
-    return res;
-  } else if (typeof target.market === "string") {
-    const res = baseMarkets.find((t) => t.address === target.market);
-    if (res === undefined) {
-      throw new Error("Unknown target");
-    }
-    return {
-      symbol: res.symbol,
-      name: res.name,
-      address: res.address,
-      underlying: res.underlying,
-    };
+    return market;
   }
   return {
-    symbol: target.market.symbol,
-    name: target.market.name,
-    address: target.market.address,
+    symbol: target.symbol,
+    name: target.name,
+    address: target.address,
     underlying: target.underlying,
   };
 }
@@ -53,7 +42,21 @@ function depositToken(chainId: ChainId, targetInfo: TargetInfo): Permission[] {
       ...allow.base.pendle.ActionAddRemoveLiqV3.addLiquiditySingleToken(
         c.avatar,
         targetInfo.address,
+        undefined,
+        undefined,
+        undefined,
         undefined
+
+      ),
+      targetAddress: pendleRouter,
+    },
+    {
+      ...allow.base.pendle.ActionAddRemoveLiqV3.removeLiquiditySingleToken(
+        c.avatar,
+        targetInfo.address,
+        undefined,
+        undefined,
+        undefined,
       ),
       targetAddress: pendleRouter,
     },
