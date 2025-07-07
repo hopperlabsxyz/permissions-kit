@@ -2,8 +2,9 @@
 pragma solidity >=0.8.28;
 
 import "@forge-std/Test.sol";
-import "@forge-std/console.sol";
+
 import {VmSafe} from "@forge-std/Vm.sol";
+import "@forge-std/console.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
 import {IRoles} from "@test/interfaces/IRoles.sol";
 
@@ -16,6 +17,12 @@ interface IModuleProxyFactory {
 }
 
 contract ZodiacHelpers is Test {
+    uint256 internal chainId;
+
+    constructor(uint256 _chainId) {
+        chainId = _chainId;
+    }
+
     address constant MODULE_PROXY_FACTORY =
         0x000000000000aDdB49795b0f9bA5BC298cDda236;
 
@@ -39,7 +46,7 @@ contract ZodiacHelpers is Test {
         address _role,
         address _owner
     ) internal {
-        for (uint i = 0; i < _permissions.length; i++) {
+        for (uint256 i = 0; i < _permissions.length; i++) {
             bytes memory txBytes = _permissions[i];
 
             //assign roles
@@ -50,7 +57,7 @@ contract ZodiacHelpers is Test {
     }
 
     function applyPermissionsOnRole(bytes[] memory _permissions) internal {
-        for (uint i = 0; i < _permissions.length; i++) {
+        for (uint256 i = 0; i < _permissions.length; i++) {
             bytes memory txBytes = _permissions[i];
 
             //assign roles
@@ -83,5 +90,16 @@ contract ZodiacHelpers is Test {
             abi.encode(_owner, _avatar, avatar)
         );
         return IRoles(_factory.deployModule(ROLE_MASTER_COPY, initParams, 0));
+    }
+
+    function loadPermissions(
+        string memory key
+    ) internal view returns (bytes[] memory) {
+        string memory path = string.concat(
+            string.concat("test/permissions/", vm.toString(chainId)),
+            ".json"
+        );
+        string memory json = vm.readFile(path);
+        return abi.decode(vm.parseJson(json, key), (bytes[]));
     }
 }

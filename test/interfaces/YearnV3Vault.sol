@@ -2,29 +2,13 @@
 pragma solidity ^0.8.4;
 
 interface YearnV3Vault {
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
+    event Approval(address indexed owner, address indexed spender, uint256 value);
     event DebtPurchased(address indexed strategy, uint256 amount);
-    event DebtUpdated(
-        address indexed strategy,
-        uint256 current_debt,
-        uint256 new_debt
-    );
-    event Deposit(
-        address indexed sender,
-        address indexed owner,
-        uint256 assets,
-        uint256 shares
-    );
+    event DebtUpdated(address indexed strategy, uint256 current_debt, uint256 new_debt);
+    event Deposit(address indexed sender, address indexed owner, uint256 assets, uint256 shares);
     event RoleSet(address indexed account, uint256 indexed role);
     event Shutdown();
-    event StrategyChanged(
-        address indexed strategy,
-        uint256 indexed change_type
-    );
+    event StrategyChanged(address indexed strategy, uint256 indexed change_type);
     event StrategyReported(
         address indexed strategy,
         uint256 gain,
@@ -34,11 +18,7 @@ interface YearnV3Vault {
         uint256 total_fees,
         uint256 total_refunds
     );
-    event Transfer(
-        address indexed sender,
-        address indexed receiver,
-        uint256 value
-    );
+    event Transfer(address indexed sender, address indexed receiver, uint256 value);
     event UpdateAccountant(address indexed accountant);
     event UpdateAutoAllocate(bool auto_allocate);
     event UpdateDefaultQueue(address[] new_default_queue);
@@ -50,11 +30,7 @@ interface YearnV3Vault {
     event UpdateRoleManager(address indexed role_manager);
     event UpdateUseDefaultQueue(bool use_default_queue);
     event UpdateWithdrawLimitModule(address indexed withdraw_limit_module);
-    event UpdatedMaxDebtForStrategy(
-        address indexed sender,
-        address indexed strategy,
-        uint256 new_debt
-    );
+    event UpdatedMaxDebtForStrategy(address indexed sender, address indexed strategy, uint256 new_debt);
     event Withdraw(
         address indexed sender,
         address indexed receiver,
@@ -73,14 +49,13 @@ interface YearnV3Vault {
 
     function add_role(address account, uint256 role) external;
 
-    function add_strategy(address new_strategy) external;
+    function add_strategy(
+        address new_strategy
+    ) external;
 
     function add_strategy(address new_strategy, bool add_to_queue) external;
 
-    function allowance(
-        address arg0,
-        address arg1
-    ) external view returns (uint256);
+    function allowance(address arg0, address arg1) external view returns (uint256);
 
     function apiVersion() external pure returns (string memory);
 
@@ -95,28 +70,35 @@ interface YearnV3Vault {
 
     function auto_allocate() external view returns (bool);
 
-    function balanceOf(address addr) external view returns (uint256);
+    function balanceOf(
+        address addr
+    ) external view returns (uint256);
 
     function buy_debt(address strategy, uint256 amount) external;
 
-    function convertToAssets(uint256 shares) external view returns (uint256);
+    function convertToAssets(
+        uint256 shares
+    ) external view returns (uint256);
 
-    function convertToShares(uint256 assets) external view returns (uint256);
+    function convertToShares(
+        uint256 assets
+    ) external view returns (uint256);
 
     function decimals() external view returns (uint8);
 
-    function default_queue(uint256 arg0) external view returns (address);
+    function default_queue(
+        uint256 arg0
+    ) external view returns (address);
 
-    function deposit(
-        uint256 assets,
-        address receiver
-    ) external returns (uint256);
+    function deposit(uint256 assets, address receiver) external returns (uint256);
 
     function deposit_limit() external view returns (uint256);
 
     function deposit_limit_module() external view returns (address);
 
-    function force_revoke_strategy(address strategy) external;
+    function force_revoke_strategy(
+        address strategy
+    ) external;
 
     function fullProfitUnlockDate() external view returns (uint256);
 
@@ -136,16 +118,19 @@ interface YearnV3Vault {
 
     function lastProfitUpdate() external view returns (uint256);
 
-    function maxDeposit(address receiver) external view returns (uint256);
+    function maxDeposit(
+        address receiver
+    ) external view returns (uint256);
 
-    function maxMint(address receiver) external view returns (uint256);
-
-    function maxRedeem(address owner) external view returns (uint256);
+    function maxMint(
+        address receiver
+    ) external view returns (uint256);
 
     function maxRedeem(
-        address owner,
-        uint256 max_loss
+        address owner
     ) external view returns (uint256);
+
+    function maxRedeem(address owner, uint256 max_loss) external view returns (uint256);
 
     function maxRedeem(
         address owner,
@@ -153,12 +138,11 @@ interface YearnV3Vault {
         address[] memory strategies
     ) external view returns (uint256);
 
-    function maxWithdraw(address owner) external view returns (uint256);
-
     function maxWithdraw(
-        address owner,
-        uint256 max_loss
+        address owner
     ) external view returns (uint256);
+
+    function maxWithdraw(address owner, uint256 max_loss) external view returns (uint256);
 
     function maxWithdraw(
         address owner,
@@ -172,7 +156,9 @@ interface YearnV3Vault {
 
     function name() external view returns (string memory);
 
-    function nonces(address arg0) external view returns (uint256);
+    function nonces(
+        address arg0
+    ) external view returns (uint256);
 
     function permit(
         address owner,
@@ -184,13 +170,21 @@ interface YearnV3Vault {
         bytes32 s
     ) external returns (bool);
 
-    function previewDeposit(uint256 assets) external view returns (uint256);
+    function previewDeposit(
+        uint256 assets
+    ) external view returns (uint256);
 
-    function previewMint(uint256 shares) external view returns (uint256);
+    function previewMint(
+        uint256 shares
+    ) external view returns (uint256);
 
-    function previewRedeem(uint256 shares) external view returns (uint256);
+    function previewRedeem(
+        uint256 shares
+    ) external view returns (uint256);
 
-    function previewWithdraw(uint256 assets) external view returns (uint256);
+    function previewWithdraw(
+        uint256 assets
+    ) external view returns (uint256);
 
     function pricePerShare() external view returns (uint256);
 
@@ -202,11 +196,7 @@ interface YearnV3Vault {
 
     function profitUnlockingRate() external view returns (uint256);
 
-    function redeem(
-        uint256 shares,
-        address receiver,
-        address owner
-    ) external returns (uint256);
+    function redeem(uint256 shares, address receiver, address owner) external returns (uint256);
 
     function redeem(
         uint256 shares,
@@ -225,44 +215,65 @@ interface YearnV3Vault {
 
     function remove_role(address account, uint256 role) external;
 
-    function revoke_strategy(address strategy) external;
+    function revoke_strategy(
+        address strategy
+    ) external;
 
     function role_manager() external view returns (address);
 
-    function roles(address arg0) external view returns (uint256);
+    function roles(
+        address arg0
+    ) external view returns (uint256);
 
-    function setName(string memory name) external;
+    function setName(
+        string memory name
+    ) external;
 
     function setProfitMaxUnlockTime(
         uint256 new_profit_max_unlock_time
     ) external;
 
-    function setSymbol(string memory symbol) external;
+    function setSymbol(
+        string memory symbol
+    ) external;
 
-    function set_accountant(address new_accountant) external;
+    function set_accountant(
+        address new_accountant
+    ) external;
 
-    function set_auto_allocate(bool auto_allocate) external;
+    function set_auto_allocate(
+        bool auto_allocate
+    ) external;
 
-    function set_default_queue(address[] memory new_default_queue) external;
+    function set_default_queue(
+        address[] memory new_default_queue
+    ) external;
 
-    function set_deposit_limit(uint256 deposit_limit) external;
+    function set_deposit_limit(
+        uint256 deposit_limit
+    ) external;
 
     function set_deposit_limit(uint256 deposit_limit, bool) external;
 
-    function set_deposit_limit_module(address deposit_limit_module) external;
-
     function set_deposit_limit_module(
-        address deposit_limit_module,
-        bool
+        address deposit_limit_module
     ) external;
 
-    function set_minimum_total_idle(uint256 minimum_total_idle) external;
+    function set_deposit_limit_module(address deposit_limit_module, bool) external;
+
+    function set_minimum_total_idle(
+        uint256 minimum_total_idle
+    ) external;
 
     function set_role(address account, uint256 role) external;
 
-    function set_use_default_queue(bool use_default_queue) external;
+    function set_use_default_queue(
+        bool use_default_queue
+    ) external;
 
-    function set_withdraw_limit_module(address withdraw_limit_module) external;
+    function set_withdraw_limit_module(
+        address withdraw_limit_module
+    ) external;
 
     function shutdown_vault() external;
 
@@ -282,20 +293,15 @@ interface YearnV3Vault {
 
     function transfer(address receiver, uint256 amount) external returns (bool);
 
-    function transferFrom(
-        address sender,
-        address receiver,
-        uint256 amount
-    ) external returns (bool);
+    function transferFrom(address sender, address receiver, uint256 amount) external returns (bool);
 
-    function transfer_role_manager(address role_manager) external;
+    function transfer_role_manager(
+        address role_manager
+    ) external;
 
     function unlockedShares() external view returns (uint256);
 
-    function update_debt(
-        address strategy,
-        uint256 target_debt
-    ) external returns (uint256);
+    function update_debt(address strategy, uint256 target_debt) external returns (uint256);
 
     function update_debt(
         address strategy,
@@ -303,18 +309,11 @@ interface YearnV3Vault {
         uint256 max_loss
     ) external returns (uint256);
 
-    function update_max_debt_for_strategy(
-        address strategy,
-        uint256 new_max_debt
-    ) external;
+    function update_max_debt_for_strategy(address strategy, uint256 new_max_debt) external;
 
     function use_default_queue() external view returns (bool);
 
-    function withdraw(
-        uint256 assets,
-        address receiver,
-        address owner
-    ) external returns (uint256);
+    function withdraw(uint256 assets, address receiver, address owner) external returns (uint256);
 
     function withdraw(
         uint256 assets,

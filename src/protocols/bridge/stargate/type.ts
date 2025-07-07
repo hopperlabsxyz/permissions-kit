@@ -19,9 +19,9 @@ export const oftAdapters = {
     ['0xa1290d69c65a6fe4df752f95823fae25cb99e5a7']: "0x85d456b2dff1fd8245387c0bfb64dfb700e98ef3", // rseth
     ['0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee']: "0xcd2eb13d6831d4602d80e5db9230a57596cdca63" // weeeth
   },
-  // 8453: {
-  //   simpleOftAdapter: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"
-  // }
+  8453: {
+    ['0x35e5db674d8e93a03d814fa0ada70731efe8a4b9']: "0x2492d0006411af6c8bbb1c8afc1b0197350a79e9", // usr
+  }
 } as const;
 
 export type SupportedChainId = keyof typeof chainIdToEndpointId

@@ -3,7 +3,6 @@ import { CanonicalTarget } from "./canonical/type";
 import { stargateTransfer } from "./stargate";
 import { StargateTarget } from "./stargate/type";
 
-
 export const eth = {
   canonical: {
     transfer: async ({ targets }: { targets: CanonicalTarget[] }) => {

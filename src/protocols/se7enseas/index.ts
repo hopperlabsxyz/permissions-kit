@@ -1,5 +1,5 @@
 import { allowErc20Approve, oneOf } from "../../conditions";
-import { c, ChainId } from "zodiac-roles-sdk";
+import { ChainId } from "zodiac-roles-sdk";
 import { allow } from "zodiac-roles-sdk/kit";
 import { Target, TargetInfo, Targets } from "./type";
 

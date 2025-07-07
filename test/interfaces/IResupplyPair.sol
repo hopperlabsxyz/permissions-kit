@@ -67,7 +67,11 @@ interface IResupplyPair {
     );
     event NewEpoch(uint256 indexed _epoch);
     event Redeemed(
-        address indexed _caller, uint256 _amount, uint256 _collateralFreed, uint256 _protocolFee, uint256 _debtReduction
+        address indexed _caller,
+        uint256 _amount,
+        uint256 _collateralFreed,
+        uint256 _protocolFee,
+        uint256 _debtReduction
     );
     event RemoveCollateral(uint256 _collateralAmount, address indexed _receiver, address indexed _borrower);
     event Repay(address indexed payer, address indexed borrower, uint256 amountToRepay, uint256 shares);
@@ -110,8 +114,12 @@ interface IResupplyPair {
     function SHARE_REFACTOR_PRECISION() external view returns (uint256);
     function addCollateral(uint256 _amount, address _borrower) external;
     function addCollateralVault(uint256 _collateralAmount, address _borrower) external;
-    function addExtraReward(address _token) external;
-    function addInterest(bool _returnAccounting)
+    function addExtraReward(
+        address _token
+    ) external;
+    function addInterest(
+        bool _returnAccounting
+    )
         external
         returns (
             uint256 _interestEarned,
@@ -119,9 +127,11 @@ interface IResupplyPair {
             uint256 _claimableFees,
             VaultAccount memory _totalBorrow
         );
-    function borrow(uint256 _borrowAmount, uint256 _underlyingAmount, address _receiver)
-        external
-        returns (uint256 _shares);
+    function borrow(
+        uint256 _borrowAmount,
+        uint256 _underlyingAmount,
+        address _receiver
+    ) external returns (uint256 _shares);
     function borrowLimit() external view returns (uint256);
     function claimableFees() external view returns (uint256);
     function claimableOtherFees() external view returns (uint256);
@@ -130,16 +140,29 @@ interface IResupplyPair {
     function convexBooster() external view returns (address);
     function convexPid() external view returns (uint256);
     function core() external view returns (address);
-    function currentRateInfo() external view returns (uint64 lastTimestamp, uint64 ratePerSec, uint128 lastShares);
+    function currentRateInfo()
+        external
+        view
+        returns (uint64 lastTimestamp, uint64 ratePerSec, uint128 lastShares);
     function currentRewardEpoch() external view returns (uint256);
     function currentUtilization() external view returns (uint256);
-    function earned(address _account) external returns (RewardDistributorMultiEpoch.EarnedData[] memory claimable);
+    function earned(
+        address _account
+    ) external returns (RewardDistributorMultiEpoch.EarnedData[] memory claimable);
     function epochLength() external view returns (uint256);
-    function exchangeRateInfo() external view returns (address oracle, uint96 lastTimestamp, uint256 exchangeRate);
+    function exchangeRateInfo()
+        external
+        view
+        returns (address oracle, uint96 lastTimestamp, uint256 exchangeRate);
     function getConstants()
         external
         pure
-        returns (uint256 _LTV_PRECISION, uint256 _LIQ_PRECISION, uint256 _EXCHANGE_PRECISION, uint256 _RATE_PRECISION);
+        returns (
+            uint256 _LTV_PRECISION,
+            uint256 _LIQ_PRECISION,
+            uint256 _EXCHANGE_PRECISION,
+            uint256 _RATE_PRECISION
+        );
     function getEpoch() external view returns (uint256 epoch);
     function getPairAccounting()
         external
@@ -151,10 +174,16 @@ interface IResupplyPair {
             uint256 _totalCollateral
         );
     function getReward(address _account, address _forwardTo) external;
-    function getReward(address _account) external;
-    function getUserSnapshot(address _address) external returns (uint256 _borrowShares, uint256 _collateralBalance);
+    function getReward(
+        address _account
+    ) external;
+    function getUserSnapshot(
+        address _address
+    ) external returns (uint256 _borrowShares, uint256 _collateralBalance);
     function global_reward_integral(uint256, address) external view returns (uint256);
-    function invalidateReward(address _token) external;
+    function invalidateReward(
+        address _token
+    ) external;
     function lastFeeEpoch() external view returns (uint256);
     function leveragedPosition(
         address _swapperAddress,
@@ -163,7 +192,9 @@ interface IResupplyPair {
         uint256 _amountCollateralOutMin,
         address[] memory _path
     ) external returns (uint256 _totalCollateralBalance);
-    function liquidate(address _borrower) external returns (uint256 _collateralForLiquidator);
+    function liquidate(
+        address _borrower
+    ) external returns (uint256 _collateralForLiquidator);
     function liquidationFee() external view returns (uint256);
     function maxLTV() external view returns (uint256);
     function maxRewards() external pure returns (uint256);
@@ -185,9 +216,12 @@ interface IResupplyPair {
         );
     function protocolRedemptionFee() external view returns (uint256);
     function rateCalculator() external view returns (address);
-    function redeemCollateral(address _caller, uint256 _amount, uint256 _totalFeePct, address _receiver)
-        external
-        returns (address _collateralToken, uint256 _collateralFreed);
+    function redeemCollateral(
+        address _caller,
+        uint256 _amount,
+        uint256 _totalFeePct,
+        address _receiver
+    ) external returns (address _collateralToken, uint256 _collateralFreed);
     function redemptionWriteOff() external view returns (address);
     function registry() external view returns (address);
     function removeCollateral(uint256 _collateralAmount, address _receiver) external;
@@ -200,45 +234,80 @@ interface IResupplyPair {
         address[] memory _path
     ) external returns (uint256 _amountOut);
     function rewardLength() external view returns (uint256);
-    function rewardMap(address) external view returns (uint256);
-    function rewardRedirect(address) external view returns (address);
+    function rewardMap(
+        address
+    ) external view returns (uint256);
+    function rewardRedirect(
+        address
+    ) external view returns (address);
     function reward_integral_for(uint256, address, address) external view returns (uint256);
-    function rewards(uint256)
-        external
-        view
-        returns (address reward_token, bool is_non_claimable, uint256 reward_remaining);
-    function setBorrowLimit(uint256 _limit) external;
-    function setConvexPool(uint256 pid) external;
-    function setLiquidationFees(uint256 _newLiquidationFee) external;
-    function setMaxLTV(uint256 _newMaxLTV) external;
-    function setMinimumBorrowAmount(uint256 _min) external;
-    function setMinimumLeftoverDebt(uint256 _min) external;
-    function setMinimumRedemption(uint256 _min) external;
-    function setMintFees(uint256 _newMintFee) external;
-    function setOracle(address _newOracle) external;
-    function setProtocolRedemptionFee(uint256 _fee) external;
+    function rewards(
+        uint256
+    ) external view returns (address reward_token, bool is_non_claimable, uint256 reward_remaining);
+    function setBorrowLimit(
+        uint256 _limit
+    ) external;
+    function setConvexPool(
+        uint256 pid
+    ) external;
+    function setLiquidationFees(
+        uint256 _newLiquidationFee
+    ) external;
+    function setMaxLTV(
+        uint256 _newMaxLTV
+    ) external;
+    function setMinimumBorrowAmount(
+        uint256 _min
+    ) external;
+    function setMinimumLeftoverDebt(
+        uint256 _min
+    ) external;
+    function setMinimumRedemption(
+        uint256 _min
+    ) external;
+    function setMintFees(
+        uint256 _newMintFee
+    ) external;
+    function setOracle(
+        address _newOracle
+    ) external;
+    function setProtocolRedemptionFee(
+        uint256 _fee
+    ) external;
     function setRateCalculator(address _newRateCalculator, bool _updateInterest) external;
-    function setRewardRedirect(address _to) external;
+    function setRewardRedirect(
+        address _to
+    ) external;
     function setSwapper(address _swapper, bool _approval) external;
     function startTime() external view returns (uint256);
-    function swappers(address) external view returns (bool);
-    function toBorrowAmount(uint256 _shares, bool _roundUp, bool _previewInterest)
-        external
-        view
-        returns (uint256 _amount);
-    function toBorrowShares(uint256 _amount, bool _roundUp, bool _previewInterest)
-        external
-        view
-        returns (uint256 _shares);
+    function swappers(
+        address
+    ) external view returns (bool);
+    function toBorrowAmount(
+        uint256 _shares,
+        bool _roundUp,
+        bool _previewInterest
+    ) external view returns (uint256 _amount);
+    function toBorrowShares(
+        uint256 _amount,
+        bool _roundUp,
+        bool _previewInterest
+    ) external view returns (uint256 _shares);
     function totalBorrow() external view returns (uint128 amount, uint128 shares);
     function totalCollateral() external view returns (uint256 _totalCollateralBalance);
     function totalDebtAvailable() external view returns (uint256);
     function underlying() external view returns (address);
     function unpause() external;
     function updateExchangeRate() external returns (uint256 _exchangeRate);
-    function userBorrowShares(address _account) external view returns (uint256 borrowShares);
-    function userCollateralBalance(address _account) external returns (uint256 _collateralAmount);
-    function userRewardEpoch(address) external view returns (uint256);
+    function userBorrowShares(
+        address _account
+    ) external view returns (uint256 borrowShares);
+    function userCollateralBalance(
+        address _account
+    ) external returns (uint256 _collateralAmount);
+    function userRewardEpoch(
+        address
+    ) external view returns (uint256);
     function user_checkpoint(address _account, uint256 _epochloops) external returns (bool);
     function version() external pure returns (uint256 _major, uint256 _minor, uint256 _patch);
     function withdrawFees() external returns (uint256 _fees, uint256 _otherFees);

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.28;
 
+import "@forge-std/Test.sol";
 import {BaseTest, IUsdc} from "@test/Base.t.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
-import {Vault} from "@test/interfaces/IVault.sol";
 import {IResupplyPair} from "@test/interfaces/IResupplyPair.sol";
-import "@forge-std/Test.sol";
+import {Vault} from "@test/interfaces/IVault.sol";
 
 address constant UNDERLYING_TOKEN = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
@@ -13,20 +13,11 @@ address constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 address constant BORING_VAULT = 0x294eecec65A0142e84AEdfD8eB2FBEA8c9a9fbad;
 address constant TELLER = 0xe97365b41B340352d3d32CA2C7230330F19A1e73;
 
-contract Se7enseasTest is BaseTest {
+contract Se7enseasTest is BaseTest(1) {
     bytes[] depositBoringVault;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        depositBoringVault = abi.decode(
-            vm.parseJson(json, "$.se7enseas.depositBoringVault"),
-            (bytes[])
-        );
+        depositBoringVault = loadPermissions("$.se7enseas.depositBoringVault");
     }
 }
 

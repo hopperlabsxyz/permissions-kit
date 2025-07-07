@@ -1,47 +1,27 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.8.28;
 
+import "@forge-std/Test.sol";
 import {BaseTest, IUsdc} from "@test/Base.t.sol";
 import {TestAvatar} from "@test/TestAvatar.sol";
 import {Vault} from "@test/interfaces/IVault.sol";
-import "@forge-std/Test.sol";
 
 address constant TARGET = 0x07ed467acD4ffd13023046968b0859781cb90D9B; // 9SETH
 address constant ASSET = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // USDC
 
-contract LagoonTest is BaseTest {
+contract LagoonTest is BaseTest(1) {
     bytes[] depositAndWithdrawFromVault;
-    bytes[] syncDeposit;
     bytes[] manageVault;
     bytes[] closeVault;
     bytes[] settleVault;
 
     constructor() {
-        _loadPermissions("test/data/permissions.json");
-    }
-
-    function _loadPermissions(string memory path) internal {
-        string memory json = vm.readFile(path);
-
-        manageVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.manageVault"),
-            (bytes[])
+        depositAndWithdrawFromVault = loadPermissions(
+            "$.lagoon.depositAndWithdrawFromVault"
         );
-
-        closeVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.closeVault"),
-            (bytes[])
-        );
-
-        settleVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.settleVault"),
-            (bytes[])
-        );
-
-        depositAndWithdrawFromVault = abi.decode(
-            vm.parseJson(json, "$.lagoon.depositAndWithdrawFromVault"),
-            (bytes[])
-        );
+        manageVault = loadPermissions("$.lagoon.manageVault");
+        closeVault = loadPermissions("$.lagoon.closeVault");
+        settleVault = loadPermissions("$.lagoon.settleVault");
     }
 }
 
@@ -157,7 +137,7 @@ contract ManageVaultTest is LagoonTest {
     function test_update_invalid_lifespan() public {
         bytes memory call = abi.encodeWithSelector(
             Vault(TARGET).updateTotalAssetsLifespan.selector,
-            300000000000000
+            300_000_000_000_000
         );
         vm.prank(manager);
         vm.expectRevert();

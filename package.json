@@ -14,6 +14,11 @@
       "types": "./dist/eth.d.ts",
       "require": "./dist/eth.js",
       "import": "./dist/eth.mjs"
+    },
+    "./base": {
+      "types": "./dist/base.d.ts",
+      "require": "./dist/base.js",
+      "import": "./dist/base.mjs"
     }
   },
   "typesVersions": {
@@ -33,7 +38,7 @@
   "scripts": {
     "setup": "eth-sdk",
     "build": "rm -rf dist && tsup --format esm,cjs",
-    "test": "forge test --fork-url ${RPC_URL:-}",
+    "test": "forge test -v",
     "generate": "bun run build && bun run test/scripts/applyUpdates.ts"
   },
   "devDependencies": {

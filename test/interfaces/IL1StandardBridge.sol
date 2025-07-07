@@ -87,7 +87,12 @@ interface L1StandardBridge {
         uint256 _amount,
         bytes memory _extraData
     ) external;
-    function finalizeBridgeETH(address _from, address _to, uint256 _amount, bytes memory _extraData) external payable;
+    function finalizeBridgeETH(
+        address _from,
+        address _to,
+        uint256 _amount,
+        bytes memory _extraData
+    ) external payable;
     function finalizeERC20Withdrawal(
         address _l1Token,
         address _l2Token,
@@ -96,9 +101,12 @@ interface L1StandardBridge {
         uint256 _amount,
         bytes memory _extraData
     ) external;
-    function finalizeETHWithdrawal(address _from, address _to, uint256 _amount, bytes memory _extraData)
-        external
-        payable;
+    function finalizeETHWithdrawal(
+        address _from,
+        address _to,
+        uint256 _amount,
+        bytes memory _extraData
+    ) external payable;
     function initialize(address _messenger, address _superchainConfig) external;
     function l2TokenBridge() external view returns (address);
     function messenger() external view returns (address);

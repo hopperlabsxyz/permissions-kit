@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-interface ISimpleOFTAdapter {
+interface ISimpleOFT {
     struct EnforcedOptionParam {
         uint32 eid;
         uint16 msgType;
@@ -63,6 +63,12 @@ interface ISimpleOFTAdapter {
 
     error AddressEmptyCode(address target);
     error AddressInsufficientBalance(address account);
+    error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed);
+    error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed);
+    error ERC20InvalidApprover(address approver);
+    error ERC20InvalidReceiver(address receiver);
+    error ERC20InvalidSender(address sender);
+    error ERC20InvalidSpender(address spender);
     error FailedInnerCall();
     error InvalidDelegate();
     error InvalidEndpointCall();
@@ -82,6 +88,7 @@ interface ISimpleOFTAdapter {
     error SimulationResult(bytes result);
     error SlippageExceeded(uint256 amountLD, uint256 minAmountLD);
 
+    event Approval(address indexed owner, address indexed spender, uint256 value);
     event EnforcedOptionSet(EnforcedOptionParam[] _enforcedOptions);
     event Initialized(uint64 version);
     event MsgInspectorSet(address inspector);
@@ -98,24 +105,29 @@ interface ISimpleOFTAdapter {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
     event PeerSet(uint32 eid, bytes32 peer);
     event PreCrimeSet(address preCrimeAddress);
+    event Transfer(address indexed from, address indexed to, uint256 value);
 
     function SEND() external view returns (uint16);
     function SEND_AND_CALL() external view returns (uint16);
     function allowInitializePath(
         Origin memory origin
     ) external view returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
     function approvalRequired() external pure returns (bool);
+    function approve(address spender, uint256 value) external returns (bool);
+    function balanceOf(
+        address account
+    ) external view returns (uint256);
     function combineOptions(
         uint32 _eid,
         uint16 _msgType,
         bytes memory _extraOptions
     ) external view returns (bytes memory);
     function decimalConversionRate() external view returns (uint256);
+    function decimals() external view returns (uint8);
     function endpoint() external view returns (address);
     function enforcedOptions(uint32 _eid, uint16 _msgType) external view returns (bytes memory);
-    function initialize(
-        address _delegate
-    ) external;
+    function initialize(string memory _name, string memory _symbol, address _delegate) external;
     function isComposeMsgSender(Origin memory, bytes memory, address _sender) external view returns (bool);
     function isPeer(uint32 _eid, bytes32 _peer) external view returns (bool);
     function lzReceive(
@@ -136,6 +148,7 @@ interface ISimpleOFTAdapter {
         bytes memory _extraData
     ) external payable;
     function msgInspector() external view returns (address);
+    function name() external view returns (string memory);
     function nextNonce(uint32, bytes32) external view returns (uint64 nonce);
     function oApp() external view returns (address);
     function oAppVersion() external pure returns (uint64 senderVersion, uint64 receiverVersion);
@@ -175,7 +188,11 @@ interface ISimpleOFTAdapter {
         address _preCrime
     ) external;
     function sharedDecimals() external pure returns (uint8);
+    function symbol() external view returns (string memory);
     function token() external view returns (address);
+    function totalSupply() external view returns (uint256);
+    function transfer(address to, uint256 value) external returns (bool);
+    function transferFrom(address from, address to, uint256 value) external returns (bool);
     function transferOwnership(
         address newOwner
     ) external;
