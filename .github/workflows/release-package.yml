@@ -13,6 +13,7 @@ permissions:
   actions: write
   metadata: read
 
+
 jobs:
   release:
     if: github.event.pull_request.merged == true
