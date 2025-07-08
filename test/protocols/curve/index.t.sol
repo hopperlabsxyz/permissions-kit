@@ -130,6 +130,28 @@ contract DepositStableSwapNg is CurveTest {
         role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
     }
 
+    function test_remove_liquidity_one_coin() public {
+        uint256[] memory arr;
+        bytes memory call = abi.encodeWithSignature(
+            "remove_liquidity_one_coin(uint256,int128,uint256)",
+            42,
+            42,
+            42
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
+
+        call = abi.encodeWithSignature(
+            "remove_liquidity_one_coin(uint256,int128,uint256,address)",
+            42,
+            42,
+            42,
+            avatar
+        );
+        vm.prank(manager);
+        role.execTransactionWithRole(reUSDsCRV, 0, call, 0, TEST_ROLE, false);
+    }
+
     function test_remove_liquidity_revert() public {
         uint256[] memory arr;
         bytes memory call = abi.encodeWithSignature(

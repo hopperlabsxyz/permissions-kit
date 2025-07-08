@@ -30,6 +30,14 @@ function depositStableSwapNg(_: ChainId, targetInfo: TargetInfo) {
     {
       ...allow.mainnet.curve.stableSwapNg["remove_liquidity(uint256,uint256[])"](undefined, undefined),
       targetAddress
+    },
+    {
+      ...allow.mainnet.curve.stableSwapNg["remove_liquidity_one_coin(uint256,int128,uint256)"](undefined, undefined, undefined),
+      targetAddress
+    },
+    {
+      ...allow.mainnet.curve.stableSwapNg["remove_liquidity_one_coin(uint256,int128,uint256,address)"](undefined, undefined, undefined, c.avatar),
+      targetAddress
     }
   ]
   if (gauge) {
