@@ -1,7 +1,9 @@
 name: Node.js Package
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
 
@@ -9,39 +11,50 @@ permissions:
   contents: write
   pull-requests: write
 
+environment: release
+
 jobs:
-  build:
+  release:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.2.8
-          
+
       - name: Configure git
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
       - name: Install dependencies
         run: bun install
-        
+
       - name: Setup project
         run: bun setup
-        
+
       - name: Build project
         run: bun run build
-        
-      - name: Bump version (patch)
+
+      - name: Release minor version for feat/*
+        if: startsWith(github.event.pull_request.head.ref, 'feat/')
         run: |
-          bun pm version patch
-          git push
-          
-      - name: Publish to npm
+          bun pm minor
+          git push --follow-tags
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          bun publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Release patch version for fix/*
+        if: startsWith(github.event.pull_request.head.ref, 'fix/')
         run: |
+          bun pm patch patch
+          git push --follow-tags
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
           bun publish --access public
         env:
