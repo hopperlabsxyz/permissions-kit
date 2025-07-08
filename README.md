@@ -14,11 +14,11 @@ The Permissions Kit is a TypeScript SDK that provides pre-configured permissions
 ## Installation
 
 ```bash
-npm install @hopperlabsxyz/permissions-kit
+npm install @lagoon-protocol/permissions-kit
 # or
-yarn add @hopperlabsxyz/permissions-kit
+yarn add @lagoon-protocol/permissions-kit
 # or
-bun add @hopperlabsxyz/permissions-kit
+bun add @lagoon-protocol/permissions-kit
 ```
 
 > **Note:** We recommend using the permissions-kit alongside the [Zodiac Starter Kit](https://docs.roles.gnosisguild.org/sdk/getting-started) for enhanced functionality and streamlined development.
