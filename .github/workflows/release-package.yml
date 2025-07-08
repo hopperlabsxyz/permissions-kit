@@ -43,7 +43,7 @@ jobs:
       - name: Release minor version for feat/*
         if: startsWith(github.event.pull_request.head.ref, 'feat/')
         run: |
-          bun pm minor
+          bun pm version minor
           git push --follow-tags
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
           bun publish --access public
@@ -53,7 +53,7 @@ jobs:
       - name: Release patch version for fix/*
         if: startsWith(github.event.pull_request.head.ref, 'fix/')
         run: |
-          bun pm patch patch
+          bun pm version patch
           git push --follow-tags
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
           bun publish --access public
