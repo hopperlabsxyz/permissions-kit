@@ -1,0 +1,37 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: ./.github/workflows/build.yml
+  
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+      
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.2.18
+      
+      - name: Publish to npm
+        run: bun run publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
