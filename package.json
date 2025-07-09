@@ -54,5 +54,9 @@
     "ts-node": "^10.9.2",
     "zodiac-roles-sdk": "^2.21.2"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "tag": "next"
+  },
   "private": false
 }
