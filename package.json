@@ -1,6 +1,6 @@
 {
   "name": "@lagoon-protocol/permissions-kit",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Permissions for Zodiac Roles covering interactions with DeFi protocols",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -53,6 +53,10 @@
     "@gnosis-guild/eth-sdk-client": "^0.1.6",
     "ts-node": "^10.9.2",
     "zodiac-roles-sdk": "^2.21.2"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "tag": "next"
   },
   "private": false
 }
