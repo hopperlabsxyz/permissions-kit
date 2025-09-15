@@ -52,6 +52,11 @@ export const contracts = {
       },
     },
   },
+  avalanche: {
+    lagoon: {
+      vault: '0x33F65C8D025b5418C7f8dd248C2Ec1d31881D465', // implementation
+    },
+  }
 } as const;
 
 export default defineConfig({

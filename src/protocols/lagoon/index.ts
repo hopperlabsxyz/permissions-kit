@@ -1,18 +1,19 @@
 import { allow } from "zodiac-roles-sdk/kit";
 import { allowErc20Approve } from "../../conditions";
 import { c, ChainId, Permission } from "zodiac-roles-sdk";
-import { Target, TargetInfo, Targets } from "./types";
-import ethVaults from "./_ethVaults.ts";
+import { TargetInfo, EthTargets, AvaxTargets, Vaults, Target } from "./types";
+import ethVaults from "./_ethVaults";
+import avaxVaults from "./_avaxVaults";
 
-function getTargetInfo(target: Target): TargetInfo {
+function getTargetInfo(target: Target, vaults: Vaults): TargetInfo {
   if (typeof target === "string") {
-    const res = ethVaults.find((t) => t.address === target);
+    const res = vaults.find((t) => t.address === target);
     if (res === undefined) {
       throw new Error("Unknown target");
     }
     return res;
   } else if (typeof target.vault === "string") {
-    const res = ethVaults.find((t) => t.address === target.vault);
+    const res = vaults.find((t) => t.address === target.vault);
     if (res === undefined) {
       throw new Error("Unknown target");
     }
@@ -187,18 +188,35 @@ function depositAndWithdrawFromVault(_: ChainId, targetInfo: TargetInfo) {
 }
 
 export const eth = {
-  manageVault: async ({ targets }: { targets: Targets }) => {
-    return targets.flatMap((target) => manageVault(1, getTargetInfo(target)));
+  manageVault: async ({ targets }: { targets: EthTargets }) => {
+    return targets.flatMap((target) => manageVault(1, getTargetInfo(target, ethVaults)));
   },
-  closeVault: async ({ targets }: { targets: Targets }) => {
-    return targets.flatMap((target) => closeVault(1, getTargetInfo(target)));
+  closeVault: async ({ targets }: { targets: EthTargets }) => {
+    return targets.flatMap((target) => closeVault(1, getTargetInfo(target, ethVaults)));
   },
-  settleVault: async ({ targets }: { targets: Targets }) => {
-    return targets.flatMap((target) => settleVault(1, getTargetInfo(target)));
+  settleVault: async ({ targets }: { targets: EthTargets }) => {
+    return targets.flatMap((target) => settleVault(1, getTargetInfo(target, ethVaults)));
   },
-  depositAndWithdrawFromVault: async ({ targets }: { targets: Targets }) => {
+  depositAndWithdrawFromVault: async ({ targets }: { targets: EthTargets }) => {
     return targets.flatMap((target) =>
-      depositAndWithdrawFromVault(1, getTargetInfo(target))
+      depositAndWithdrawFromVault(1, getTargetInfo(target, ethVaults))
+    );
+  },
+};
+
+export const avax = {
+  manageVault: async ({ targets }: { targets: AvaxTargets }) => {
+    return targets.flatMap((target) => manageVault(43114, getTargetInfo(target, avaxVaults)));
+  },
+  closeVault: async ({ targets }: { targets: AvaxTargets }) => {
+    return targets.flatMap((target) => closeVault(43114, getTargetInfo(target, avaxVaults)));
+  },
+  settleVault: async ({ targets }: { targets: AvaxTargets }) => {
+    return targets.flatMap((target) => settleVault(43114, getTargetInfo(target, avaxVaults)));
+  },
+  depositAndWithdrawFromVault: async ({ targets }: { targets: AvaxTargets }) => {
+    return targets.flatMap((target) =>
+      depositAndWithdrawFromVault(43114, getTargetInfo(target, avaxVaults))
     );
   },
 };

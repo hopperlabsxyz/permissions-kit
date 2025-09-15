@@ -1,6 +1,6 @@
 {
   "name": "@lagoon-protocol/permissions-kit",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "Permissions for Zodiac Roles covering interactions with DeFi protocols",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -19,6 +19,11 @@
       "types": "./dist/base.d.ts",
       "require": "./dist/base.js",
       "import": "./dist/base.mjs"
+    },
+    "./avax": {
+      "types": "./dist/avax.d.ts",
+      "require": "./dist/avax.js",
+      "import": "./dist/avax.mjs"
     }
   },
   "typesVersions": {
@@ -28,6 +33,12 @@
       ],
       "eth": [
         "./dist/eth.d.ts"
+      ],
+      "base": [
+        "./dist/base.d.ts"
+      ],
+      "avax": [
+        "./dist/avax.d.ts"
       ]
     }
   },

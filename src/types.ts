@@ -1,4 +1,5 @@
 export enum Chain {
   eth = "eth",
   base = "base",
+  avax = "avax",
 }

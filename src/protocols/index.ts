@@ -23,3 +23,7 @@ export const base = {
   pendle: pendle.base,
   bridge: bridge.base,
 };
+
+export const avax = {
+  lagoon: lagoon.avax
+}
