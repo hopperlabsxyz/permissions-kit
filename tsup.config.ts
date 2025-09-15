@@ -8,6 +8,7 @@ export default defineConfig({
     "./src/index.ts",
     "./src/eth.ts",
     "./src/base.ts",
+    "./src/avax.ts",
   ],
   dts: {
     resolve: true,
